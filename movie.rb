@@ -1,6 +1,5 @@
 require './movie_collection.rb'
-class Movie < MovieCollection
-
+class Movie
   attr_reader :link, :title, :year, :country, :detailed_year, :genre,
               :duration, :rating, :director, :actors
 

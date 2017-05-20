@@ -16,3 +16,8 @@ movies.all.first.has_genre? 'Test'
 rescue StandardError
 puts "No such genre"
 end
+
+# Testing
+movies.stats :month
+movies.filter genre: 'Comedy'
+movies.sort_by :year
