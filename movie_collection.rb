@@ -26,8 +26,7 @@ class MovieCollection
   end
 
   def stats(field)
-    #возвращает хэш: имя_дира - значение, имя_дира - кол-во
-    puts @all.map(&field)
+    puts @all.map(&field).group_by(&:itself).each { |k, v| k = v.length }
   end
 
   private
