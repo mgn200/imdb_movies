@@ -17,4 +17,9 @@ class Movie < MovieCollection
   def to_s
     "#{@title}, #{@detailed_year}, #{@director}, #{@rating}"
   end
+
+  def has_genre?(genre)
+    @genre.include?(genre) ? true : raise {"Error"}
+  end
+
 end
