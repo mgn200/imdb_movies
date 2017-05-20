@@ -2,7 +2,7 @@ require './movie_collection.rb'
 class Movie < MovieCollection
 
   attr_reader :link, :title, :year, :country, :detailed_year, :genre,
-              :duration, :rating, :director, :main_actors
+              :duration, :rating, :director, :actors
 
   def initialize(movie_info)
     movie_info.each do |k, v|
@@ -10,12 +10,8 @@ class Movie < MovieCollection
     end
   end
 
-  def main_actors
-    Array(@main_actors)
-  end
-
-  def stats
-
+  def actors
+    Array(@actors)
   end
 
   def to_s

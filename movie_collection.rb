@@ -2,9 +2,10 @@ require 'csv'
 require 'ostruct'
 require 'date'
 require 'pry'
+require 'date'
 
 class MovieCollection
-  KEYS = %w[link title year country detailed_year genre duration rating director main_actors]
+  KEYS = %w[link title year country detailed_year genre duration rating director actors]
   attr_reader :all
 
   def initialize(file)
@@ -26,7 +27,21 @@ class MovieCollection
   end
 
   def stats(field)
-    puts @all.map(&field).group_by(&:itself).each { |k, v| k = v.length }
+    case field
+    when :actors
+      actors = @all.map { |x| x.actors.first.split "," }
+              .flatten
+              .group_by(&:itself)
+      puts actors.each {|k, v| actors[k] = v.length }
+    when :month
+      month = @all.reject { |x| x.detailed_year.length <= 4 }
+                  .map { |x| Date.strptime(x.detailed_year, '%Y-%m').mon }
+                  .group_by { |x| Date::MONTHNAMES[x] }
+      puts month.each { |k, v| month[k] = v.length }
+    else
+      movies = @all.map(&field).group_by(&:itself)
+      puts movies.each {|k, v| movies[k] = v.length }
+    end
   end
 
   private
