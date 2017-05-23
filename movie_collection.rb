@@ -9,7 +9,8 @@ class MovieCollection
   attr_reader :all
 
   def initialize(file)
-    @all = parse_file(file)
+    @@movies = @all = parse_file(file)
+    # => @all = @@movie
   end
 
   def sort_by(field)
@@ -44,10 +45,16 @@ class MovieCollection
     end
   end
 
+  def has_genre?(genre)
+    @@movies.map(&:genre).include? genre
+  end
+
   private
 
   def parse_file(file)
     CSV.foreach(file, { col_sep: '|', headers: KEYS }).map { |row| Movie.new(row.to_h) }
   end
+
+
 end
 

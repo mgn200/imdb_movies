@@ -10,14 +10,13 @@ abort('No such file') unless File.exist? file
 puts "Using default file" if file == default_file
 
 movies = MovieCollection.new(file)
+#binding.pry
+movies.all.first.has_genre? 'Drama'
 
-begin
-movies.all.first.has_genre? 'Test'
-rescue StandardError
-puts "No such genre"
-end
+movies.has_genre? 'Comedy'
+movies.all.first.has_genre? 'Dramdsa'
 
 # Testing
-movies.stats :month
-movies.filter genre: 'Comedy'
-movies.sort_by :year
+#movies.stats :month
+#movies.filter(genre: 'Comedy', year: 2011)
+#movies.sort_by :year

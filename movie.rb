@@ -1,5 +1,5 @@
 require './movie_collection.rb'
-class Movie
+class Movie < MovieCollection
   attr_reader :link, :title, :year, :country, :detailed_year, :genre,
               :duration, :rating, :director, :actors
 
@@ -18,7 +18,7 @@ class Movie
   end
 
   def has_genre?(genre)
-    @genre.include?(genre) ? true : raise {"Error"}
+    return @genre.include? genre if super
+    fail ArgumentError, 'Invalid genre name' unless @genre.include? genre
   end
-
 end
