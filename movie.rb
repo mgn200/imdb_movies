@@ -3,9 +3,14 @@ class Movie < MovieCollection
   attr_reader :link, :title, :year, :country, :detailed_year, :genre,
               :duration, :rating, :director, :actors
 
-  def initialize(movie_info)
+  def initialize(list, movie_info)
+    @list = list
     movie_info.each do |k, v|
-      self.instance_variable_set "@#{k}", v
+      if k == 'year' || k == 'duration'
+        self.instance_variable_set "@#{k}", v.to_i
+      else
+        self.instance_variable_set "@#{k}", v
+      end
     end
   end
 
@@ -17,8 +22,12 @@ class Movie < MovieCollection
     "#{@title}, #{@detailed_year}, #{@director}, #{@rating}"
   end
 
+  #def inspect
+  #  Hash[instance_variables.map { |name| [name, instance_variable_get(name)]}]
+  #end
+
   def has_genre?(genre)
-    return @genre.include? genre if super
+    return @genre.include? genre if @list.has_genre? genre
     fail ArgumentError, 'Invalid genre name' unless @genre.include? genre
   end
 end

@@ -8,9 +8,10 @@ class MovieCollection
   KEYS = %w[link title year country detailed_year genre duration rating director actors]
   attr_reader :all
 
-  def initialize(file)
-    @@movies = @all = parse_file(file)
-    # => @all = @@movie
+  def initialize(file = 'movies.txt')
+    @filename = file
+    abort('No such file') unless File.exist? file
+    @all = parse_file(file)
   end
 
   def sort_by(field)
@@ -22,9 +23,15 @@ class MovieCollection
   end
 
   def filter(hash)
-    key = hash.keys.first
-    value = hash.values.first
-    puts @all.select {|x| (x.send(key)).include? value}
+    hash.reduce(@all) do |sequence, (k, v)|
+        sequence.select do |x|
+        if String === v
+          x.send(k).include? v
+        else
+          x.send(k) === v
+        end
+      end
+    end
   end
 
   def stats(field)
@@ -46,15 +53,14 @@ class MovieCollection
   end
 
   def has_genre?(genre)
-    @@movies.map(&:genre).include? genre
+    @all.map(&:genre).include? genre
   end
 
   private
 
   def parse_file(file)
-    CSV.foreach(file, { col_sep: '|', headers: KEYS }).map { |row| Movie.new(row.to_h) }
+    #binding.pry
+    CSV.foreach(file, { col_sep: '|', headers: KEYS }).map { |row| Movie.new(self, row.to_h) }
   end
-
-
 end
 
