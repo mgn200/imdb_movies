@@ -35,21 +35,8 @@ class MovieCollection
   end
 
   def stats(field)
-    case field
-    when :actors
-      actors = @all.map { |x| x.actors.first.split "," }
-              .flatten
-              .group_by(&:itself)
-      puts actors.each {|k, v| actors[k] = v.length }
-    when :month
-      month = @all.reject { |x| x.detailed_year.length <= 4 }
-                  .map { |x| Date.strptime(x.detailed_year, '%Y-%m').mon }
-                  .group_by { |x| Date::MONTHNAMES[x] }
-      puts month.each { |k, v| month[k] = v.length }
-    else
-      movies = @all.map(&field).group_by(&:itself)
-      puts movies.each {|k, v| movies[k] = v.length }
-    end
+    stats = @all.map { |x| x.send(field) }.flatten.group_by(&:itself)
+    stats.each { |k, v| stats[k] = v.length }.sort_by { |field, count| -count }.to_h
   end
 
   def has_genre?(genre)
@@ -59,7 +46,6 @@ class MovieCollection
   private
 
   def parse_file(file)
-    #binding.pry
     CSV.foreach(file, { col_sep: '|', headers: KEYS }).map { |row| Movie.new(self, row.to_h) }
   end
 end
