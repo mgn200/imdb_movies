@@ -24,15 +24,23 @@ class Movie < MovieCollection
 
   def month
     if @detailed_year.length > 4
-      month = Date.strptime(@detailed_year, '%Y-%m').mon
-      @month = Date::MONTHNAMES[month]
+      m = Date.strptime(@detailed_year, '%Y-%m').mon
+      Date::MONTHNAMES[m]
     else
-      @month = 'No month written'
+      nil
     end
   end
 
   def has_genre?(genre)
-    return @genre.include? genre if @list.has_genre? genre
-    fail ArgumentError, 'Invalid genre name' unless @genre.include? genre
+    fail ArgumentError, 'Invalid genre name' unless @list.has_genre? genre
+    return @genre.include? genre
+  end
+
+  def matches?(key, value)
+    if send(key).is_a? Array
+      send(key).any? { |x| value === x }
+    else
+      value === send(key)
+    end
   end
 end

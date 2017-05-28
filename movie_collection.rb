@@ -24,23 +24,17 @@ class MovieCollection
 
   def filter(hash)
     hash.reduce(@all) do |sequence, (k, v)|
-        sequence.select do |x|
-        if String === v
-          x.send(k).include? v
-        else
-          x.send(k) === v
-        end
-      end
+        sequence.select { |x| x.matches?(k, v) }
     end
   end
 
   def stats(field)
     stats = @all.map { |x| x.send(field) }.flatten.group_by(&:itself)
-    stats.each { |k, v| stats[k] = v.length }.sort_by { |field, count| -count }.to_h
+    stats.map { |x| [x.first, x[1].length] }.to_h.sort_by { |k, v| v }
   end
 
   def has_genre?(genre)
-    @all.map(&:genre).include? genre
+    @all.map(&:genre).flatten.uniq.include? genre
   end
 
   private
