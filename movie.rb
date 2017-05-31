@@ -1,8 +1,8 @@
 require './movie_collection.rb'
 require 'date'
 
-class Movie < MovieCollection
-  attr_reader :list, :link, :title, :year, :country, :detailed_year, :genre,
+class Movie
+  attr_reader :list, :link, :title, :year, :country, :date, :genre,
               :duration, :rating, :director, :actors
 
   def initialize(list, movie_info)
@@ -16,6 +16,7 @@ class Movie < MovieCollection
     @list = list
     @actors = @actors.split ","
     @genre = @genre.split ","
+    @date = parse_date(@date)
   end
 
   def to_s
@@ -23,24 +24,26 @@ class Movie < MovieCollection
   end
 
   def month
-    if @detailed_year.length > 4
-      m = Date.strptime(@detailed_year, '%Y-%m').mon
-      Date::MONTHNAMES[m]
-    else
-      nil
-    end
+    Date::MONTHNAMES[@date.mon] unless @date.nil?
   end
 
   def has_genre?(genre)
     fail ArgumentError, 'Invalid genre name' unless @list.has_genre? genre
-    return @genre.include? genre
+    @genre.include? genre
   end
 
   def matches?(key, value)
-    if send(key).is_a? Array
-      send(key).any? { |x| value === x }
+    func = send(key)
+    if func.is_a? Array
+      func.any? { |x| value === x }
     else
-      value === send(key)
+      value === func
     end
+  end
+
+  private
+
+  def parse_date(date)
+    @date = Date.strptime(date, '%Y-%m') if date.length > 4
   end
 end

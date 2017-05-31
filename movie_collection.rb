@@ -5,7 +5,7 @@ require 'pry'
 require 'date'
 
 class MovieCollection
-  KEYS = %w[link title year country detailed_year genre duration rating director actors]
+  KEYS = %w[link title year country date genre duration rating director actors]
   attr_reader :all
 
   def initialize(file = 'movies.txt')
@@ -29,8 +29,7 @@ class MovieCollection
   end
 
   def stats(field)
-    stats = @all.map { |x| x.send(field) }.flatten.group_by(&:itself)
-    stats.map { |x| [x.first, x[1].length] }.to_h.sort_by { |k, v| v }
+    @all.flat_map(&field).group_by(&:itself).map { |val, group| [val, group.count] }.to_h
   end
 
   def has_genre?(genre)
