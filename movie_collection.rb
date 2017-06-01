@@ -2,12 +2,15 @@ require 'csv'
 require 'ostruct'
 require 'date'
 require 'pry'
+require 'date'
 
 class MovieCollection
-  KEYS = %w[link title year country detailed_year genre duration rating director main_actors]
+  KEYS = %w[link title year country date genre duration rating director actors]
   attr_reader :all
 
-  def initialize(file)
+  def initialize(file = 'movies.txt')
+    @filename = file
+    abort('No such file') unless File.exist? file
     @all = parse_file(file)
   end
 
@@ -20,20 +23,23 @@ class MovieCollection
   end
 
   def filter(hash)
-    key = hash.keys.first
-    value = hash.values.first
-    puts @all.select {|x| (x.send(key)).include? value}
+    hash.reduce(@all) do |sequence, (k, v)|
+        sequence.select { |x| x.matches?(k, v) }
+    end
   end
 
   def stats(field)
-    #возвращает хэш: имя_дира - значение, имя_дира - кол-во
-    puts @all.map(&field)
+    @all.flat_map(&field).group_by(&:itself).map { |val, group| [val, group.count] }.to_h
+  end
+
+  def has_genre?(genre)
+    @all.map(&:genre).flatten.uniq.include? genre
   end
 
   private
 
   def parse_file(file)
-    CSV.foreach(file, { col_sep: '|', headers: KEYS }).map { |row| Movie.new(row.to_h) }
+    CSV.foreach(file, { col_sep: '|', headers: KEYS }).map { |row| Movie.new(self, row.to_h) }
   end
 end
 
