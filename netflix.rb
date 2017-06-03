@@ -1,5 +1,8 @@
-require './movie_collection'
+require 'pry'
 
-class Netflix < MovieCollection
-
+class Netflix
+  attr_accessor :balance
+  def initialize
+    @balance = 0
+  end
 end

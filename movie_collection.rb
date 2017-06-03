@@ -6,6 +6,7 @@ require 'date'
 
 class MovieCollection
   KEYS = %w[link title year country date genre duration rating director actors]
+  
   attr_reader :all
 
   def initialize(file = 'movies.txt')
@@ -42,4 +43,3 @@ class MovieCollection
     CSV.foreach(file, { col_sep: '|', headers: KEYS }).map { |row| Movie.new(self, row.to_h) }
   end
 end
-
