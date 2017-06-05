@@ -1,6 +1,6 @@
 require 'pry'
 RSpec.describe AncientMovie do
-  let(:ancient_movie) { AncientMovie.new( {title: 'Test title', year: 1949 }) }
+  let(:ancient_movie) { build(:ancient_movie) }
 
   describe "#to_s" do
     it 'returns a string' do

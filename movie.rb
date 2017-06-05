@@ -17,7 +17,7 @@ class Movie
     @actors = @actors.split ","
     @genre = @genre.split ","
     @date = parse_date(@date)
-    AncientMovie.new(movie_info)
+    create_movie_type
   end
 
   def to_s
@@ -47,7 +47,7 @@ class Movie
   def create_movie_type
     if @year < 1950
       AncientMovie.new
-    end
+    elsif @year >
   end
 
   def parse_date(date)
