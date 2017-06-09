@@ -3,10 +3,14 @@ require 'ostruct'
 require 'date'
 require 'pry'
 require 'date'
+require_relative 'ancient_movie'
+require_relative 'classic_movie'
+require_relative 'new_movie'
+require_relative 'modern_movie'
 
 class MovieCollection
   KEYS = %w[link title year country date genre duration rating director actors]
-  
+
   attr_reader :all
 
   def initialize(file = 'movies.txt')
@@ -40,6 +44,16 @@ class MovieCollection
   private
 
   def parse_file(file)
-    CSV.foreach(file, { col_sep: '|', headers: KEYS }).map { |row| Movie.new(self, row.to_h) }
+    CSV.foreach(file, { col_sep: '|', headers: KEYS }).map do |row|
+      if row['year'].to_i < 1945
+        AncientMovie.new(self, row.to_h)
+      elsif row['year'].to_i >= 1945 && row['year'].to_i < 1968
+        ClassicMovie.new(self, row.to_h)
+      elsif row['year'].to_i >= 1968 && row['year'].to_i < 2000
+        ModernMovie.new(self, row.to_h)
+      elsif row['year'].to_i >= 2000
+        NewMovie.new(self, row.to_h)
+      end
+    end
   end
 end

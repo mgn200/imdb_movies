@@ -1,12 +1,9 @@
 class ModernMovie < Movie
-  attr_reader :title, :year
-
-  def initialize(movie_info)
-    @title = movie_info[:title]
-    @year = movie_info[:year]
+  def initialize(list, movie_info)
+    super(list, movie_info)
   end
 
   def to_s
-    "#{@title} - старый фильм(#{@year})"
+    "#{@title} - современное кино: играют #{@actors.join ","}."
   end
 end

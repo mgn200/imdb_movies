@@ -4,7 +4,7 @@ RSpec.describe NewMovie do
 
   describe "#to_s" do
     it 'returns a string' do
-      expect(new_movie.to_s).to eq "#{new_movie.title} - старый фильм(#{new_movie.year})"
+      expect(new_movie.to_s).to eq "NewMovie - новинка, вышло 13 лет назад!"
     end
   end
 end

@@ -1,15 +1,14 @@
 require 'pry'
-#require './movie.rb'
 
 class ClassicMovie < Movie
-  attr_reader :title, :year
+  attr_reader :list
 
-  def initialize(movie_info)
-    @title = movie_info[:title]
-    @year = movie_info[:year]
+  def initialize(list, movie_info)
+    super(list, movie_info)
   end
 
   def to_s
-    "#{@title} - старый фильм(#{@year})"
+    movies = list.filter(director: @director).map(&:title).join(",")
+    "#{@title} - классический фильм, режиссёр #{@director}(#{movies})"
   end
 end

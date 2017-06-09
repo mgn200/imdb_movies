@@ -1,8 +1,7 @@
-require './movie_collection.rb'
 require 'date'
 
 class Movie
-  attr_reader :list, :link, :title, :year, :country, :date, :genre,
+  attr_accessor :list, :link, :title, :year, :country, :date, :genre,
               :duration, :rating, :director, :actors
 
   def initialize(list, movie_info)
@@ -17,7 +16,6 @@ class Movie
     @actors = @actors.split ","
     @genre = @genre.split ","
     @date = parse_date(@date)
-    create_movie_type
   end
 
   def to_s
@@ -44,15 +42,7 @@ class Movie
 
   private
 
-  def create_movie_type
-    if @year < 1950
-      AncientMovie.new
-    elsif @year >
-  end
-
   def parse_date(date)
     @date = Date.strptime(date, '%Y-%m') if date.length > 4
   end
 end
-
-require './ancient_movie.rb'
