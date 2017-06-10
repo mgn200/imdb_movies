@@ -2,11 +2,12 @@ require 'pry'
 require_relative 'movie'
 
 class ClassicMovie < Movie
-  attr_reader :list, :period
+  attr_reader :period, :price
 
   def initialize(list, movie_info)
     super(list, movie_info)
     @period = 'Classic'
+    @price = 1.5
   end
 
   def to_s
