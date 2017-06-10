@@ -1,5 +1,5 @@
 http://imdb.com/title/tt0111161/?ref_=chttp_tt_1|ModernMovie|1994|USA|1994-10-14|Crime,Drama|142 min|9.3|Frank Darabont|Tim Robbins,Morgan Freeman,Bob Gunton
-http://imdb.com/title/tt0068646/?ref_=chttp_tt_2|ClassicMovie|1967|USA|1944-03-24|Crime,Drama|175 min|9.2|Paul Fear|Marlon Brando,Al Pacino,James Caan
+http://imdb.com/title/tt0068646/?ref_=chttp_tt_2|ClassicMovie|1969|USA|1944-03-24|Crime,Drama|175 min|9.2|Paul Fear|Marlon Brando,Al Pacino,James Caan
 http://imdb.com/title/tt0071562/?ref_=chttp_tt_3|AncientMovie|1944|USA|1974-12-20|Crime,Drama|200 min|9.1|Paul Fear|Al Pacino,Robert De Niro,Robert Duvall
 http://imdb.com/title/tt0468569/?ref_=chttp_tt_4|NewMovie|2008|USA|2008-07-18|Action,Crime,Drama|152 min|9.0|Christopher Nolan|Christian Bale,Heath Ledger,Aaron Eckhart
 http://imdb.com/title/tt0068646/?ref_=chttp_tt_2|ClassicMovie|1967|USA|1944-03-24|Crime,Drama|175 min|9.2|Paul Fear|Marlon Brando,Al Pacino,James Caan

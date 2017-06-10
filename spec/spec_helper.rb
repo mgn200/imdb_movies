@@ -1,10 +1,10 @@
+require './movie_collection'
 require './netflix.rb'
 require './movie.rb'
 require './classic_movie.rb'
 require './ancient_movie.rb'
 require './modern_movie.rb'
 require './new_movie.rb'
-require './movie_collection'
 require 'factory_girl'
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|

@@ -29,7 +29,7 @@ class MovieCollection
 
   def filter(hash)
     hash.reduce(@all) do |sequence, (k, v)|
-        sequence.select { |x| x.matches?(k, v) }
+      sequence.select { |x| x.matches?(k, v) }
     end
   end
 

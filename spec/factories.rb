@@ -1,6 +1,10 @@
 require 'date'
 movie_collection = MovieCollection.new('movies_for_spec.txt')
 FactoryGirl.define do
+  factory :movie_collection do
+
+  end
+
   factory :movie do
     list { movie_collection }
     movie_info { { title: 'Movie',
@@ -35,5 +39,9 @@ FactoryGirl.define do
   factory :classic_movie, class: ClassicMovie, parent: :movie do
     year 1956
     title 'ClassicMovie'
+  end
+
+  factory :netflix, class: Netflix, parent: :movie_collection do
+    initialize_with { new(movie_collection) }
   end
 end

@@ -6,7 +6,9 @@ require_relative 'movie.rb'
 require_relative 'movie_collection'
 require_relative 'netflix.rb'
 movies = MovieCollection.new
-#netflix = Netflix.new
+
+netflix = Netflix.new(movies)
+netflix.show(genre: 'Drama', period: 'New')
 
 #puts movies.stats :month
 #puts movies.filter(genre: 'Comedy', year: 2011)

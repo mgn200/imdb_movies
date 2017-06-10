@@ -2,7 +2,7 @@ require 'date'
 
 class Movie
   attr_accessor :list, :link, :title, :year, :country, :date, :genre,
-              :duration, :rating, :director, :actors
+              :duration, :rating, :director, :actors, :period
 
   def initialize(list, movie_info)
     movie_info.each do |k, v|
