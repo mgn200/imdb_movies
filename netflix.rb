@@ -24,7 +24,6 @@ class Netflix < MovieCollection
   end
 
   def how_much?(movie_name)
-    binding.pry
     #@all.select blablabla
     filter({title: movie_name}).first.price
   end

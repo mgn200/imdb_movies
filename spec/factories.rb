@@ -44,4 +44,8 @@ FactoryGirl.define do
   factory :netflix, class: Netflix, parent: :movie_collection do
     initialize_with { new(movie_collection) }
   end
+
+  factory :theatre, class: Theatre, parent: :movie_collection do
+    initialize_with { new(movie_collection) }
+  end
 end

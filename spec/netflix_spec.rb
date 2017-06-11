@@ -1,4 +1,3 @@
-require 'pry'
 RSpec.describe Netflix do
   #build :movie
   let(:netflix) { build :netflix }
@@ -7,7 +6,7 @@ RSpec.describe Netflix do
   it 'initialize balance variable' do
     expect(netflix.balance).to eq 10
   end
-
+  
   describe '#show' do
     context 'with valid params' do
       it 'returns string with movie info' do

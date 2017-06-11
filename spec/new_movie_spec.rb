@@ -1,4 +1,3 @@
-require 'pry'
 RSpec.describe NewMovie do
   let(:new_movie) { build(:new_movie) }
 

@@ -1,4 +1,5 @@
 require './movie_collection'
+require './theatre.rb'
 require './netflix.rb'
 require './movie.rb'
 require './classic_movie.rb'
