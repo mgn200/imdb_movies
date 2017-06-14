@@ -2,7 +2,7 @@ require 'date'
 movie_collection = MovieCollection.new('movies_for_spec.txt')
 FactoryGirl.define do
   factory :movie_collection do
-
+    
   end
 
   factory :movie do

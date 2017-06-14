@@ -6,7 +6,7 @@ RSpec.describe Netflix do
   it 'initialize balance variable' do
     expect(netflix.balance).to eq 10
   end
-  
+
   describe '#show' do
     context 'with valid params' do
       it 'returns string with movie info' do
@@ -16,25 +16,25 @@ RSpec.describe Netflix do
       describe 'changes balance variable' do
         context 'Ancient Movie' do
           it 'changes balance by 1' do
-            expect { netflix.show(period: 'Ancient', genre: 'Crime') }.to change { netflix.balance }.by -1
+            expect { netflix.show(period: 'Ancient', genre: 'Action') }.to change { netflix.balance }.by -1
           end
         end
 
         context 'Modern Movie' do
           it 'changes balance by 3' do
-            expect { netflix.show(period: 'Modern', genre: 'Crime') }.to change { netflix.balance }.by -3
+            expect { netflix.show(period: 'Modern', genre: 'Comedy') }.to change { netflix.balance }.by -3
           end
         end
 
         context 'New Movie' do
           it 'changes balance by 5' do
-            expect { netflix.show(period: 'New', genre: 'Crime') }.to change { netflix.balance }.by -5
+            expect { netflix.show(period: 'New', genre: 'Thriller') }.to change { netflix.balance }.by -5
           end
         end
 
         context 'Classic Movie' do
           it 'changes balance by 1.5' do
-            expect { netflix.show(period: 'Classic', genre: 'Crime') }.to change { netflix.balance }.by -1.5
+            expect { netflix.show(period: 'Classic', genre: 'Horror') }.to change { netflix.balance }.by -1.5
           end
         end
       end

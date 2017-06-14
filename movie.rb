@@ -34,7 +34,7 @@ class Movie
   def matches?(key, value)
     func = send(key)
     if func.is_a? Array
-      func.any? { |x| value === x }
+      func.any? { |x| value.include? x }
     else
       value === func
     end

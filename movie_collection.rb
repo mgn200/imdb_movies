@@ -41,6 +41,10 @@ class MovieCollection
     @all.map(&:genre).flatten.uniq.include? genre
   end
 
+  def pick_movie(movies_array)
+    movies_array.sort_by { |x| x.rating.to_f*rand(1..1.5) }.last
+  end
+
   private
 
   def parse_file(file)

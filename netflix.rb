@@ -13,7 +13,8 @@ class Netflix < MovieCollection
   end
 
   def show(params)
-    movie = filter(params).sample
+    movies = filter(params)
+    movie = pick_movie(movies)
     raise 'Insufficient funds' unless (@balance - movie.price) > 0
     @balance -= movie.price
     "Now showing: #{movie.title} #{start_end(movie)}"
