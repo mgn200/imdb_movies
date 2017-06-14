@@ -1,10 +1,9 @@
 RSpec.describe MovieCollection do
   mc = MovieCollection.new('movies.txt')
-  mc_test = MovieCollection.new('movies_for_spec')
+  mc_test = MovieCollection.new('movies_for_spec.txt')
 
   describe 'create 4 movie categores on initialize' do
     it 'creates ModernMovie' do
-      binding.pry
       expect(mc_test.all.first.is_a? ModernMovie).to be true
     end
 
@@ -24,7 +23,7 @@ RSpec.describe MovieCollection do
   describe '#pick_movie' do
     it 'returns random movie from array, preferably higher rated' do
       arr = mc.filter(period: 'Ancient')
-      expect(mc.pick_movie(arr).first.is_a? Movie).to be true
+      expect((mc.pick_movie(arr)).is_a? AncientMovie).to be true
     end
   end
 end
