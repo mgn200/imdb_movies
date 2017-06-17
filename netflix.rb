@@ -1,15 +1,11 @@
 require 'pry'
 
 class Netflix < MovieCollection
-  attr_accessor :balance, :all
+  attr_reader :all, :balance
 
   def initialize(collection)
-    @balance = 10
+    @balance = 0
     @all = collection.all
-  end
-
-  def filter(params)
-    super
   end
 
   def show(params)
@@ -25,7 +21,6 @@ class Netflix < MovieCollection
   end
 
   def how_much?(movie_name)
-    #@all.select blablabla
     filter({title: movie_name}).first.price
   end
 

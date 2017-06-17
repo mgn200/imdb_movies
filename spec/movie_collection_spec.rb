@@ -1,29 +1,31 @@
 RSpec.describe MovieCollection do
-  mc = MovieCollection.new('movies.txt')
-  mc_test = MovieCollection.new('movies_for_spec.txt')
+  let(:movie_collection) { MovieCollection.new('movies.txt') }
+  let(:random_movie_arr) { movie_collection.filter(period: 'Ancient') }
 
   describe 'create 4 movie categores on initialize' do
-    it 'creates ModernMovie' do
-      expect(mc_test.all.first.is_a? ModernMovie).to be true
+    context 'year < 1945' do
+      subject { movie_collection.filter(year: 1900...1945) }
+      it { is_expected.to all be_a AncientMovie }
     end
 
-    it 'creates ClassicMovie' do
-      expect(mc_test.all[1].is_a? ClassicMovie).to be true
+    context 'year 1945-1968' do
+      subject { movie_collection.filter(year: 1945...1968) }
+      it { is_expected.to all be_a ClassicMovie }
     end
 
-    it 'creates AncientMovie' do
-      expect(mc_test.all[2].is_a? AncientMovie).to be true
+    context 'year 1968-2000' do
+      subject { movie_collection.filter(year: 1968...2000) }
+      it { is_expected.to all be_a ModernMovie }
     end
 
-    it 'creates NewsMovie' do
-      expect(mc_test.all[3].is_a? NewMovie).to be true
+    context 'year > 2000 ' do
+      subject { movie_collection.filter(year: 2000...2018) }
+      it { is_expected.to all be_a NewMovie }
     end
   end
 
   describe '#pick_movie' do
-    it 'returns random movie from array, preferably higher rated' do
-      arr = mc.filter(period: 'Ancient')
-      expect((mc.pick_movie(arr)).is_a? AncientMovie).to be true
-    end
+    subject { movie_collection.pick_movie(random_movie_arr) }
+    it { is_expected.to be_a AncientMovie }
   end
 end

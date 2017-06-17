@@ -1,19 +1,22 @@
 RSpec.describe ClassicMovie do
-  let(:classic_movie) { build(:classic_movie) }
+  subject(:classic_movie) { MovieCollection.new('movies.txt').filter(period: 'Classic').sample }
 
   describe '#initialze' do
-    it 'sets price' do
-      expect(classic_movie.price).to eq 1.5
+    context 'price' do
+      it { is_expected.to have_attributes(price: 1.5) }
     end
 
-    it 'sets period' do
-      expect(classic_movie.period).to eq 'Classic'
+    context 'period' do
+      it { is_expected.to have_attributes(period: 'Classic') }
     end
   end
 
   describe "#to_s" do
     it 'returns a string' do
-      expect(classic_movie.to_s).to eq "ClassicMovie - классический фильм, режиссёр Paul Fear(ClassicMovie)"
+      director_movies = classic_movie.list
+                            .filter(director: classic_movie.director)
+                            .map(&:title).join(",")
+      expect(classic_movie.to_s).to eq "#{classic_movie.title} - классический фильм, режиссёр #{classic_movie.director}(#{director_movies})"
     end
   end
 end

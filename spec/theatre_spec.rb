@@ -1,10 +1,12 @@
 RSpec.describe Theatre do
-  let(:theatre) { build :theatre }
+  movies = MovieCollection.new('movies.txt')
+  subject { Theatre.new }
 
-  describe '#get_period' do
-    context '06:00 - 12:00' do
+  describe '#when?' do
+    context 'Ancient Movies' do
+      let(:title) { movies.filter(period: 'Ancient').first.title }
+      it { expect { subject.when? title }.to eq ()}
       it 'returns valid hash' do
-        params = { period: 'Ancient' }
         expect(theatre.get_time("07:22")).to eq params
       end
     end

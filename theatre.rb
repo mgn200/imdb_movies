@@ -32,7 +32,6 @@ class Theatre < MovieCollection
   def when?(title)
     movie = @all.select { |x| x.title == title }.first
     return 'No such movie' unless movie
-
     if movie.period == 'Ancient'
       ("06:00".."12:00")
     elsif movie.genre.any? { |x| ['Comedy', 'Adventure'].include? x  }

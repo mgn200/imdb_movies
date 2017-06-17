@@ -1,19 +1,20 @@
 RSpec.describe NewMovie do
-  let(:new_movie) { build(:new_movie) }
+  subject(:new_movie) { MovieCollection.new('movies.txt').filter(period: 'New').sample }
 
   describe '#initialze' do
-    it 'sets price' do
-      expect(new_movie.price).to eq 5
+    context 'price' do
+      it { is_expected.to have_attributes(price: 5) }
     end
 
-    it 'sets period' do
-      expect(new_movie.period).to eq 'New'
+    context 'period' do
+      it { is_expected.to have_attributes(period: 'New') }
     end
   end
 
   describe "#to_s" do
     it 'returns a string' do
-      expect(new_movie.to_s).to eq "NewMovie - новинка, вышло 13 лет назад!"
+      years_passed = Date.today.year - new_movie.year
+      expect(new_movie.to_s).to eq "#{new_movie.title} - новинка, вышло #{years_passed} лет назад!"
     end
   end
 end

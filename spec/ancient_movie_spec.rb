@@ -1,19 +1,19 @@
 RSpec.describe AncientMovie do
-  let(:ancient_movie) { build(:ancient_movie) }
+  subject(:ancient_movie) { MovieCollection.new('movies.txt').filter(period: 'Ancient').sample }
 
   describe '#initialze' do
-    it 'sets price' do
-      expect(ancient_movie.price).to eq 1
+    context 'price' do
+      it { is_expected.to have_attributes(price: 1) }
     end
 
-    it 'sets period' do
-      expect(ancient_movie.period).to eq 'Ancient'
+    context 'period' do
+      it { is_expected.to have_attributes(period: 'Ancient') }
     end
   end
 
   describe "#to_s" do
     it 'returns a string' do
-      expect(ancient_movie.to_s).to eq "AncientMovie - старый фильм(1944 год)"
+      expect(ancient_movie.to_s).to eq "#{ancient_movie.title} - старый фильм(#{ancient_movie.year} год)"
     end
   end
 end

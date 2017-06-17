@@ -10,6 +10,7 @@ class ModernMovie < Movie
   end
 
   def to_s
-    "#{@title} - современное кино: играют #{@actors.join ","}."
+    actors = @actors.join ","
+    "#{@title} - современное кино: играют #{actors}."
   end
 end

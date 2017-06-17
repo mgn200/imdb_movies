@@ -3,7 +3,7 @@ require_relative 'movie'
 
 class NewMovie< Movie
   attr_reader :period, :price
-  
+
   def initialize(list, movie_info)
     super(list, movie_info)
     @period = 'New'
@@ -11,6 +11,7 @@ class NewMovie< Movie
   end
 
   def to_s
-    "#{@title} - новинка, вышло #{Date.today.year - @year} лет назад!"
+    years_passed = Date.today.year - @year
+    "#{@title} - новинка, вышло #{years_passed} лет назад!"
   end
 end
