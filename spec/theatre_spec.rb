@@ -1,72 +1,66 @@
 RSpec.describe Theatre do
   movies = MovieCollection.new('movies.txt')
-  subject { Theatre.new }
+  let(:theatre) { Theatre.new(movies) }
 
   describe '#when?' do
     context 'Ancient Movies' do
-      let(:title) { movies.filter(period: 'Ancient').first.title }
-      it { expect { subject.when? title }.to eq ()}
-      it 'returns valid hash' do
-        expect(theatre.get_time("07:22")).to eq params
-      end
+      title = movies.filter(period: 'Ancient').first.title
+      it { expect(theatre.when? title).to eq "06:00".."12:00" }
     end
 
-    context '12:00 - 18:00' do
-      it 'returns valid hash' do
-        params = { genre: ['Comedy', 'Adventure'] }
-        expect(theatre.get_time("12:22")).to eq params
-      end
+    context 'Comedies and Adventures' do
+      title = movies.filter(genre: ['Comedy', 'Adventure']).first.title
+      it { expect(theatre.when? title).to eq "12:00".."18:00" }
     end
 
-    context '18:00 - 24:00' do
-      it 'return valid hash' do
-        params = { genre: ['Drama', 'Horror'] }
-        expect(theatre.get_time("18:22")).to eq params
-      end
+    context 'Dramas and Horrors' do
+      title = movies.filter(genre: ['Drama', 'Horror']).first.title
+      it { expect(theatre.when? title).to eq "18:00".."24:00" }
+    end
+
+    context 'Unknown title' do
+      title = 'qwerty'
+      it { expect(theatre.when? title).to eq "No such movie" }
     end
   end
 
   describe '#show' do
-    describe 'different time params' do
-      context '6:00 - 12:00' do
-        it 'show ancient movies' do
-          expect(theatre.show('10:04')).to eq "AncientMovie will be shown at 10:04"
-        end
-      end
+    context '06:00 - 12:00' do
+      subject { theatre.show('07:22') }
+      it { is_expected.to be_a String }
+    end
 
-      context '12:00 - 18:00' do
-        it 'show comedies and adventures' do
-          expect(theatre.show('12:04')).to eq "ModernMovie will be shown at 12:04"
-        end
-      end
+    context '12:00 - 18:00' do
+      subject { theatre.show('12:22') }
+      it { is_expected.to be_a String }
+    end
 
-      context '18:00 - 24:00' do
-        it 'show dramas and horrors' do
-          expect(theatre.show('18:04')).to eq "HorrorMovie will be shown at 18:04"
-        end
-      end
+    context '18:00 - 24:00' do
+      subject { theatre.show('12:22') }
+      it { is_expected.to be_a String }
+    end
+
+    context '00:00 - 06:00' do
+      subject { theatre.show('00:22') }
+      it { is_expected.to be_a String }
     end
   end
 
   describe '#when?' do
-    context 'with valid params' do
-      it 'returns time range for horrors and dramas' do
-        expect(theatre.when?('HorrorMovie')).to eq ('18:00'..'24:00')
-      end
-
-      it 'returns time range for comedy and dventures' do
-        expect(theatre.when?('ModernMovie')).to eq ('12:00'..'18:00')
-      end
-
-      it 'returns time ragne for ancient movies' do
-        expect(theatre.when?('AncientMovie')).to eq ('06:00'..'12:00')
-      end
+    context 'horros and dramas' do
+      it { expect(theatre.when?('Fight Club')).to eq ('18:00'..'24:00') }
     end
 
-    context 'with invalid params' do
-      it 'returns message' do
-        expect(theatre.when?('TestMovie')).to eq 'No such movie'
-      end
+    context 'comedy and dventures' do
+      it { expect(theatre.when?('3 Idiots')).to eq ('12:00'..'18:00') }
+    end
+
+    context'ancient movies' do
+      it { expect(theatre.when?("City Lights")).to eq ('06:00'..'12:00') }
+    end
+
+    context 'invalid params' do
+      it { expect(theatre.when?('TestMovie')).to eq 'No such movie' }
     end
   end
 end

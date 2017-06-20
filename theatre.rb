@@ -19,6 +19,7 @@ class Theatre < MovieCollection
   end
 
   def get_time(time)
+    #24:00 - 06:00
     case time
     when "06:00".."12:00"
       { period: 'Ancient' }
@@ -26,6 +27,8 @@ class Theatre < MovieCollection
       { genre: ['Comedy', 'Adventure'] }
     when "18:00".."24:00"
       { genre: ['Drama', 'Horror'] }
+    when "00:00".."06:00"
+      abort "Working hours: 06:00 - 00:00"
     end
   end
 

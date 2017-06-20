@@ -4,6 +4,7 @@ RSpec.describe Netflix do
 
   describe '#show' do
     let(:params) { { period: 'Classic' } }
+    let(:initial) { 25 }
 
     context 'with valid params' do
       subject { netflix.show(params) }
@@ -33,7 +34,7 @@ RSpec.describe Netflix do
     end
 
     context 'with insufficient balance' do
-      #balance = 0
+      before { netflix.pay -25 }
       subject { netflix.show(params) }
       it { expect { subject }.to raise_error }
     end
