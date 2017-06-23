@@ -1,26 +1,34 @@
 RSpec.describe Theatre do
-  movies = MovieCollection.new('movies.txt')
-  let(:theatre) { Theatre.new(movies) }
+  let(:movies) { MovieCollection.new('movies.txt') }
+  let(:theatre) { Theatre.new }
 
   describe '#when?' do
     context 'Ancient Movies' do
-      title = movies.filter(period: 'Ancient').first.title
-      it { expect(theatre.when? title).to eq "06:00".."12:00" }
+      it 'returns time 6-12 range' do
+        title = movies.filter(period: :ancient).first.title
+        expect(theatre.when? title).to eq "06:00".."12:00"
+      end
     end
 
     context 'Comedies and Adventures' do
-      title = movies.filter(genre: ['Comedy', 'Adventure']).first.title
-      it { expect(theatre.when? title).to eq "12:00".."18:00" }
+      it 'returns 12-18 time range' do
+        title = movies.filter(genre: ['Comedy', 'Adventure']).first.title
+        expect(theatre.when? title).to eq "12:00".."18:00"
+      end
     end
 
     context 'Dramas and Horrors' do
-      title = movies.filter(genre: ['Drama', 'Horror']).first.title
-      it { expect(theatre.when? title).to eq "18:00".."24:00" }
+      it 'returns 18-24 time range' do
+        title = movies.filter(genre: ['Drama', 'Horror']).first.title
+        expect(theatre.when? title).to eq "18:00".."24:00"
+      end
     end
 
     context 'Unknown title' do
-      title = 'qwerty'
-      it { expect(theatre.when? title).to eq "No such movie" }
+      it 'returns error message' do
+        title = 'qwerty'
+        expect(theatre.when? title).to eq "No such movie"
+      end
     end
   end
 

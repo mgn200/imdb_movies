@@ -2,14 +2,18 @@ require 'pry'
 require_relative 'movie'
 
 class AncientMovie < Movie
-  attr_reader :period, :price
+  PRICE = 1
+  attr_reader :period
+
   def initialize(list, movie_info)
-    super(list, movie_info)
-    @period = 'Ancient'
-    @price = 1
+    super
   end
 
   def to_s
-    "#{@title} - старый фильм(#{@year} год)"
+    print "#{@title} - старый фильм(#{@year} год)"
+  end
+
+  def price
+    PRICE
   end
 end

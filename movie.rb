@@ -2,7 +2,7 @@ require 'date'
 
 class Movie
   attr_accessor :list, :link, :title, :year, :country, :date, :genre,
-              :duration, :rating, :director, :actors, :period
+              :duration, :rating, :director, :actors
 
   def initialize(list, movie_info)
     movie_info.each do |k, v|
@@ -16,6 +16,7 @@ class Movie
     @actors = @actors.split ","
     @genre = @genre.split ","
     @date = parse_date(@date)
+    @period = self.class.name.match(/(\w+)Movie/)[1].to_s.downcase.to_sym
   end
 
   def to_s
@@ -26,8 +27,12 @@ class Movie
     Date::MONTHNAMES[@date.mon] unless @date.nil?
   end
 
-  def has_genre?(genre)
-    fail ArgumentError, 'Invalid genre name' unless @list.has_genre? genre
+  def has_genre?(genre_name)
+    if genre.is_a? Array
+      return @genre.any? { |x| genre_name.include? x }
+    end
+
+    raise ArgumentError, 'Invalid genre name' unless @list.has_genre? genre
     @genre.include? genre
   end
 

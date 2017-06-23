@@ -1,5 +1,5 @@
 RSpec.describe ClassicMovie do
-  subject(:classic_movie) { MovieCollection.new('movies.txt').filter(period: 'Classic').sample }
+  subject(:classic_movie) { MovieCollection.new('movies.txt').filter(period: :classic).sample }
 
   describe '#initialze' do
     context 'price' do
@@ -7,7 +7,7 @@ RSpec.describe ClassicMovie do
     end
 
     context 'period' do
-      it { is_expected.to have_attributes(period: 'Classic') }
+      it { is_expected.to have_attributes(period: :classic) }
     end
   end
 
@@ -16,7 +16,8 @@ RSpec.describe ClassicMovie do
       director_movies = classic_movie.list
                             .filter(director: classic_movie.director)
                             .map(&:title).join(",")
-      expect(classic_movie.to_s).to eq "#{classic_movie.title} - классический фильм, режиссёр #{classic_movie.director}(#{director_movies})"
+      expect { classic_movie.to_s }.to output("#{classic_movie.title} - классический фильм, режиссёр #{classic_movie.director}(#{director_movies})")
+                                   .to_stdout
     end
   end
 end

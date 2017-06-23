@@ -1,6 +1,6 @@
 RSpec.describe MovieCollection do
   let(:movie_collection) { MovieCollection.new('movies.txt') }
-  let(:random_movie_arr) { movie_collection.filter(period: 'Ancient') }
+  let(:random_movie_arr) { movie_collection.filter(period: :ancient) }
 
   describe 'create 4 movie categores on initialize' do
     context 'year < 1945' do

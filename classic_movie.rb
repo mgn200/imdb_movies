@@ -2,17 +2,20 @@ require 'pry'
 require_relative 'movie'
 
 class ClassicMovie < Movie
-  attr_reader :period, :price
+  PRICE = 1.5
+  attr_reader :period
 
   def initialize(list, movie_info)
     super(list, movie_info)
-    @period = 'Classic'
-    @price = 1.5
   end
 
   def to_s
     # показывать доп. фильмы режиссера
     movies = list.filter(director: @director).map(&:title).join(",")
-    "#{@title} - классический фильм, режиссёр #{@director}(#{movies})"
+    print "#{@title} - классический фильм, режиссёр #{@director}(#{movies})"
+  end
+
+  def price
+    PRICE
   end
 end

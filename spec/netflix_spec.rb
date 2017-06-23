@@ -1,9 +1,9 @@
 RSpec.describe Netflix do
-  netflix = Netflix.new(MovieCollection.new('movies.txt'))
+  netflix = Netflix.new
   netflix.pay 25
 
   describe '#show' do
-    let(:params) { { period: 'Classic' } }
+    let(:params) { { period: :classic } }
     let(:initial) { 25 }
 
     context 'with valid params' do
@@ -12,22 +12,22 @@ RSpec.describe Netflix do
 
       describe 'changes balance variable' do
         context 'Ancient Movie' do
-          let(:params) { { period: 'Ancient' } }
+          let(:params) { { period: :ancient } }
           it { expect { subject }.to change(netflix, :balance).by -1 }
         end
 
         context 'Modern Movie' do
-          let(:params) { { period: 'Modern' } }
+          let(:params) { { period: :modern } }
           it { expect { subject }.to change(netflix, :balance).by -3 }
         end
 
         context 'New Movie' do
-          let(:params) { { period: 'New'} }
+          let(:params) { { period: :new } }
           it { expect { subject }.to change(netflix, :balance).by -5 }
         end
 
         context 'Classic Movie' do
-          let(:params) { { period: 'Classic'} }
+          let(:params) { { period: :classic } }
           it { expect { subject }.to change(netflix, :balance).by -1.5 }
         end
       end

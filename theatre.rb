@@ -1,15 +1,6 @@
 require 'pry'
 
 class Theatre < MovieCollection
-  attr_accessor :all
-
-  def initialize(collection)
-    @all = collection.all
-  end
-
-  def filter(params)
-    super
-  end
 
   def show(time)
     params = get_time(time)
@@ -19,10 +10,9 @@ class Theatre < MovieCollection
   end
 
   def get_time(time)
-    #24:00 - 06:00
     case time
     when "06:00".."12:00"
-      { period: 'Ancient' }
+      { period: :ancient }
     when "12:00".."18:00"
       { genre: ['Comedy', 'Adventure'] }
     when "18:00".."24:00"
@@ -35,11 +25,11 @@ class Theatre < MovieCollection
   def when?(title)
     movie = @all.select { |x| x.title == title }.first
     return 'No such movie' unless movie
-    if movie.period == 'Ancient'
+    if movie.period == :ancient
       ("06:00".."12:00")
-    elsif movie.genre.any? { |x| ['Comedy', 'Adventure'].include? x  }
+    elsif movie.has_genre? ['Comedy', 'Adventure']
       ("12:00".."18:00")
-    elsif movie.genre.any? { |x| ['Drama', 'Horror'].include? x }
+    elsif movie.has_genre? ['Drama', 'Horror']
       ("18:00".."24:00")
     end
   end

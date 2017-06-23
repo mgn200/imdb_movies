@@ -1,11 +1,11 @@
 require 'pry'
 
 class Netflix < MovieCollection
-  attr_reader :all, :balance
+  attr_reader :balance
 
-  def initialize(collection)
+  def initialize
+    super
     @balance = 0
-    @all = collection.all
   end
 
   def show(params)
