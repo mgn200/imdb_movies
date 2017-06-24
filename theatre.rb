@@ -1,6 +1,10 @@
 require 'pry'
 
 class Theatre < MovieCollection
+  SCHEDULE = { morning: ("06:00".."12:00"),
+               noon: ("12:00".."18:00"),
+               evening: ("18:00".."24:00")
+             }
 
   def show(time)
     params = get_time(time)
@@ -11,13 +15,13 @@ class Theatre < MovieCollection
 
   def get_time(time)
     case time
-    when "06:00".."12:00"
+    when SCHEDULE[:morning]
       { period: :ancient }
-    when "12:00".."18:00"
+    when SCHEDULE[:noon]
       { genre: ['Comedy', 'Adventure'] }
-    when "18:00".."24:00"
+    when SCHEDULE[:evening]
       { genre: ['Drama', 'Horror'] }
-    when "00:00".."06:00"
+    else
       abort "Working hours: 06:00 - 00:00"
     end
   end
@@ -26,11 +30,11 @@ class Theatre < MovieCollection
     movie = @all.select { |x| x.title == title }.first
     return 'No such movie' unless movie
     if movie.period == :ancient
-      ("06:00".."12:00")
+      SCHEDULE[:morning]
     elsif movie.has_genre? ['Comedy', 'Adventure']
-      ("12:00".."18:00")
+      SCHEDULE[:noon]
     elsif movie.has_genre? ['Drama', 'Horror']
-      ("18:00".."24:00")
+      SCHEDULE[:evening]
     end
   end
 end

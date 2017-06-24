@@ -50,14 +50,14 @@ class MovieCollection
   def parse_file(file)
     CSV.foreach(file, { col_sep: '|', headers: KEYS }).map do |row|
       year = row['year'].to_i
-      case
-      when year < 1945
+      case year
+      when (1900..1945)
         AncientMovie.new(self, row.to_h)
-      when year >= 1945 && year < 1968
+      when (1946..1967)
         ClassicMovie.new(self, row.to_h)
-      when year >= 1968 && year < 2000
+      when (1968..1999)
         ModernMovie.new(self, row.to_h)
-      when year >= 2000
+      when  (2000..3000)
         NewMovie.new(self, row.to_h)
       end
     end

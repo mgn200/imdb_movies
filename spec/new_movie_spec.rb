@@ -14,7 +14,7 @@ RSpec.describe NewMovie do
   describe "#to_s" do
     it 'returns a string' do
       years_passed = Date.today.year - new_movie.year
-      expect { new_movie.to_s }.to output("#{new_movie.title} - новинка, вышло #{years_passed} лет назад!").to_stdout
+      expect(new_movie.to_s).to eq "#{new_movie.title} - новинка, вышло #{years_passed} лет назад!"
     end
   end
 end

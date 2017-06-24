@@ -17,10 +17,12 @@ class Netflix < MovieCollection
   end
 
   def pay(amount)
+    fail ArgumentError, 'Wrong amount' unless amount > 0
     @balance += amount
   end
 
   def how_much?(movie_name)
+    raise ArgumentError, 'No such movie' unless filter(title: movie_name).any?
     filter({title: movie_name}).first.price
   end
 

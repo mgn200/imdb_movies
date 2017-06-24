@@ -16,8 +16,7 @@ RSpec.describe ClassicMovie do
       director_movies = classic_movie.list
                             .filter(director: classic_movie.director)
                             .map(&:title).join(",")
-      expect { classic_movie.to_s }.to output("#{classic_movie.title} - классический фильм, режиссёр #{classic_movie.director}(#{director_movies})")
-                                   .to_stdout
+      expect(classic_movie.to_s).to eq "#{classic_movie.title} - классический фильм, режиссёр #{classic_movie.director}(#{director_movies})"
     end
   end
 end

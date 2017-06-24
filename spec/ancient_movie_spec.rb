@@ -13,7 +13,7 @@ RSpec.describe AncientMovie do
 
   describe "#to_s" do
     it 'returns a string' do
-      expect { ancient_movie.to_s }.to output("#{ancient_movie.title} - старый фильм(#{ancient_movie.year} год)").to_stdout
+      expect(ancient_movie.to_s).to eq "#{ancient_movie.title} - старый фильм(#{ancient_movie.year} год)"
     end
   end
 end

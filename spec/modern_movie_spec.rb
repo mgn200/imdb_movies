@@ -14,7 +14,7 @@ RSpec.describe ModernMovie do
   describe "#to_s" do
     it 'returns a string' do
       actors = modern_movie.actors.join(",")
-      expect { modern_movie.to_s }.to output("#{modern_movie.title} - современное кино: играют #{actors}.").to_stdout
+      expect(modern_movie.to_s).to eq "#{modern_movie.title} - современное кино: играют #{actors}."
     end
   end
 end

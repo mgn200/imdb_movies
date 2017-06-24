@@ -1,7 +1,12 @@
 require 'date'
 
 class Movie
-  attr_accessor :list, :link, :title, :year, :country, :date, :genre,
+  PRICES = { ancient: 1,
+             classic: 1.5,
+             modern: 3,
+             new: 5
+           }
+  attr_reader :list, :link, :title, :year, :country, :date, :genre,
               :duration, :rating, :director, :actors
 
   def initialize(list, movie_info)
@@ -16,7 +21,6 @@ class Movie
     @actors = @actors.split ","
     @genre = @genre.split ","
     @date = parse_date(@date)
-    @period = self.class.name.match(/(\w+)Movie/)[1].to_s.downcase.to_sym
   end
 
   def to_s
@@ -43,6 +47,14 @@ class Movie
     else
       value === func
     end
+  end
+
+  def price
+    PRICES[self.period]
+  end
+
+  def period
+    self.class.name.match(/(\w+)Movie/)[1].to_s.downcase.to_sym
   end
 
   private
