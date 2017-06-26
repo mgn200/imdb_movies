@@ -1,26 +1,15 @@
 RSpec.describe Netflix do
   let(:netflix) { Netflix.new }
+  let(:params) { { period: :ancient } }
   before { netflix.pay 10 }
 
   describe '#show' do
-    let(:params) { { period: :classic } }
+    subject { netflix.show(params) }
 
     context 'with valid params' do
-      subject { netflix.show(params) }
-      it { is_expected.to be_a String }
-
       describe 'changes balance variable' do
         context 'Ancient Movie' do
-          context 'valid params' do
-            let(:params) { { period: :ancient } }
-            it { expect { subject }.to change(netflix, :balance).by -1 }
-            it { expect { subject }.to eq "Now showing: #{movie.title} #{start_end(movie)}" }
-          end
-
-          context 'invalid params' do
-            let(:params) { { period: :wrong } }
-            it { expect { subject }.to eq "Wrong period name" }
-          end
+          it { expect { subject }.to change(netflix, :balance).by -1 }
         end
 
         context 'Modern Movie' do
@@ -38,11 +27,36 @@ RSpec.describe Netflix do
           it { expect { subject }.to change(netflix, :balance).by -1.5 }
         end
       end
+
+      describe 'Return string' do
+        let(:stubed_movie) { MovieCollection.new.filter(title: 'Fight Club').first }
+
+        before {
+          allow(netflix).to receive(:pick_movie).and_return(stubed_movie)
+          new_time = Time.local(2017, 9, 1, 12, 0, 0)
+          Timecop.freeze(new_time)
+        }
+
+        context 'Ancient Movie' do
+          it { expect(subject).to eq "Now showing: Fight Club 12:00:00 - 14:19:00" }
+        end
+
+        context 'Modern Movie' do
+          let(:params) { { period: :modern } }
+
+        end
+      end
     end
 
+    context 'with invalid params' do
+      let(:params) { { period: :wrong } }
+      it { expect { subject }.to raise_error(ArgumentError, "Wrong arguments") }
+    end
+
+
     context 'with insufficient balance' do
-      before { netflix.pay 0.1 }
-      subject { netflix.show(params) }
+      let(:netflix_zero_balance) { Netflix.new }
+      subject { netflix_zero_balance.show(params) }
       it { expect { subject }.to raise_error(RuntimeError, 'Insufficient funds') }
     end
   end
@@ -57,7 +71,7 @@ RSpec.describe Netflix do
       subject { netflix.how_much? 'Inception' }
       it { is_expected.to eq 5 }
     end
-    #цену тянуть из Movie?
+
     context 'wrongs params' do
       subject { netflix.how_much? 'Qwerty' }
       it { expect { subject }.to raise_error(ArgumentError, 'No such movie') }

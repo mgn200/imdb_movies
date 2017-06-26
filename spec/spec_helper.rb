@@ -7,6 +7,7 @@ require './ancient_movie.rb'
 require './modern_movie.rb'
 require './new_movie.rb'
 require 'factory_girl'
+require 'timecop'
 
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|

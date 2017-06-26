@@ -10,6 +10,7 @@ class Netflix < MovieCollection
 
   def show(params)
     movies = filter(params)
+    raise ArgumentError, 'Wrong arguments' unless movies.any?
     movie = pick_movie(movies)
     raise 'Insufficient funds' unless (@balance - movie.price) > 0
     @balance -= movie.price
@@ -17,7 +18,7 @@ class Netflix < MovieCollection
   end
 
   def pay(amount)
-    fail ArgumentError, 'Wrong amount' unless amount > 0
+    raise ArgumentError, 'Wrong amount' unless amount > 0
     @balance += amount
   end
 
@@ -26,7 +27,7 @@ class Netflix < MovieCollection
     filter({title: movie_name}).first.price
   end
 
-  private
+  #private
 
   def start_end(movie)
     start = Time.now.strftime("%T")

@@ -1,5 +1,13 @@
 RSpec.describe ClassicMovie do
-  subject(:classic_movie) { MovieCollection.new('movies.txt').filter(period: :classic).sample }
+  list = MovieCollection.new
+  movie_info = { title: 'Test movie',
+                 year: 1954,
+                 actors: 'A, B, C',
+                 genre: 'Comedy',
+                 date: '1954-04-03'
+               }
+
+  subject(:classic_movie) { ClassicMovie.new(list, movie_info) }
 
   describe '#initialze' do
     context 'price' do

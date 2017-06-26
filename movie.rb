@@ -32,6 +32,7 @@ class Movie
   end
 
   def has_genre?(genre_name)
+    # "пока оставим" - Шепелев Виктор)
     if genre.is_a? Array
       return @genre.any? { |x| genre_name.include? x }
     end

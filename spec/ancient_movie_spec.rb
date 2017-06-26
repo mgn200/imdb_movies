@@ -1,5 +1,12 @@
 RSpec.describe AncientMovie do
-  subject(:ancient_movie) { MovieCollection.new('movies.txt').filter(period: :ancient).sample }
+  list = nil
+  movie_info = { title: 'Test movie',
+                 year: 1944,
+                 actors: 'A, B, C',
+                 genre: 'Comedy',
+                 date: '1944-04-03'
+               }
+  subject(:ancient_movie) { AncientMovie.new(list, movie_info) }
 
   describe '#initialze' do
     context 'price' do
