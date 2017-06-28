@@ -32,13 +32,8 @@ class Movie
   end
 
   def has_genre?(genre_name)
-    # "пока оставим" - Шепелев Виктор)
-    if genre.is_a? Array
-      return @genre.any? { |x| genre_name.include? x }
-    end
-
-    raise ArgumentError, 'Invalid genre name' unless @list.has_genre? genre
-    @genre.include? genre
+    raise ArgumentError, 'Invalid genre name' unless @list.has_genre? genre_name
+    @genre.any? { |x| genre_name.include? x }
   end
 
   def matches?(key, value)

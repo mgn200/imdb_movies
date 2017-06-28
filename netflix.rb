@@ -27,7 +27,7 @@ class Netflix < MovieCollection
     filter({title: movie_name}).first.price
   end
 
-  #private
+  private
 
   def start_end(movie)
     start = Time.now.strftime("%T")

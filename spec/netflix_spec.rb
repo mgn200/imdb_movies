@@ -1,7 +1,8 @@
 RSpec.describe Netflix do
   let(:netflix) { Netflix.new }
   let(:params) { { period: :ancient } }
-  before { netflix.pay 10 }
+  let(:prepayment) { 10 }
+  before { netflix.pay(prepayment) }
 
   describe '#show' do
     subject { netflix.show(params) }
@@ -55,8 +56,7 @@ RSpec.describe Netflix do
 
 
     context 'with insufficient balance' do
-      let(:netflix_zero_balance) { Netflix.new }
-      subject { netflix_zero_balance.show(params) }
+      let(:prepayment) { 0.1 }
       it { expect { subject }.to raise_error(RuntimeError, 'Insufficient funds') }
     end
   end
