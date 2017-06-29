@@ -22,10 +22,4 @@ RSpec.describe MovieCollection do
       it { is_expected.to all be_a NewMovie }
     end
   end
-
-  describe '#pick_movie' do
-    let(:random_movie_arr) { movie_collection.filter(period: :ancient) }
-    subject { movie_collection.pick_movie(random_movie_arr) }
-    it { is_expected.to be_a AncientMovie }
-  end
 end

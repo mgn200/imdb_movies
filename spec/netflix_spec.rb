@@ -29,23 +29,14 @@ RSpec.describe Netflix do
         end
       end
 
-      describe 'Return string' do
+      describe 'Returns string' do
         let(:stubed_movie) { MovieCollection.new.filter(title: 'Fight Club').first }
-
         before {
           allow(netflix).to receive(:pick_movie).and_return(stubed_movie)
           new_time = Time.local(2017, 9, 1, 12, 0, 0)
           Timecop.freeze(new_time)
         }
-
-        context 'Ancient Movie' do
-          it { expect(subject).to eq "Now showing: Fight Club 12:00:00 - 14:19:00" }
-        end
-
-        context 'Modern Movie' do
-          let(:params) { { period: :modern } }
-
-        end
+        it { expect(subject).to eq "Now showing: Fight Club 12:00:00 - 14:19:00" }
       end
     end
 
