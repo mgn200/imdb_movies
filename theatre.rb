@@ -1,7 +1,7 @@
 require 'pry'
 
 class Theatre < MovieCollection
-  SCHEDULE = { ("06:00".."12:00") => { period: :ancient},
+  SCHEDULE = { ("06:00".."12:00") => { period: :ancient },
                ("12:00".."18:00") => { genre: ['Comedy', 'Adventure'] },
                ("18:00".."24:00") => { genre: ['Drama', 'Horror'] },
                ("00:00".."06:00") => 'Working hours: 06:00 - 00:00'
@@ -20,12 +20,10 @@ class Theatre < MovieCollection
   end
 
   def when?(title)
-    movie = @all.select { |x| x.title == title }.first
+    movie = @all.detect { |x| x.title == title }
     return 'No such movie' unless movie
-    (SCHEDULE.detect do |time, filters|
-              key = filters.keys.first
-              value = filters.values.first
-              movie.matches?(key, value)
-            end).first
+    SCHEDULE.detect { |k, v|
+      v.select { |x, y| movie.matches? x, y }.any?
+    }.first
   end
 end
