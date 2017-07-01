@@ -22,8 +22,8 @@ class Theatre < MovieCollection
   def when?(title)
     movie = @all.detect { |x| x.title == title }
     return 'No such movie' unless movie
-    SCHEDULE.detect { |k, v|
-      v.select { |x, y| movie.matches? x, y }.any?
+    SCHEDULE.detect { |range, filter|
+      filter.select.any? { |key, value| movie.matches? key, value }
     }.first
   end
 end
