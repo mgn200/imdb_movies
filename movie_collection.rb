@@ -3,9 +3,14 @@ require 'ostruct'
 require 'date'
 require 'pry'
 require 'date'
+require_relative 'ancient_movie'
+require_relative 'classic_movie'
+require_relative 'new_movie'
+require_relative 'modern_movie'
 
 class MovieCollection
   KEYS = %w[link title year country date genre duration rating director actors]
+
   attr_reader :all
 
   def initialize(file = 'movies.txt')
@@ -24,7 +29,7 @@ class MovieCollection
 
   def filter(hash)
     hash.reduce(@all) do |sequence, (k, v)|
-        sequence.select { |x| x.matches?(k, v) }
+      sequence.select { |x| x.matches?(k, v) }
     end
   end
 
@@ -36,10 +41,25 @@ class MovieCollection
     @all.map(&:genre).flatten.uniq.include? genre
   end
 
+  def pick_movie(movies_array)
+    movies_array.sort_by { |x| x.rating.to_f*rand(1..1.5) }.last
+  end
+
   private
 
   def parse_file(file)
-    CSV.foreach(file, { col_sep: '|', headers: KEYS }).map { |row| Movie.new(self, row.to_h) }
+    CSV.foreach(file, { col_sep: '|', headers: KEYS }).map do |row|
+      year = row['year'].to_i
+      case year
+      when (1900..1945)
+        AncientMovie.new(self, row.to_h)
+      when (1946..1967)
+        ClassicMovie.new(self, row.to_h)
+      when (1968..1999)
+        ModernMovie.new(self, row.to_h)
+      when  (2000..3000)
+        NewMovie.new(self, row.to_h)
+      end
+    end
   end
 end
-

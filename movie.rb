@@ -1,7 +1,11 @@
-require './movie_collection.rb'
 require 'date'
 
 class Movie
+  PRICES = { ancient: 1,
+             classic: 1.5,
+             modern: 3,
+             new: 5
+           }
   attr_reader :list, :link, :title, :year, :country, :date, :genre,
               :duration, :rating, :director, :actors
 
@@ -27,18 +31,26 @@ class Movie
     Date::MONTHNAMES[@date.mon] unless @date.nil?
   end
 
-  def has_genre?(genre)
-    fail ArgumentError, 'Invalid genre name' unless @list.has_genre? genre
-    @genre.include? genre
+  def has_genre?(genre_name)
+    raise ArgumentError, 'Invalid genre name' unless @list.has_genre? genre_name
+    @genre.any? { |x| genre_name.include? x }
   end
 
   def matches?(key, value)
     func = send(key)
     if func.is_a? Array
-      func.any? { |x| value === x }
+      func.any? { |x| value.include? x }
     else
       value === func
     end
+  end
+
+  def price
+    PRICES[self.period]
+  end
+
+  def period
+    self.class.name.match(/(\w+)Movie/)[1].to_s.downcase.to_sym
   end
 
   private
