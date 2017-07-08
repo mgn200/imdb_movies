@@ -12,7 +12,7 @@ RSpec.describe ModernMovie do
   describe '#initialze' do
     it {
       is_expected.to have_attributes(period: :modern,
-                                     price: 3,
+                                     price: Money.new(300),
                                      to_s: 'Test movie - современное кино: играют A, B, C.')
     }
   end

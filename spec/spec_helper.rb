@@ -8,6 +8,7 @@ require './modern_movie.rb'
 require './new_movie.rb'
 require 'factory_girl'
 require 'timecop'
+require 'money'
 
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|

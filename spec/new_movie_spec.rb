@@ -11,7 +11,7 @@ RSpec.describe NewMovie do
 
   describe '#initialze' do
     it {
-      is_expected.to have_attributes(price: 5,
+      is_expected.to have_attributes(price: Money.new(500),
                                      period: :new,
                                      to_s: 'Test movie - новинка, вышло 15 лет назад!')
     }

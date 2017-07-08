@@ -1,11 +1,12 @@
 require 'pry'
 
 class Netflix < MovieCollection
+  extend Cashbox
   attr_reader :balance
 
   def initialize
     super
-    @balance = 0
+    @balance = Money.new(0)
   end
 
   def show(params)
@@ -17,14 +18,15 @@ class Netflix < MovieCollection
     "Now showing: #{movie.title} #{start_end(movie)}"
   end
 
-  def pay(amount)
-    raise ArgumentError, 'Wrong amount' unless amount > 0
-    @balance += amount
+  def pay(price)
+    raise ArgumentError, 'Wrong amount' unless price > 0
+    @balance += Money.new(price*100) #to whole dollars
+    Netflix.store_cash(price)
   end
 
   def how_much?(movie_name)
     raise ArgumentError, 'No such movie' unless filter(title: movie_name).any?
-    filter({title: movie_name}).first.price
+    filter({title: movie_name}).first.price.format
   end
 
   private

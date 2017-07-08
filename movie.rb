@@ -1,10 +1,11 @@
 require 'date'
+require 'money'
 
 class Movie
-  PRICES = { ancient: 1,
-             classic: 1.5,
-             modern: 3,
-             new: 5
+  PRICES = { ancient: Money.new(100, 'USD'),
+             classic: Money.new(150,'USD'),
+             modern: Money.new(300,'USD'),
+             new: Money.new(500,'USD')
            }
   attr_reader :list, :link, :title, :year, :country, :date, :genre,
               :duration, :rating, :director, :actors

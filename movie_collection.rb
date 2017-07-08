@@ -7,8 +7,10 @@ require_relative 'ancient_movie'
 require_relative 'classic_movie'
 require_relative 'new_movie'
 require_relative 'modern_movie'
+require 'money'
 
 class MovieCollection
+  include Enumerable
   KEYS = %w[link title year country date genre duration rating director actors]
 
   attr_reader :all
@@ -21,24 +23,24 @@ class MovieCollection
 
   def sort_by(field)
     if field == :director
-      puts @all.sort_by{ |x| x.director.split(' ').last }
+      puts sort_by{ |x| x.director.split(' ').last }
     else
-      puts @all.sort_by { |x| x.send field }.map(&:to_s)
+      puts sort_by { |x| x.send field }.map(&:to_s)
     end
   end
 
   def filter(hash)
-    hash.reduce(@all) do |sequence, (k, v)|
+    hash.reduce(self) do |sequence, (k, v)|
       sequence.select { |x| x.matches?(k, v) }
     end
   end
 
   def stats(field)
-    @all.flat_map(&field).group_by(&:itself).map { |val, group| [val, group.count] }.to_h
+    flat_map(&field).group_by(&:itself).map { |val, group| [val, group.count] }.to_h
   end
 
   def has_genre?(genre)
-    @all.map(&:genre).flatten.uniq.include? genre
+    map(&:genre).flatten.uniq.include? genre
   end
 
   def pick_movie(movies_array)
@@ -61,5 +63,9 @@ class MovieCollection
         NewMovie.new(self, row.to_h)
       end
     end
+  end
+
+  def each(&block)
+    @all.each(&block)
   end
 end

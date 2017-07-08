@@ -1,5 +1,5 @@
 RSpec.describe MovieCollection do
-  let(:movie_collection) { MovieCollection.new('movies.txt') }
+  let(:movie_collection) { MovieCollection.new }
 
   describe 'create 4 movie categores on initialize' do
     context 'year < 1945' do
@@ -20,6 +20,18 @@ RSpec.describe MovieCollection do
     context 'year > 2000 ' do
       subject { movie_collection.filter(year: 2000...2018) }
       it { is_expected.to all be_a NewMovie }
+    end
+  end
+
+  describe 'has Enumerable methods' do
+    context 'select' do
+      subject { movie_collection.select {|x| (1968...2000) === x.year }.first }
+      it { is_expected.to be_a ModernMovie }
+    end
+
+    context 'map' do
+      subject { movie_collection.map(&:genre) }
+      it { is_expected.to be_a Array }
     end
   end
 end

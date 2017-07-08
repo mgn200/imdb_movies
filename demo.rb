@@ -2,10 +2,11 @@ require 'date'
 require 'csv'
 require 'ostruct'
 require 'pry'
-require_relative 'movie.rb'
-require_relative 'movie_collection'
-require_relative 'netflix.rb'
-
+require './theatre.rb'
+require './movie.rb'
+require './movie_collection.rb'
+require './netflix.rb'
+binding.pry
 #netflix = Netflix.new
 #netflix.show(genre: 'Drama', period: 'New')
 #puts movies.stats :month

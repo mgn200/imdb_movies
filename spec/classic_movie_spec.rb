@@ -12,7 +12,7 @@ RSpec.describe ClassicMovie do
 
   describe '#initialze' do
     it {
-      is_expected.to have_attributes(price: 1.5,
+      is_expected.to have_attributes(price: Money.new(150),
                                      period: :classic,
                                      to_s: "Test movie - классический фильм, режиссёр Frank Darabont(The Shawshank Redemption,The Green Mile)")
     }
