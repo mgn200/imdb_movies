@@ -10,7 +10,7 @@ RSpec.describe Theatre do
     context "when 'Bank' params" do
       subject { theatre.take "Bank" }
       it { expect(subject).to eq 'Проведена инкассация'  }
-      it { expect { subject }.to change(theatre, :cash).to 0}
+      it { expect { subject }.to change(theatre, :cash).to 0 }
     end
 
     context "other params" do
@@ -77,7 +77,7 @@ RSpec.describe Theatre do
   describe '#buy_ticket' do
     subject { theatre.buy_ticket 'Casablanca' }
     it { expect(subject).to eq('Вы купили билет на Casablanca') }
-    it { expect { subject }.to change(theatre, :cash).by 3 }
+    it { expect { subject }.to change(theatre, :cash).by Money.new(300) }
 
 
     describe 'puts money in cashbox' do
@@ -86,17 +86,17 @@ RSpec.describe Theatre do
       subject { theatre.buy_ticket(title) }
 
       context 'when morning time' do
-        it { expect { subject }.to change(theatre, :cash).by 3 }
+        it { expect { subject }.to change(theatre, :cash).by Money.new(300) }
       end
 
       context 'when noon time' do
         let(:filter) { Theatre::SCHEDULE.values[1] }
-        it { expect { subject }.to change(theatre, :cash).by 5 }
+        it { expect { subject }.to change(theatre, :cash).by Money.new(500) }
       end
 
       context 'when evening time' do
         let(:filter) { Theatre::SCHEDULE.values[2] }
-        it { expect { subject }.to change(theatre, :cash).by 10 }
+        it { expect { subject }.to change(theatre, :cash).by Money.new(1000) }
       end
     end
   end

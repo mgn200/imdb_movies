@@ -4,7 +4,7 @@ require './movie_collection.rb'
 
 class Theatre < MovieCollection
   include Cashbox
-
+  
   SCHEDULE = { ("06:00".."12:00") => { period: :ancient },
                ("12:00".."18:00") => { genre: ['Comedy', 'Adventure'] },
                ("18:00".."24:00") => { genre: ['Drama', 'Horror'] },
