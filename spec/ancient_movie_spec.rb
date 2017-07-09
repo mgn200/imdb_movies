@@ -1,4 +1,4 @@
-RSpec.describe AncientMovie do
+RSpec.describe Movieproduction::AncientMovie do
   let(:list) { nil }
   let(:movie_info) { { title: 'Test movie',
                        year: 1944,
@@ -6,7 +6,7 @@ RSpec.describe AncientMovie do
                        genre: 'Comedy',
                        date: '1944-04-03'
                    } }
-  subject(:ancient_movie) { AncientMovie.new(list, movie_info) }
+  subject(:ancient_movie) { Movieproduction::AncientMovie.new(list, movie_info) }
 
   describe 'methods and attributes' do
     it {

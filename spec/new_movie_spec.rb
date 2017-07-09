@@ -1,4 +1,4 @@
-RSpec.describe NewMovie do
+RSpec.describe Movieproduction::NewMovie do
   let(:list) { nil }
   let(:movie_info)  { { title: 'Test movie',
                          year: 2002,
@@ -7,7 +7,7 @@ RSpec.describe NewMovie do
                          date: '2002-04-03'
                        } }
 
-  subject(:new_movie) { NewMovie.new(list, movie_info) }
+  subject(:new_movie) { Movieproduction::NewMovie.new(list, movie_info) }
 
   describe '#initialze' do
     it {
