@@ -1,6 +1,6 @@
-RSpec.describe Movieproduction::Theatre do
-  let(:movies) { Movieproduction::MovieCollection.new }
-  let(:theatre) { Movieproduction::Theatre.new }
+RSpec.describe MovieProduction::Theatre do
+  let(:movies) { MovieProduction::MovieCollection.new }
+  let(:theatre) { MovieProduction::Theatre.new }
 
   describe '#take' do
     before {
@@ -81,7 +81,7 @@ RSpec.describe Movieproduction::Theatre do
 
 
     describe 'puts money in cashbox' do
-      let(:filter) { Movieproduction::Theatre::SCHEDULE.values[0] }
+      let(:filter) { MovieProduction::Theatre::SCHEDULE.values[0] }
       let(:title) { movies.filter(filter).first.title }
       subject { theatre.buy_ticket(title) }
 
@@ -90,12 +90,12 @@ RSpec.describe Movieproduction::Theatre do
       end
 
       context 'when noon time' do
-        let(:filter) { Movieproduction::Theatre::SCHEDULE.values[1] }
+        let(:filter) { MovieProduction::Theatre::SCHEDULE.values[1] }
         it { expect { subject }.to change(theatre, :cash).by Money.new(500) }
       end
 
       context 'when evening time' do
-        let(:filter) { Movieproduction::Theatre::SCHEDULE.values[2] }
+        let(:filter) { MovieProduction::Theatre::SCHEDULE.values[2] }
         it { expect { subject }.to change(theatre, :cash).by Money.new(1000) }
       end
     end

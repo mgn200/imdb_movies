@@ -1,7 +1,7 @@
 require 'pry'
 require_relative './movie.rb'
-module Movieproduction
-  class AncientMovie < Movieproduction::Movie
+module MovieProduction
+  class AncientMovie < MovieProduction::Movie
     PRICE = 1
 
     def to_s

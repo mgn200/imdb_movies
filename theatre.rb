@@ -2,10 +2,10 @@ require 'pry'
 require './cashbox.rb'
 require './movie_collection.rb'
 
-module Movieproduction
+module MovieProduction
 
-  class Theatre < Movieproduction::MovieCollection
-    include Movieproduction::Cashbox
+  class Theatre < MovieProduction::MovieCollection
+    include MovieProduction::Cashbox
 
     SCHEDULE = { ("06:00".."12:00") => { period: :ancient },
                  ("12:00".."18:00") => { genre: ['Comedy', 'Adventure'] },
@@ -46,6 +46,7 @@ module Movieproduction
     end
 
     def buy_ticket(movie_title)
+      # переносить это в Cashbox?
       range_time = when?(movie_title)
       daytime = Theatre::DAYTIME.detect { |range, time| range == range_time }.last
       price = Theatre::PRICES.detect { |time, price| daytime == time }.last

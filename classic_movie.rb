@@ -1,8 +1,8 @@
 require 'pry'
 require_relative 'movie'
 
-module Movieproduction
-  class ClassicMovie < Movieproduction::Movie
+module MovieProduction
+  class ClassicMovie < MovieProduction::Movie
     PRICE = 1.5
 
     def to_s

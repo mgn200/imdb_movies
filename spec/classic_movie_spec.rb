@@ -1,5 +1,5 @@
-RSpec.describe Movieproduction::ClassicMovie do
-  let(:list) { Movieproduction::MovieCollection.new }
+RSpec.describe MovieProduction::ClassicMovie do
+  let(:list) { MovieProduction::MovieCollection.new }
   let(:movie_info) { { title: 'Test movie',
                        year: 1954,
                        actors: 'A, B, C',
@@ -8,7 +8,7 @@ RSpec.describe Movieproduction::ClassicMovie do
                        director: 'Frank Darabont'
                    } }
 
-  subject(:classic_movie) { Movieproduction::ClassicMovie.new(list, movie_info) }
+  subject(:classic_movie) { MovieProduction::ClassicMovie.new(list, movie_info) }
 
   describe '#initialze' do
     it {

@@ -9,7 +9,7 @@ require_relative 'new_movie'
 require_relative 'modern_movie'
 require 'money'
 
-module Movieproduction
+module MovieProduction
 
   class MovieCollection
     include Enumerable

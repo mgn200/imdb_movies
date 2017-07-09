@@ -1,29 +1,29 @@
-RSpec.describe Movieproduction::Netflix do
-  let(:netflix) { Movieproduction::Netflix.new }
+RSpec.describe MovieProduction::Netflix do
+  let(:netflix) { MovieProduction::Netflix.new }
   let(:params) { { period: :ancient } }
   let(:prepayment) { 10 }
 
   describe '#cash' do
-    let(:netflix2) { Movieproduction::Netflix.new }
-    let(:netflix3) { Movieproduction::Netflix.new }
+    let(:netflix2) { MovieProduction::Netflix.new }
+    let(:netflix3) { MovieProduction::Netflix.new }
     before {
       netflix2.pay 12
       netflix3.pay 1
     }
-    it { expect(Movieproduction::Netflix.cash).to eq Money.new(1300) }
+    it { expect(MovieProduction::Netflix.cash).to eq Money.new(1300) }
   end
 
   describe '#take' do
     before { netflix.pay(prepayment) }
-    subject { Movieproduction::Netflix.take "Bank" }
+    subject { MovieProduction::Netflix.take "Bank" }
 
     context "when 'Bank' params" do
       it { expect(subject).to eq 'Проведена инкассация' }
-      it { expect { subject }.to change(Movieproduction::Netflix, :cash).to 0}
+      it { expect { subject }.to change(MovieProduction::Netflix, :cash).to 0}
     end
 
     context 'other params' do
-      subject { Movieproduction::Netflix.take "Another" }
+      subject { MovieProduction::Netflix.take "Another" }
       it { expect { subject }.to raise_error(ArgumentError, 'Вызываю полицию') }
     end
   end
@@ -55,7 +55,7 @@ RSpec.describe Movieproduction::Netflix do
       end
 
       describe 'Returns string' do
-        let(:stubed_movie) { Movieproduction::MovieCollection.new.filter(title: 'Fight Club').first }
+        let(:stubed_movie) { MovieProduction::MovieCollection.new.filter(title: 'Fight Club').first }
         before {
           allow(netflix).to receive(:pick_movie).and_return(stubed_movie)
           new_time = Time.local(2017, 9, 1, 12, 0, 0)
@@ -80,11 +80,11 @@ RSpec.describe Movieproduction::Netflix do
   describe '#pay' do
     it { expect { netflix.pay(24) }.to change(netflix, :balance).by Money.new(2400) }
     it { expect { netflix.pay(-24) }.to raise_error(ArgumentError, 'Wrong amount') }
-    it { expect { netflix.pay(23) }.to change(Movieproduction::Netflix, :cash).by Money.new(2300) }
+    it { expect { netflix.pay(23) }.to change(MovieProduction::Netflix, :cash).by Money.new(2300) }
   end
 
   describe '#store_cash' do
-    it { expect { Movieproduction::Netflix.store_cash 12 }.to change(Movieproduction::Netflix, :cash).by Money.new(1200) }
+    it { expect { MovieProduction::Netflix.store_cash 12 }.to change(MovieProduction::Netflix, :cash).by Money.new(1200) }
   end
 
   describe '#how_much?' do

@@ -1,4 +1,4 @@
-module Movieproduction
+module MovieProduction
 
   module Cashbox
     def cash
@@ -6,8 +6,7 @@ module Movieproduction
     end
 
     def store_cash(price)
-      cash
-      @cash += Money.new(price*100)
+      @cash = cash + Money.new(price*100)
     end
 
     def take(who)

@@ -1,6 +1,6 @@
 require 'date'
 require 'money'
-module Movieproduction
+module MovieProduction
 
   class Movie
     PRICES = { ancient: Money.new(100, 'USD'),

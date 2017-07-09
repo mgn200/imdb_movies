@@ -1,7 +1,7 @@
 require_relative 'movie'
 
-module Movieproduction
-  class ModernMovie < Movieproduction::Movie
+module MovieProduction
+  class ModernMovie < MovieProduction::Movie
     PRICE = 3
 
     def to_s

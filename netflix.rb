@@ -1,9 +1,9 @@
 require 'pry'
 
-module Movieproduction
+module MovieProduction
 
-  class Netflix < Movieproduction::MovieCollection
-    extend Movieproduction::Cashbox
+  class Netflix < MovieProduction::MovieCollection
+    extend MovieProduction::Cashbox
     attr_reader :balance
 
     def initialize
@@ -22,7 +22,7 @@ module Movieproduction
 
     def pay(price)
       raise ArgumentError, 'Wrong amount' unless price > 0
-      @balance += Money.new(price*100) #to whole dollars
+      @balance += Money.new(price*100) # to whole dollars
       Netflix.store_cash(price)
     end
 
