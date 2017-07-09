@@ -1,6 +1,23 @@
-RSpec.describe Theatre do
-  let(:movies) { MovieCollection.new('movies.txt') }
-  let(:theatre) { Theatre.new }
+RSpec.describe MovieProduction::Theatre do
+  let(:movies) { MovieProduction::MovieCollection.new }
+  let(:theatre) { MovieProduction::Theatre.new }
+
+  describe '#take' do
+    before {
+      theatre.buy_ticket 'Casablanca'
+    }
+
+    context "when 'Bank' params" do
+      subject { theatre.take "Bank" }
+      it { expect(subject).to eq 'Проведена инкассация'  }
+      it { expect { subject }.to change(theatre, :cash).to 0 }
+    end
+
+    context "other params" do
+      subject { theatre.take "Another" }
+      it { expect { subject }.to raise_error(ArgumentError, 'Вызываю полицию') }
+    end
+  end
 
   describe '#when?' do
     subject { theatre.when? title }
@@ -23,6 +40,11 @@ RSpec.describe Theatre do
       let(:title) { 'qwerty' }
       it { is_expected.to eq 'No such movie' }
     end
+
+    context 'Unmatched movie' do
+      let(:title) { 'The Terminator' }
+      it { is_expected.to eq 'That movie is not at the box office atm' }
+    end
   end
 
   describe '#show' do
@@ -44,6 +66,38 @@ RSpec.describe Theatre do
     context '00:00 - 06:00' do
       subject { theatre.show('00:22') }
       it { is_expected.to eq "Working hours: 06:00 - 00:00" }
+    end
+  end
+
+  describe '#cash' do
+    subject { theatre.cash }
+    it { is_expected.to eq 0 }
+  end
+
+  describe '#buy_ticket' do
+    subject { theatre.buy_ticket 'Casablanca' }
+    it { expect(subject).to eq('Вы купили билет на Casablanca') }
+    it { expect { subject }.to change(theatre, :cash).by Money.new(300) }
+
+
+    describe 'puts money in cashbox' do
+      let(:filter) { MovieProduction::Theatre::SCHEDULE.values[0] }
+      let(:title) { movies.filter(filter).first.title }
+      subject { theatre.buy_ticket(title) }
+
+      context 'when morning time' do
+        it { expect { subject }.to change(theatre, :cash).by Money.new(300) }
+      end
+
+      context 'when noon time' do
+        let(:filter) { MovieProduction::Theatre::SCHEDULE.values[1] }
+        it { expect { subject }.to change(theatre, :cash).by Money.new(500) }
+      end
+
+      context 'when evening time' do
+        let(:filter) { MovieProduction::Theatre::SCHEDULE.values[2] }
+        it { expect { subject }.to change(theatre, :cash).by Money.new(1000) }
+      end
     end
   end
 end
