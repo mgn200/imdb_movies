@@ -3,6 +3,11 @@ RSpec.describe MovieProduction::Netflix do
   let(:params) { { period: :ancient } }
   let(:prepayment) { 10 }
 
+  def freeze_time
+    new_time = Time.local(2017, 9, 1, 12, 0, 0)
+    Timecop.freeze(new_time)
+  end
+
   describe '#cash' do
     let(:netflix2) { MovieProduction::Netflix.new }
     let(:netflix3) { MovieProduction::Netflix.new }
@@ -19,7 +24,7 @@ RSpec.describe MovieProduction::Netflix do
 
     context "when 'Bank' params" do
       it { expect(subject).to eq 'Проведена инкассация' }
-      it { expect { subject }.to change(MovieProduction::Netflix, :cash).to 0}
+      it { expect { subject }.to change(MovieProduction::Netflix, :cash).to 0 }
     end
 
     context 'other params' do
@@ -32,7 +37,7 @@ RSpec.describe MovieProduction::Netflix do
     subject { netflix.show(params) }
     before { netflix.pay(prepayment) }
 
-    context 'with valid params' do
+    context 'when valid hash is passed' do
       describe 'changes balance' do
         context 'Ancient Movie' do
           it { expect { subject }.to change(netflix, :balance).to Money.new(900) }
@@ -58,11 +63,34 @@ RSpec.describe MovieProduction::Netflix do
         let(:stubed_movie) { MovieProduction::MovieCollection.new.filter(title: 'Fight Club').first }
         before {
           allow(netflix).to receive(:pick_movie).and_return(stubed_movie)
-          new_time = Time.local(2017, 9, 1, 12, 0, 0)
-          Timecop.freeze(new_time)
+          freeze_time
         }
         it { expect(subject).to eq "Now showing: Fight Club 12:00:00 - 14:19:00" }
       end
+    end
+
+    context 'when block is passed' do
+      let(:params) { proc { |movie| movie.genre.include?('Drama') && movie.director == 'David Fincher' && movie.year == 1999 } }
+      subject { netflix.show &params }
+      describe 'changes balance' do
+        it { expect { subject }.to change(netflix, :balance).to Money.new(700) }
+      end
+
+      describe 'returns string' do
+        before { freeze_time }
+        it { expect(subject).to eq "Now showing: Fight Club 12:00:00 - 14:19:00" }
+      end
+    end
+
+    context 'when user filter is passed' do
+      before {
+        netflix.define_filter(:test_filter) { |movie| movie.genre.include?('Drama') &&
+                                                      movie.director == 'David Fincher' &&
+                                                      movie.actors.include?('Brad Pitt') &&
+                                                      movie.year > 1998 }
+      }
+      subject { netflix.show(test_filter: true) }
+      it { expect(subject).to eq "Now showing: Fight Club 12:00:00 - 14:19:00" }
     end
 
     context 'with invalid params' do
@@ -96,6 +124,25 @@ RSpec.describe MovieProduction::Netflix do
     context 'wrongs params' do
       subject { netflix.how_much? 'Qwerty' }
       it { expect { subject }.to raise_error(ArgumentError, 'No such movie') }
+    end
+  end
+
+  describe '#define_filter' do
+    before do
+      netflix.pay 5
+      netflix.define_filter(:test_filter) { |movie| movie.genre.include?('Drama') &&
+                                                              movie.director == 'David Fincher' &&
+                                                              movie.year == 1999 }
+    end
+
+    context 'saves user filters' do
+      subject { netflix.user_filters }
+      it { expect(subject).not_to be nil }
+    end
+
+    context 'can be used by user' do
+      subject { netflix.show(test_filter: true) }
+      it { expect(subject).to eq "Now showing: Fight Club 12:00:00 - 14:19:00" }
     end
   end
 end

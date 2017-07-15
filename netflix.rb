@@ -4,20 +4,32 @@ module MovieProduction
 
   class Netflix < MovieProduction::MovieCollection
     extend MovieProduction::Cashbox
-    attr_reader :balance
+    attr_reader :balance, :user_filters
 
     def initialize
       super
       @balance = Money.new(0)
+      @user_filters = {}
     end
 
-    def show(params)
-      movies = filter(params)
+    def show(params = {}, &block)
+      movies = filter(params, &block)
       raise ArgumentError, 'Wrong arguments' unless movies.any?
       movie = pick_movie(movies)
-      raise 'Insufficient funds' unless (@balance - movie.price) > 0
+      raise 'Insufficient funds' unless (@balance - movie.price) >= 0
       @balance -= movie.price
       "Now showing: #{movie.title} #{start_end(movie)}"
+    end
+
+    def filter(params = {}, &block)
+      if block_given?
+        select(&block)
+      elsif user_filters.keys.include?(params.keys.first) && params.values.first == true
+        block = user_filters[params.keys.first]
+        select(&block)
+      else
+        super(params)
+      end
     end
 
     def pay(price)
@@ -29,6 +41,10 @@ module MovieProduction
     def how_much?(movie_name)
       raise ArgumentError, 'No such movie' unless filter(title: movie_name).any?
       filter({title: movie_name}).first.price.format
+    end
+
+    def define_filter(filter_name, &block)
+      user_filters[filter_name] = block
     end
 
     private
