@@ -24,9 +24,12 @@ module MovieProduction
     def filter(params = {}, &block)
       if block_given?
         select(&block)
-      elsif user_filters.keys.include?(params.keys.first) && params.values.first == true
+      elsif user_filters.keys.include?(params.keys.first) && params.values.first
         block = user_filters[params.keys.first]
-        select(&block)
+        arg = params.values.first
+        select do |movie|
+          block.call(movie, arg)
+        end
       else
         super(params)
       end
@@ -43,8 +46,12 @@ module MovieProduction
       filter({title: movie_name}).first.price.format
     end
 
-    def define_filter(filter_name, &block)
-      user_filters[filter_name] = block
+    def define_filter(filter_name, from: nil, arg: nil, &block)
+      if from && arg
+        user_filters[filter_name] = proc { |m| user_filters[from].call(m, arg) }
+      else
+        user_filters[filter_name] = block
+      end
     end
 
     private

@@ -131,8 +131,8 @@ RSpec.describe MovieProduction::Netflix do
     before do
       netflix.pay 5
       netflix.define_filter(:test_filter) { |movie| movie.genre.include?('Drama') &&
-                                                              movie.director == 'David Fincher' &&
-                                                              movie.year == 1999 }
+                                                    movie.director == 'David Fincher' &&
+                                                    movie.year == 1999 }
     end
 
     context 'saves user filters' do
@@ -140,9 +140,30 @@ RSpec.describe MovieProduction::Netflix do
       it { expect(subject).not_to be nil }
     end
 
-    context 'can be used by user' do
+    context 'used by user' do
       subject { netflix.show(test_filter: true) }
       it { expect(subject).to eq "Now showing: Fight Club 12:00:00 - 14:19:00" }
+    end
+
+    context 'changes existing filter' do
+      before {
+        netflix.define_filter(:test_filter) { |movie, year| movie.year > year && movie.title == 'The Avengers' }
+        freeze_time
+      }
+      subject { netflix.show(test_filter: 2008)}
+      it { expect(subject).to eq "Now showing: The Avengers 12:00:00 - 14:23:00" }
+    end
+
+    context 'creates filter based on another' do
+      before {
+        netflix.define_filter(:test_filter) { |movie, year| movie.year > year &&
+                                                            movie.genre.include?('Drama') &&
+                                                            movie.director == 'Roman Polanski'}
+        netflix.define_filter(:new_test_filter, from: :test_filter, arg: 2000)
+        freeze_time
+      }
+      subject { netflix.show(new_test_filter: true) }
+      it { expect(subject).to eq "Now showing: The Pianist 12:00:00 - 14:30:00" }
     end
   end
 end
