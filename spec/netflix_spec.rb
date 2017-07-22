@@ -61,10 +61,10 @@ RSpec.describe MovieProduction::Netflix do
 
       describe 'Returns string' do
         let(:stubed_movie) { MovieProduction::MovieCollection.new.filter(title: 'Fight Club').first }
-        before {
+        before do
           allow(netflix).to receive(:pick_movie).and_return(stubed_movie)
           freeze_time
-        }
+        end
         it { expect(subject).to eq "Now showing: Fight Club 12:00:00 - 14:19:00" }
       end
     end
@@ -83,12 +83,12 @@ RSpec.describe MovieProduction::Netflix do
     end
 
     context 'when user filter is passed' do
-      before {
+      before do
         netflix.define_filter(:test_filter) { |movie| movie.genre.include?('Drama') &&
                                                       movie.director == 'David Fincher' &&
                                                       movie.actors.include?('Brad Pitt') &&
                                                       movie.year > 1998 }
-      }
+      end
       subject { netflix.show(test_filter: true) }
       it { expect(subject).to eq "Now showing: Fight Club 12:00:00 - 14:19:00" }
     end
@@ -146,22 +146,22 @@ RSpec.describe MovieProduction::Netflix do
     end
 
     context 'changes existing filter' do
-      before {
+      before do
         netflix.define_filter(:test_filter) { |movie, year| movie.year > year && movie.title == 'The Avengers' }
         freeze_time
-      }
+      end
       subject { netflix.show(test_filter: 2008)}
       it { expect(subject).to eq "Now showing: The Avengers 12:00:00 - 14:23:00" }
     end
 
     context 'creates filter based on another' do
-      before {
+      before do
         netflix.define_filter(:test_filter) { |movie, year| movie.year > year &&
                                                             movie.genre.include?('Drama') &&
                                                             movie.director == 'Roman Polanski'}
         netflix.define_filter(:new_test_filter, from: :test_filter, arg: 2000)
         freeze_time
-      }
+      end
       subject { netflix.show(new_test_filter: true) }
       it { expect(subject).to eq "Now showing: The Pianist 12:00:00 - 14:30:00" }
     end

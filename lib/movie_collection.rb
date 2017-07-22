@@ -3,17 +3,11 @@ require 'ostruct'
 require 'date'
 require 'pry'
 require 'date'
-require_relative 'ancient_movie'
-require_relative 'classic_movie'
-require_relative 'new_movie'
-require_relative 'modern_movie'
-require 'money'
 
 module MovieProduction
-
   class MovieCollection
     include Enumerable
-    KEYS = %w[link title year country date genre duration rating director actors]
+    KEYS = %w[link title year country date genre duration rating director actors].freeze
 
     attr_reader :all
 
@@ -25,7 +19,7 @@ module MovieProduction
 
     def sort_by(field)
       if field == :director
-        puts sort_by{ |x| x.director.split(' ').last }
+        puts sort_by { |x| x.director.split(' ').last }
       else
         puts sort_by { |x| x.send field }.map(&:to_s)
       end
@@ -46,13 +40,13 @@ module MovieProduction
     end
 
     def pick_movie(movies_array)
-      movies_array.sort_by { |x| x.rating.to_f*rand(1..1.5) }.last
+      movies_array.sort_by { |x| x.rating.to_f * rand(1..1.5) }.last
     end
 
     private
 
     def parse_file(file)
-      CSV.foreach(file, { col_sep: '|', headers: KEYS }).map do |row|
+      CSV.foreach(file, col_sep: '|', headers: KEYS).map do |row|
         year = row['year'].to_i
         case year
         when (1900..1945)
@@ -61,7 +55,7 @@ module MovieProduction
           ClassicMovie.new(self, row.to_h)
         when (1968..1999)
           ModernMovie.new(self, row.to_h)
-        when  (2000..3000)
+        when (2000..3000)
           NewMovie.new(self, row.to_h)
         end
       end

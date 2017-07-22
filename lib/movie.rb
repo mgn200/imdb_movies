@@ -1,27 +1,19 @@
-require 'date'
-require 'money'
 module MovieProduction
-
   class Movie
     PRICES = { ancient: Money.new(100, 'USD'),
-               classic: Money.new(150,'USD'),
-               modern: Money.new(300,'USD'),
-               new: Money.new(500,'USD')
-             }
+               classic: Money.new(150, 'USD'),
+               modern: Money.new(300, 'USD'),
+               new: Money.new(500, 'USD') }.freeze
+
     attr_reader :list, :link, :title, :year, :country, :date, :genre,
                 :duration, :rating, :director, :actors
 
     def initialize(list, movie_info)
-      movie_info.each do |k, v|
-        if k == 'year' || k == 'duration'
-          self.instance_variable_set "@#{k}", v.to_i
-        else
-          self.instance_variable_set "@#{k}", v
-        end
-      end
+      movie_info.each { |k, v| instance_variable_set "@#{k}", v }
+      @year, @duration = @year.to_i, @duration.to_i
       @list = list
-      @actors = @actors.split ","
-      @genre = @genre.split ","
+      @actors = @actors.split ','
+      @genre = @genre.split ','
       @date = parse_date(@date)
     end
 
@@ -48,7 +40,7 @@ module MovieProduction
     end
 
     def price
-      PRICES[self.period]
+      PRICES[period]
     end
 
     def period

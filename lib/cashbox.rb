@@ -1,12 +1,13 @@
 module MovieProduction
-
   module Cashbox
+    I18n.enforce_available_locales = false
+
     def cash
       @cash ||= Money.new(0)
     end
 
     def store_cash(price)
-      @cash = cash + Money.new(price*100)
+      @cash = cash + Money.new(price * 100)
     end
 
     def take(who)
