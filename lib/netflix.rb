@@ -19,13 +19,15 @@ module MovieProduction
     end
 
     def filter(params = {}, &block)
-      return select(&block) if block_given?
-      if user_filters.keys.include?(params.keys.first)
-        block = user_filters[params.keys.first]
-        arg = params.values.first
-        return select { |movie| block.call(movie, arg) }
+      filtered = block_given? ? select(&block) : all
+      user_filter, movie_params = params.partition { |x| user_filters[x.first] }.map(&:to_h)
+
+      filtered = user_filter.reduce(filtered) do |memo, (k, v)|
+        block = user_filters[k]
+        memo.select { |m| block.call(m, v) }
       end
-      super(params)
+
+      super(movie_params, filtered)
     end
 
     def pay(price)
@@ -40,11 +42,7 @@ module MovieProduction
     end
 
     def define_filter(filter_name, from: nil, arg: nil, &block)
-      if from && arg
-        return user_filters[filter_name] = proc { |m| user_filters[from].call(m, arg) }
-      end
-
-      user_filters[filter_name] = block
+      from && arg ? user_filters[filter_name] = proc { |m| user_filters[from].call(m, arg) } : user_filters[filter_name] = block
     end
 
     private

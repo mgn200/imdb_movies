@@ -35,7 +35,10 @@ RSpec.describe MovieProduction::Netflix do
 
   describe '#show' do
     subject { netflix.show(params) }
-    before { netflix.pay(prepayment) }
+    before do
+      netflix.pay(prepayment)
+      freeze_time
+    end
 
     context 'when valid hash is passed' do
       describe 'changes balance' do
@@ -60,12 +63,16 @@ RSpec.describe MovieProduction::Netflix do
       end
 
       describe 'Returns string' do
-        let(:stubed_movie) { MovieProduction::MovieCollection.new.filter(title: 'Fight Club').first }
-        before do
-          allow(netflix).to receive(:pick_movie).and_return(stubed_movie)
-          freeze_time
+        context 'single param' do
+          let(:stubed_movie) { MovieProduction::MovieCollection.new.filter(title: 'Fight Club').first }
+          before { allow(netflix).to receive(:pick_movie).and_return(stubed_movie) }
+          it { expect(subject).to eq "Now showing: Fight Club 12:00:00 - 14:19:00" }
         end
-        it { expect(subject).to eq "Now showing: Fight Club 12:00:00 - 14:19:00" }
+
+        context 'multiple params' do
+          let(:params) { { period: :modern, title: 'Fight Club' } }
+          it { expect(subject).to eq "Now showing: Fight Club 12:00:00 - 14:19:00" }
+        end
       end
     end
 
@@ -82,7 +89,7 @@ RSpec.describe MovieProduction::Netflix do
       end
     end
 
-    context 'when user filter is passed' do
+    context 'when user filters are passed' do
       before do
         netflix.define_filter(:test_filter) { |movie| movie.genre.include?('Drama') &&
                                                       movie.director == 'David Fincher' &&
@@ -90,6 +97,26 @@ RSpec.describe MovieProduction::Netflix do
                                                       movie.year > 1998 }
       end
       subject { netflix.show(test_filter: true) }
+      it { expect(subject).to eq "Now showing: Fight Club 12:00:00 - 14:19:00" }
+
+      context 'multiple filters' do
+        before do
+          netflix.define_filter(:filter1) { |movie| movie.genre.include?('Drama') &&
+                                                    movie.director == 'David Fincher' }
+          netflix.define_filter(:filter2) { |movie| movie.actors.include?('Brad Pitt') &&
+                                                    movie.year > 1998 }
+        end
+        subject { netflix.show(filter1: true, filter2: true) }
+        it { expect(subject).to eq "Now showing: Fight Club 12:00:00 - 14:19:00" }
+      end
+    end
+
+    context 'when both filter and block is passed' do
+      before do
+        netflix.define_filter(:test_filter) { |movie| movie.genre.include?('Drama') &&
+                                                      movie.year == 1999 }
+      end
+      subject { netflix.show(test_filter:true) { |movie| movie.director == 'David Fincher'} }
       it { expect(subject).to eq "Now showing: Fight Club 12:00:00 - 14:19:00" }
     end
 

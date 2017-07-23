@@ -1,3 +1,5 @@
+# rubocop:disable Style/CaseEquality
+# rubocop:disable Namin/PredicateName
 module MovieProduction
   class Movie
     PRICES = { ancient: Money.new(100, 'USD'),

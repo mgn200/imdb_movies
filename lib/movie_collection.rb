@@ -3,7 +3,7 @@ require 'ostruct'
 require 'date'
 require 'pry'
 require 'date'
-
+# rubocop:disable Namin/PredicateName
 module MovieProduction
   class MovieCollection
     include Enumerable
@@ -25,8 +25,10 @@ module MovieProduction
       end
     end
 
-    def filter(hash)
-      hash.reduce(self) do |sequence, (k, v)|
+    def filter(hash, array = nil)
+      array ||= all
+
+      hash.reduce(array) do |sequence, (k, v)|
         sequence.select { |x| x.matches?(k, v) }
       end
     end

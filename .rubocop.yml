@@ -4,25 +4,12 @@ AllCops:
 
 Metrics/LineLength:
   # Change the default 80 chars limit value
-  Max: 120
+  Max: 130
 Style/Documentation:
   Enabled: false
 Metrics/MethodLength:
   Max: 15
-Style/CaseEquality:
-  Description: 'Avoid explicit use of the case equality operator(===).'
-  StyleGuide: '#no-case-equality'
-  Enabled: false
 Style/StringLiterals:
   Description: 'Checks if uses of quotes match the configured preference.'
   StyleGuide: '#consistent-string-literals'
   Enabled: false
-Metrics/AbcSize:
-  Description: >-
-                 A calculated magnitude based on number of assignments,
-                 branches, and conditions.
-  Reference: 'http://c2.com/cgi/wiki?AbcMetric'
-  Enabled: false
-Naming/PredicateName:
-  NameWhitelist:
-    - has_genre?

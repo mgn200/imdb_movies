@@ -24,7 +24,7 @@ module MovieProduction
     end
 
     def get_time(time)
-      SCHEDULE.detect { |key, _hash| key === time }.last
+      SCHEDULE.detect { |key, _hash| key.include?(time) }.last
     end
 
     def when?(title)
