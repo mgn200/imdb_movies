@@ -1,6 +1,7 @@
 module MovieProduction
   class Netflix < MovieProduction::MovieCollection
     extend MovieProduction::Cashbox
+    #extend MovieProduction::MoviesDSL
     attr_reader :balance, :user_filters
 
     def initialize

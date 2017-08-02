@@ -1,6 +1,7 @@
 require 'csv'
 require 'date'
 require 'money'
+require_relative 'lib/coercions'
 require_relative 'lib/movie'
 require_relative 'lib/movie_collection'
 require_relative 'lib/cashbox'
@@ -20,3 +21,4 @@ require_relative 'lib/new_movie'
 # movies.sort_by :year
 # movies.all.first.has_genre? ['Drama', 'Adventure']
 # movies.all.first.has_genre? 'Dramdsa'
+binding.pry
