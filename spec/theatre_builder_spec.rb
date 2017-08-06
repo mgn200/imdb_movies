@@ -36,7 +36,7 @@ RSpec.describe MovieProduction::Theatre do
   end
 
   describe 'Creates Theatre with given block params' do
-    subject { theatre}
-    it { is_expected.to have_attributes() }
+    #subject { theatre1/theatre2 }
+    #it { is_expected.to have_attributes }
   end
 end
