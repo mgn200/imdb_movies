@@ -9,7 +9,7 @@ module MovieProduction
                classic: Money.new(150, 'USD'),
                modern: Money.new(300, 'USD'),
                new: Money.new(500, 'USD') }.freeze
-
+               
     # set to reader only
     attribute :list
     attribute :movie_info

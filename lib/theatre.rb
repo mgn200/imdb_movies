@@ -15,6 +15,10 @@ module MovieProduction
                DAYTIME.values[1] => 5,
                DAYTIME.values[2] => 10 }.freeze
 
+    def initialize(&block)
+      block_given? ? MovieProduction::TheatreBuilder.new(&block) : super
+    end
+
     def show(time)
       params = get_time(time)
       return params if params.is_a? String

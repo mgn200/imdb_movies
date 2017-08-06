@@ -1,13 +1,14 @@
 module MovieProduction
   class Netflix < MovieProduction::MovieCollection
     extend MovieProduction::Cashbox
-    #extend MovieProduction::MoviesDSL
+    include MovieProduction::NetflixDSL
     attr_reader :balance, :user_filters
 
     def initialize
       super
       @balance = Money.new(0)
       @user_filters = {}
+      make_attr_filters(KEYS)
     end
 
     def show(params = {}, &block)
@@ -22,7 +23,6 @@ module MovieProduction
     def filter(params = {}, &block)
       filtered = block_given? ? select(&block) : all
       user_filter, movie_params = params.partition { |x| user_filters[x.first] }.map(&:to_h)
-
       filtered = user_filter.reduce(filtered) do |memo, (k, v)|
         block = user_filters[k]
         memo.select { |m| block.call(m, v) }

@@ -27,7 +27,6 @@ module MovieProduction
 
     def filter(hash, array = nil)
       array ||= all
-
       hash.reduce(array) do |sequence, (k, v)|
         sequence.select { |x| x.matches?(k, v) }
       end
