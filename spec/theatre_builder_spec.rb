@@ -1,5 +1,5 @@
 RSpec.describe MovieProduction::Theatre do
-  let(:theatre) do
+  subject do
     MovieProduction::Theatre.new do
       hall :red, title: 'Красный зал', places: 100
       hall :blue, title: 'Синий зал', places: 50
@@ -36,7 +36,19 @@ RSpec.describe MovieProduction::Theatre do
   end
 
   describe 'Creates Theatre with given block params' do
-    #subject { theatre1/theatre2 }
-    #it { is_expected.to have_attributes }
+    it { is_expected.to have_attributes(periods: { ("06:00".."12:00") => { params: { period: :ancient },
+                                                                      daytime: :morning,
+                                                                      price: 3 },
+                                              ("12:00".."18:00") => { params: { genre: %w[Comedy Adventure] },
+                                                                      daytime: :afternoon,
+                                                                      price: 5 },
+                                              ("18:00".."24:00") => { params: { genre: %w[Drama Horror] },
+                                                                      daytime: :evening,
+                                                                      price: 10 },
+                                              ("00:00".."06:00") => { params: 'Working hours: 06:00 - 00:00' } },
+                                   halls: { :red => { title: 'Красный зал', places: 100 },
+                                            :blue => { title: 'Синий зал', places: 50 },
+                                            :green => { title: 'Зелёный зал (deluxe)', places: 12 } } )
+                                          }
   end
 end

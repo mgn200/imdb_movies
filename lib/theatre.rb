@@ -1,6 +1,7 @@
 module MovieProduction
   class Theatre < MovieProduction::MovieCollection
     include MovieProduction::Cashbox
+    include MovieProduction::TheatreBuilder
 
     DEFAULT_SCHEDULE = { ("06:00".."12:00") => { params: { period: :ancient },
                                                  daytime: :morning,
@@ -25,7 +26,8 @@ module MovieProduction
     #           DAYTIME.values[1] => 5,
     #           DAYTIME.values[2] => 10 }.freeze
 
-    def initialize(&block)
+    def initialize(params = {}, &block)
+      binding.pry
       block_given? ? instance_eval(&block) : super
     end
 
