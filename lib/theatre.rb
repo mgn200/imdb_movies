@@ -2,7 +2,6 @@ module MovieProduction
   class Theatre < MovieProduction::MovieCollection
     include MovieProduction::Cashbox
     include MovieProduction::TheatreBuilder
-
     DEFAULT_SCHEDULE = { ("06:00".."12:00") => { params: { period: :ancient },
                                                  daytime: :morning,
                                                  price: 3 },
@@ -11,8 +10,8 @@ module MovieProduction
                                                  price: 5 },
                          ("18:00".."24:00") => { params: { genre: %w[Drama Horror] },
                                                  daytime: :evening,
-                                                 price: 10 },
-                         ("00:00".."06:00") => { params: 'Working hours: 06:00 - 00:00' } }.freeze
+                                                 price: 10 }
+                                               }
 
     DEFAULT_HALLS = { :red => { title: 'Красный зал', places: 100 },
                       :blue => { title: 'Синий зал', places: 50 },
@@ -26,25 +25,25 @@ module MovieProduction
     #           DAYTIME.values[1] => 5,
     #           DAYTIME.values[2] => 10 }.freeze
 
-    def initialize(params = {}, &block)
-      binding.pry
-      block_given? ? instance_eval(&block) : super
+    def initialize(&block)
+      super
+      instance_eval(&block) if block
     end
 
     def show(time)
+      return 'Кинотеатр не работает в это время' if session_break?(time)
       params = get_params(time)
-      return params if params.is_a? String
       movies = filter(params)
       movie = pick_movie(movies)
       "#{movie.title} will be shown at #{time}"
     end
 
     def periods
-      @periods ||= DEFAULT_SCHEDULE
+      @periods || DEFAULT_SCHEDULE
     end
 
     def halls
-      @halls ||= DEFAULT_HALLS
+      @halls || DEFAULT_HALLS
     end
 
     def get_params(time)
@@ -64,6 +63,10 @@ module MovieProduction
       price = periods[range_time][:price]
       store_cash(price)
       "Вы купили билет на #{movie_title}"
+    end
+
+    def session_break?(time)
+      !periods.keys.any? { |x| x.include? time }
     end
   end
 end

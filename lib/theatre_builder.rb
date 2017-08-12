@@ -1,44 +1,37 @@
 module MovieProduction
   module TheatreBuilder
     attr_accessor :halls
+    attr_accessor :periods
 
     def hall(*params)
-      # из параметров создавай хэш вида
-      # red => { title: 'Красный зал', places: 100 } }
-      # добавляй другие туда же
-      @halls ||= {}
-      @halls[params.first] = params.last
+      self.halls[params.first] = params.last
     end
 
     def period(range, &block)
+      @periods = {} if periods == MovieProduction::Theatre::DEFAULT_SCHEDULE
       PeriodScope.new(self, range, &block)
-      #binding.pry
     end
 
     class PeriodScope
       def initialize(theatre_reference, range, &block)
-        @builded_hash = {}
+        @theatre = theatre_reference
+        @scope_hash = {}
         instance_eval(&block)
-        periods_hash = { range => @builded_hash }
-        # theatre @all = nil
-        binding.pry
-        theatre_reference.instance_variable_set(:@periods, periods_hash )
+        @periods_hash = { range => @scope_hash }
+        theatre_reference.periods.merge! @periods_hash
+      end
+
+      def method_missing(*params)
+        if MovieProduction::MovieCollection::KEYS.any? { |key| key.to_sym == params.first }
+          # if two keys are given, first is overwritten
+          @scope_hash[:params] = { params.first => params.last }
+        else
+          @scope_hash[params.first] = params.last
+        end
       end
 
       def hall(*params)
-        @builded_hash[:hall] = params.first
-      end
-
-      def description(*params)
-        @builded_hash[:description] = params.first
-      end
-
-      def filters(*params)
-        @builded_hash[:filters] = params.first
-      end
-
-      def price(*params)
-        @builded_hash[:price] = params.first
+        @scope_hash[:hall] = params
       end
     end
   end
