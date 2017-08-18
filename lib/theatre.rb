@@ -50,17 +50,27 @@ module MovieProduction
       periods.detect { |key, _hash| key.include?(time) }.last[:params]
     end
 
-    def when?(title)
+    def when?(title, hall)
+      # refactor?
       movie = detect { |x| x.title == title }
       return 'No such movie' unless movie
-      periods.detect { |_range, filter| filter[:params].select.any? { |key, value| movie.matches?(key, value) } }.first
-    rescue
-      'That movie is not at the box office atm'
+      # matches? doesnt work with exclude_country
+      if hall
+        period = periods.select { |_range, values| values[:params].select.any? { |key, value| movie.matches?(key, value) } }
+                        .select { |key, value| value[:hall].include? hall }
+                        .keys
+      fail ArgumentError, 'Выбран неверный зал' if period.empty?
+      else
+        period = periods.select { |_range, values| values[:params].select.any? { |key, value| movie.matches?(key, value) } }.keys
+      end
+      period
     end
 
-    def buy_ticket(movie_title)
-      range_time = when?(movie_title)
-      price = periods[range_time][:price]
+    def buy_ticket(movie_title, hall = nil)
+      range_time = when?(movie_title, hall)
+    fail ArgumentError, 'Выберите нужный вам зал' if range_time.length > 1
+      return 'That movie is not at the box office atm' if range_time.nil?
+      price = periods[range_time.first][:price]
       store_cash(price)
       "Вы купили билет на #{movie_title}"
     end

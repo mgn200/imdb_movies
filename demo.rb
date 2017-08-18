@@ -57,4 +57,3 @@ a = MovieProduction::Theatre.new do
     hall :green
   end
 end
-binding.pry
