@@ -111,12 +111,15 @@ RSpec.describe MovieProduction::Theatre do
     describe '#when with exclude_*attr params' do
       # Metropolis checks for 19-22 period
       subject { theatre.when?('Metropolis') }
-      it { is_expected.to eq "19:00".."22:00" }
+      it { is_expected.to eq ["19:00".."22:00"] }
     end
 
     describe '#show with exclude_*attr params' do
-      before { theatre.periods = { ("06:00".."23:00") => { params: { exclude_year: 1900..1998, exclude_genre: 'Action',
-                                                                     country: 'France', exclude_rating: '8.0'..'8.8' },
+      before { theatre.periods = { ("06:00".."23:00") => { params: { exclude_year: 1900..1998,
+                                                                     exclude_genre: 'Fantasy',
+                                                                     exclude_director: 'Quentin Tarantino',
+                                                                     country: 'USA',
+                                                                     rating: '8.9' },
                                                            description: 'Утренний сеанс',
                                                            price: 10,
                                                            hall: [:red, :blue]

@@ -28,12 +28,7 @@ module MovieProduction
     def filter(hash, array = nil)
       array ||= all
       hash.reduce(array) do |sequence, (k, v)|
-        if k.to_s.include? 'exclude'
-          key = k.to_s.split('_').last
-          sequence.select { |x| x.send(key) != v }
-        else
-          sequence.select { |x| x.matches?(k, v) }
-        end
+        sequence.select { |x| x.matches?(k, v) }
       end
     end
 

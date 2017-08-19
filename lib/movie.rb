@@ -39,11 +39,22 @@ module MovieProduction
     end
 
     def matches?(key, value)
-      func = send(key)
-      if func.is_a? Array
-        func.any? { |x| value.include? x }
+      # refactor?
+      if key.to_s.include? 'exclude'
+        key = key.to_s.split('_').last
+        func = send(key)
+        if func.is_a? Array
+          !func.any? { |x| value.include? x }
+        else
+          !(value === func)
+        end
       else
-        value === func
+        func = send(key)
+        if func.is_a? Array
+          func.any? { |x| value.include? x }
+        else
+          value === func
+        end
       end
     end
 

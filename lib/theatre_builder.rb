@@ -23,9 +23,13 @@ module MovieProduction
       end
 
       def method_missing(*params)
+        # for normal keys
         if MovieProduction::MovieCollection::KEYS.any? { |key| key.to_sym == params.first }
+          # for standalone params
+          # build hash to add to params key
           @scope_hash[:params] = { params.first => params.last }
         else
+          # for non-params attr
           @scope_hash[params.first] = params.last
         end
       end
