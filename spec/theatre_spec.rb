@@ -81,22 +81,22 @@
 
 
     describe 'puts money in cashbox' do
-      let(:filter) { theatre.periods.detect { |k, v| v[:daytime] == :morning }.last[:params] }
+      let(:filter) { theatre.periods.detect { |k, v| v[:daytime] == :morning }.last[:filters] }
       let(:title) { movies.filter(filter).first.title }
-    
+
       context 'when morning time' do
         subject { theatre.buy_ticket(title, :red) }
         it { expect { subject }.to change(theatre, :cash).by Money.new(300) }
       end
 
       context 'when noon time' do
-        let(:filter) { theatre.periods.detect { |k, v| v[:daytime] == :afternoon }.last[:params] }
+        let(:filter) { theatre.periods.detect { |k, v| v[:daytime] == :afternoon }.last[:filters] }
         subject { theatre.buy_ticket(title, :green) }
         it { expect { subject }.to change(theatre, :cash).by Money.new(500) }
       end
 
       context 'when evening time' do
-        let(:filter) { theatre.periods.detect { |k, v| v[:daytime] == :evening }.last[:params] }
+        let(:filter) { theatre.periods.detect { |k, v| v[:daytime] == :evening }.last[:filters] }
         subject { theatre.buy_ticket(title, :blue) }
         it { expect { subject }.to change(theatre, :cash).by Money.new(1000) }
       end

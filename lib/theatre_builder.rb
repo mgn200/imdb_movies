@@ -1,7 +1,7 @@
 module MovieProduction
   module TheatreBuilder
-    attr_accessor :halls
-    attr_accessor :periods
+    attr_writer :halls
+    attr_writer :periods
 
     def hall(*params)
       halls[params.first] = params.last
@@ -23,11 +23,10 @@ module MovieProduction
       end
 
       def method_missing(*params)
-        # for normal keys
         if MovieProduction::MovieCollection::KEYS.any? { |key| key.to_sym == params.first }
           # for standalone params
           # build hash to add to params key
-          @scope_hash[:params] = { params.first => params.last }
+          @scope_hash[:filters] = { params.first => params.last }
         else
           # for non-params attr
           @scope_hash[params.first] = params.last

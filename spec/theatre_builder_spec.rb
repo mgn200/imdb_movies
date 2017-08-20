@@ -7,7 +7,7 @@ RSpec.describe MovieProduction::Theatre do
 
       period '09:00'..'11:00' do
         description 'Утренний сеанс'
-        params genre: 'Comedy', year: 1900..1980
+        filters genre: 'Comedy', year: 1900..1980
         price 10
         hall :red, :blue
       end
@@ -21,14 +21,14 @@ RSpec.describe MovieProduction::Theatre do
 
       period '16:00'..'20:00' do
         description 'Вечерний сеанс'
-        params genre: ['Action', 'Drama'], year: 2007..Time.now.year
+        filters genre: ['Action', 'Drama'], year: 2007..Time.now.year
         price 20
         hall :red, :blue
       end
 
       period '19:00'..'22:00' do
         description 'Вечерний сеанс для киноманов'
-        params year: 1900..1945, exclude_country: 'USA'
+        filters year: 1900..1945, exclude_country: 'USA'
         price 30
         hall :green
       end
@@ -36,22 +36,22 @@ RSpec.describe MovieProduction::Theatre do
   end
 
   describe 'creates Theatre with given block params' do
-    it { expect(theatre).to have_attributes(periods: { ("09:00".."11:00") => { params: { genre: 'Comedy', year: 1900..1980 },
-                                                                                  description: 'Утренний сеанс',
-                                                                                  price: 10,
-                                                                                  hall: [:red, :blue] },
-                                                          ("11:00".."16:00") => { description: 'Спецпоказ',
-                                                                                  params: { title: 'The Terminator' },
-                                                                                  hall: [:green],
-                                                                                  price: 50 },
-                                                          ("16:00".."20:00") => { description: 'Вечерний сеанс',
-                                                                                  params: { genre: ['Action', 'Drama'], year: 2007..Time.now.year },
-                                                                                  price: 20,
-                                                                                  hall: [:red, :blue] },
-                                                          ("19:00".."22:00") => { description: 'Вечерний сеанс для киноманов',
-                                                                                  params: { year: 1900..1945, exclude_country: 'USA' },
-                                                                                  price: 30,
-                                                                                  hall: [:green] } },
+    it { expect(theatre).to have_attributes(periods: { ("09:00".."11:00") => { filters: { genre: 'Comedy', year: 1900..1980 },
+                                                                                description: 'Утренний сеанс',
+                                                                                price: 10,
+                                                                                hall: [:red, :blue] },
+                                                        ("11:00".."16:00") => { description: 'Спецпоказ',
+                                                                                filters: { title: 'The Terminator' },
+                                                                                hall: [:green],
+                                                                                price: 50 },
+                                                        ("16:00".."20:00") => { description: 'Вечерний сеанс',
+                                                                                filters: { genre: ['Action', 'Drama'], year: 2007..Time.now.year },
+                                                                                price: 20,
+                                                                                hall: [:red, :blue] },
+                                                        ("19:00".."22:00") => { description: 'Вечерний сеанс для киноманов',
+                                                                                filters: { year: 1900..1945, exclude_country: 'USA' },
+                                                                                price: 30,
+                                                                                hall: [:green] } },
                                                halls: { :red => { title: 'Красный зал', places: 100 },
                                                         :blue => { title: 'Синий зал', places: 50 },
                                                         :green => { title: 'Зелёный зал (deluxe)', places: 12 }
@@ -59,7 +59,7 @@ RSpec.describe MovieProduction::Theatre do
                                                 )}
 
     context 'title params given explicitly is wrapped in params' do
-      it { expect(theatre.periods[("11:00".."16:00")][:params]).to eq Hash[:title, 'The Terminator'] }
+      it { expect(theatre.periods[("11:00".."16:00")][:filters]).to eq Hash[:title, 'The Terminator'] }
     end
 
     context 'when periods intersect by time and halls' do
@@ -81,11 +81,11 @@ RSpec.describe MovieProduction::Theatre do
   describe 'methods' do
     describe '#buy_ticket' do
       before do
-        theatre.periods = { ("09:00".."11:00") => { params: { genre: 'Comedy', year: 1900..1980 },
+        theatre.periods = { ("09:00".."11:00") => { filters: { genre: 'Comedy', year: 1900..1980 },
                                                                                description: 'Утренний сеанс',
                                                                                price: 10,
                                                                                hall: [:red, :blue] },
-                            ("11:00".."12:00") => { params: { genre: 'Comedy', year: 1900..1980 },
+                            ("11:00".."12:00") => { filters: { genre: 'Comedy', year: 1900..1980 },
                                                                                description: 'Утренний сеанс',
                                                                                price: 10,
                                                                                hall: [:green] } }
@@ -115,11 +115,11 @@ RSpec.describe MovieProduction::Theatre do
     end
 
     describe '#show with exclude_*attr params' do
-      before { theatre.periods = { ("06:00".."23:00") => { params: { exclude_year: 1900..1998,
+      before { theatre.periods = { ("06:00".."23:00") => { filters: { exclude_year: 1900..1998,
                                                                      exclude_genre: 'Fantasy',
                                                                      exclude_director: 'Quentin Tarantino',
                                                                      country: 'USA',
-                                                                     rating: '8.9' },
+                                                                     rating: 8.9 },
                                                            description: 'Утренний сеанс',
                                                            price: 10,
                                                            hall: [:red, :blue]

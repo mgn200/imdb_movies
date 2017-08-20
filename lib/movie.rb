@@ -17,7 +17,7 @@ module MovieProduction
     attribute :actors, MovieProduction::Coercions::Splitter
     attribute :genre, MovieProduction::Coercions::Splitter
     attribute :date, MovieProduction::Coercions::DateParse
-    attribute :rating
+    attribute :rating, MovieProduction::Coercions::Integer
     attribute :director
     attribute :title
     attribute :price
@@ -43,6 +43,7 @@ module MovieProduction
       if key.to_s.include? 'exclude'
         key = key.to_s.split('_').last
         func = send(key)
+        binding.pry
         if func.is_a? Array
           !func.any? { |x| value.include? x }
         else

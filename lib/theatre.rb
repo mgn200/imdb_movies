@@ -2,15 +2,15 @@ module MovieProduction
   class Theatre < MovieProduction::MovieCollection
     include MovieProduction::Cashbox
     include MovieProduction::TheatreBuilder
-    DEFAULT_SCHEDULE = { ("06:00".."12:00") => { params: { period: :ancient },
+    DEFAULT_SCHEDULE = { ("06:00".."12:00") => { filters: { period: :ancient },
                                                  daytime: :morning,
                                                  price: 3,
                                                  hall: [:red] },
-                         ("12:00".."18:00") => { params: { genre: %W[Comedy Adventure] },
+                         ("12:00".."18:00") => { filters: { genre: %W[Comedy Adventure] },
                                                  daytime: :afternoon,
                                                  price: 5,
                                                  hall: [:green] },
-                         ("18:00".."24:00") => { params: { genre: %w[Drama Horror] },
+                         ("18:00".."24:00") => { filters: { genre: %w[Drama Horror] },
                                                  daytime: :evening,
                                                  price: 10,
                                                  hall: [:blue] }
@@ -42,20 +42,19 @@ module MovieProduction
     end
 
     def get_params(time)
-      periods.detect { |key, _hash| key.include?(time) }.last[:params]
+      periods.detect { |key, _hash| key.include?(time) }.last[:filters]
     end
 
     def when?(title, hall = nil)
       movie = detect { |x| x.title == title }
       return 'Неверное название фильма' unless movie
       if hall
-        period = periods.select { |_range, values| values[:params].all? { |key, value| movie.matches?(key, value) } }
+        period = periods.select { |_range, values| values[:filters].all? { |key, value| movie.matches?(key, value) } }
                                .select { |key, value| value[:hall].include? hall }
                                .keys
       fail ArgumentError, 'Выбран неверный зал' if period.empty?
       else
-        #binding.pry
-        period = periods.select { |_range, values| values[:params].all? { |key, value| movie.matches?(key, value) } }.keys
+        period = periods.select { |_range, values| values[:filters].all? { |key, value| movie.matches?(key, value) } }.keys
       end
       return 'В данный момент этот фильм не идет в кино' if period.empty?
       period
