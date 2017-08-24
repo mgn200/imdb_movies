@@ -3,7 +3,6 @@ module MovieProduction
   class Coercions
     class Integer < Virtus::Attribute
       def coerce(value)
-        # в первый проход всегда nil
         value.to_i
       end
     end
@@ -17,6 +16,12 @@ module MovieProduction
     class DateParse < Virtus::Attribute
       def coerce(value)
         value && value.length > 4 ? Date.strptime(value, '%Y-%m') : value
+      end
+    end
+
+    class Float < Virtus::Attribute
+      def coerce(value)
+        value.to_f
       end
     end
   end

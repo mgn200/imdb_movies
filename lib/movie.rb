@@ -13,15 +13,15 @@ module MovieProduction
     # set to reader only
     attribute :list
     attribute :movie_info
-    attribute :duration, MovieProduction::Coercions::Integer
-    attribute :actors, MovieProduction::Coercions::Splitter
-    attribute :genre, MovieProduction::Coercions::Splitter
-    attribute :date, MovieProduction::Coercions::DateParse
-    attribute :rating, MovieProduction::Coercions::Integer
+    attribute :duration, Coercions::Integer
+    attribute :actors, Coercions::Splitter
+    attribute :genre, Coercions::Splitter
+    attribute :date, Coercions::DateParse
+    attribute :rating, Coercions::Float
     attribute :director
     attribute :title
     attribute :price
-    attribute :year, MovieProduction::Coercions::Integer
+    attribute :year, Coercions::Integer
     attribute :link
     attribute :country
 
@@ -39,24 +39,16 @@ module MovieProduction
     end
 
     def matches?(key, value)
-      # refactor?
-      if key.to_s.include? 'exclude'
-        key = key.to_s.split('_').last
-        func = send(key)
-        binding.pry
-        if func.is_a? Array
-          !func.any? { |x| value.include? x }
+      key.to_s.include?('exclude') ? attribute = send(key.to_s.split('_').last) : attribute = send(key)
+      attr_proc = proc do
+        if attribute.is_a? Array
+          attribute.any? { |x| value.include? x }
         else
-          !(value === func)
-        end
-      else
-        func = send(key)
-        if func.is_a? Array
-          func.any? { |x| value.include? x }
-        else
-          value === func
+          value === attribute
         end
       end
+
+      key.to_s.include?('exclude') ? !attr_proc.call : attr_proc.call
     end
 
     def price
