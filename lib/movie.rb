@@ -40,9 +40,12 @@ module MovieProduction
 
     def matches?(key, value)
       key.to_s.include?('exclude') ? attribute = send(key.to_s.split('_').last) : attribute = send(key)
+
       attr_proc = proc do
         if attribute.is_a? Array
           attribute.any? { |x| value.include? x }
+        elsif attribute.is_a? String
+          value.downcase == attribute.downcase
         else
           value === attribute
         end

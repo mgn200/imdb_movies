@@ -1,51 +1,62 @@
+
 module MovieProduction
   module TheatreBuilder
     attr_writer :halls
     attr_writer :periods
 
-    def hall(*params)
-      halls[params.first] = params.last
+    # for initial halls description
+    def hall(name, params)
+      halls[name] = params
     end
 
     def period(range, &block)
       @periods = {} if periods == MovieProduction::Theatre::DEFAULT_SCHEDULE
-      PeriodScope.new(self, range, &block)
+      period = PeriodBuilder.new(range, &block).period
+      fail ArgumentError, 'Periods and halls intersection detected. Please check parameters.' if intersection(period)
+      @periods.merge! period
     end
 
-    class PeriodScope
-      def initialize(theatre_reference, range, &block)
-        @theatre = theatre_reference
-        @scope_hash = {}
+    def intersection(built_period)
+      # skip to second elemesnt for comparison
+      return false if @periods.length < 1
+
+      @periods.keys.any? do |period|
+        if period.overlaps? built_period.keys.first
+          return true if (@periods[period][:hall] & built_period.values.first[:hall]).any?
+        end
+      end
+    end
+
+    class Object::Range
+      def overlaps?(other)
+        # "11:00" not overlapping another "11:00"
+        return false if other.last == first || other.first == last
+        cover?(other.first) || other.cover?(first)
+      end
+    end
+
+    class PeriodBuilder
+      attr_accessor :period
+
+      def initialize(range, &block)
+        @built_hash = {}
         instance_eval(&block)
-        fail ArgumentError, 'Periods and halls intersection detected. Please check parameters.' if intersection(range, theatre_reference)
-        @periods_hash = { range => @scope_hash }
-        theatre_reference.periods.merge! @periods_hash
+        @period = { range => @built_hash }
       end
 
-      def method_missing(*params)
-        if MovieProduction::MovieCollection::KEYS.any? { |key| key.to_sym == params.first }
-          # for standalone params
-          # build hash to add to params key
-          @scope_hash[:filters] = { params.first => params.last }
+      def method_missing(key, value)
+        if MovieProduction::MovieCollection::KEYS.any? { |k| k.to_sym == key }
+        # wrap movie attribute in filter hash if it's given alone
+        # like: { title: 'abc' } instead of { filters: { title: 'abc' } }
+          @built_hash[:filters] =  { key => value }
         else
-          # for non-params attr
-          @scope_hash[params.first] = params.last
+          @built_hash[key] = value
         end
       end
 
-      def hall(*params)
-        @scope_hash[:hall] = params
-      end
-
-      def intersection(period, theatre)
-        return false if theatre.periods.empty?
-        intersect = false
-        theatre.periods.each do |range|
-          if (period.to_a & range.first.to_a).any? && (@scope_hash[:hall] & range.last[:hall]).any?
-            intersect = true
-          end
-        end
-        intersect
+      # for setting periods to hall connection
+      def hall(*halls)
+        @built_hash[:hall] = halls
       end
     end
   end
