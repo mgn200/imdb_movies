@@ -80,15 +80,27 @@ RSpec.describe MovieProduction::Theatre do
 
   describe 'methods' do
     describe '#buy_ticket' do
-      before do
-        theatre.periods = { ("09:00".."11:00") => { filters: { genre: 'Comedy', year: 1900..1980 },
-                                                                               description: 'Утренний сеанс',
-                                                                               price: 10,
-                                                                               hall: [:red, :blue] },
-                            ("11:00".."12:00") => { filters: { genre: 'Comedy', year: 1900..1980 },
-                                                                               description: 'Утренний сеанс',
-                                                                               price: 10,
-                                                                               hall: [:green] } }
+
+      let(:theatre) do
+        MovieProduction::Theatre.new do
+          hall :red, title: 'Красный зал', places: 100
+          hall :blue, title: 'Синий зал', places: 50
+          hall :green, title: 'Зелёный зал (deluxe)', places: 12
+
+          period '09:00'..'11:00' do
+            description 'Утренний сеанс'
+            filters genre: 'Comedy', year: 1900..1980
+            price 10
+            hall :red, :blue
+          end
+
+          period '11:00'..'12:00' do
+            description 'Утренний сеанс'
+            filters genre: 'Comedy', year: 1900..1980
+            price 10
+            hall :green
+          end
+        end
       end
 
       context 'when periods intersect by time' do
@@ -115,18 +127,24 @@ RSpec.describe MovieProduction::Theatre do
     end
 
     describe '#show with exclude_*attr params' do
-      before { theatre.periods = { ("06:00".."23:00") => { filters: { exclude_year: 1900..1998,
-                                                                     exclude_genre: 'Fantasy',
-                                                                     exclude_director: 'Quentin Tarantino',
-                                                                     country: 'USA',
-                                                                     rating: 8.9 },
-                                                           description: 'Утренний сеанс',
-                                                           price: 10,
-                                                           hall: [:red, :blue]
-                                                         }
-                                                       }
-                                                     }
+      let(:theatre) do
+        MovieProduction::Theatre.new do
+          hall :red, title: 'Красный зал', places: 100
+          hall :blue, title: 'Синий зал', places: 50
+          hall :green, title: 'Зелёный зал (deluxe)', places: 12
 
+          period '06:00'..'23:00' do
+            description 'Утренний сеанс'
+            filters exclude_year: 1900..1998,
+                    exclude_genre: 'Fantasy',
+                    exclude_director: 'Quentin Tarantino',
+                    country: 'USA',
+                    rating: 8.9
+            price 10
+            hall :red, :blue
+          end
+        end
+      end
 
       subject { theatre.show("12:00") }
       it { is_expected.to eq 'Fight Club will be shown at 12:00' }

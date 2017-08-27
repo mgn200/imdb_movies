@@ -1,9 +1,6 @@
 
 module MovieProduction
   module TheatreBuilder
-    attr_writer :halls
-    attr_writer :periods
-
     # for initial halls description
     def hall(name, params)
       halls[name] = params
