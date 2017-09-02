@@ -32,6 +32,8 @@ RSpec.describe MovieProduction::Theatre do
         price 30
         hall :green
       end
+
+      session_break '22:00'..'09:00'
     end
   end
 
@@ -51,7 +53,9 @@ RSpec.describe MovieProduction::Theatre do
                                                         ("19:00".."22:00") => { description: 'Вечерний сеанс для киноманов',
                                                                                 filters: { year: 1900..1945, exclude_country: 'USA' },
                                                                                 price: 30,
-                                                                                hall: [:green] } },
+                                                                                hall: [:green] },
+                                                        ("22:00".."09:00") => 'В это время кинотеатр не работает'
+                                                      },
                                                halls: { :red => { title: 'Красный зал', places: 100 },
                                                         :blue => { title: 'Синий зал', places: 50 },
                                                         :green => { title: 'Зелёный зал (deluxe)', places: 12 }
@@ -79,8 +83,21 @@ RSpec.describe MovieProduction::Theatre do
   end
 
   describe 'methods' do
-    describe '#buy_ticket' do
+    describe '#season_break' do
+      context 'checks period for holes' do
+        subject { MovieProduction::Theatre.new do
+                          period "09:00".."23:00" do
+                            hall :red
+                          end
 
+                          session_break "23:00".."08:00"
+                        end
+                      }
+        it { expect { subject }.to raise_error(ArgumentError, 'В расписании есть неучтенное время.') }
+      end
+    end
+
+    describe '#buy_ticket' do
       let(:theatre) do
         MovieProduction::Theatre.new do
           hall :red, title: 'Красный зал', places: 100
@@ -100,6 +117,8 @@ RSpec.describe MovieProduction::Theatre do
             price 10
             hall :green
           end
+
+          session_break '12:00'..'09:00'
         end
       end
 
@@ -143,6 +162,8 @@ RSpec.describe MovieProduction::Theatre do
             price 10
             hall :red, :blue
           end
+
+          session_break '23:00'..'06:00'
         end
       end
 

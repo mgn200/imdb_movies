@@ -2,6 +2,8 @@ module MovieProduction
   class Theatre < MovieProduction::MovieCollection
     include MovieProduction::Cashbox
     include MovieProduction::TheatreBuilder
+    # проверять дырки в расписании после создания + добавить метод season_break
+    # для законного указания "дырок"
     DEFAULT_SCHEDULE = { ("06:00".."12:00") => { filters: { period: :ancient },
                                                  daytime: :morning,
                                                  price: 3,
@@ -23,6 +25,7 @@ module MovieProduction
     def initialize(&block)
       super
       instance_eval(&block) if block
+      fail ArgumentError, 'В расписании есть неучтенное время.' if holes?(@periods)
     end
 
     def show(time)
@@ -47,6 +50,7 @@ module MovieProduction
 
     def when?(title, hall = nil)
       movie = detect { |x| x.title == title }
+      binding.pry
       return 'Неверное название фильма' unless movie
       if hall
         period = periods.select { |_range, values| values[:filters].all? { |key, value| movie.matches?(key, value) } }
@@ -68,8 +72,15 @@ module MovieProduction
       "Вы купили билет на #{movie_title}"
     end
 
+    # for default schedule, with no #holes? check
     def session_break?(time)
       !periods.keys.any? { |x| x.include? time }
+    end
+
+    def info
+      # агрегатор, который собирает инфу из..класса?
+      # TheatreSchedule ? TheatreSchedule.new(theatre) - для каждой инстанции свой 
+      # after DSL "inject" movies to be showing
     end
   end
 end

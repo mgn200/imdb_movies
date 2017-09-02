@@ -102,4 +102,9 @@
       end
     end
   end
+
+  describe '#print_schedule' do
+    subject { theatre.print_schedule }
+    it { expect(subject).to eq 'abc'}
+  end
 end
