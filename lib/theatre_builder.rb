@@ -67,7 +67,7 @@ module MovieProduction
         if MovieProduction::MovieCollection::KEYS.any? { |k| k.to_sym == key }
         # оборачивать в фильтр параметры, данные вне хэша
         # типа { title: 'abc' } вместо { filters: { title: 'abc' } }
-          @built_hash[:filters] =  { key => value }
+          @built_hash[:filters] = { key => value }
         else
           @built_hash[key] = value
         end
@@ -79,7 +79,7 @@ module MovieProduction
       end
 
       def session_break
-        @built_hash = 'В это время кинотеатр не работает'
+        @built_hash[:session_break] = true
       end
     end
   end

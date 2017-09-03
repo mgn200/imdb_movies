@@ -50,7 +50,6 @@ module MovieProduction
           value === attribute
         end
       end
-
       key.to_s.include?('exclude') ? !attr_proc.call : attr_proc.call
     end
 

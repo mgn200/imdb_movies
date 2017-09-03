@@ -54,7 +54,7 @@ RSpec.describe MovieProduction::Theatre do
                                                                                 filters: { year: 1900..1945, exclude_country: 'USA' },
                                                                                 price: 30,
                                                                                 hall: [:green] },
-                                                        ("22:00".."09:00") => 'В это время кинотеатр не работает'
+                                                        ("22:00".."09:00") => { session_break: true }
                                                       },
                                                halls: { :red => { title: 'Красный зал', places: 100 },
                                                         :blue => { title: 'Синий зал', places: 50 },
