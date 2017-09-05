@@ -1,10 +1,10 @@
-RSpec.describe MovieProduction::Theatre do
+  RSpec.describe MovieProduction::Theatre do
   let(:movies) { MovieProduction::MovieCollection.new }
   let(:theatre) { MovieProduction::Theatre.new }
 
   describe '#take' do
     before {
-      theatre.buy_ticket 'Casablanca'
+      theatre.buy_ticket('Casablanca', :red)
     }
 
     context "when 'Bank' params" do
@@ -23,27 +23,27 @@ RSpec.describe MovieProduction::Theatre do
     subject { theatre.when? title }
     context 'Ancient Movies' do
       let(:title) { movies.filter(period: :ancient).first.title }
-      it { is_expected.to eq "06:00".."12:00" }
+      it { is_expected.to eq ["06:00".."12:00", "18:00".."24:00"] }
     end
 
     context 'Comedies and Adventures' do
       let(:title) { movies.filter(genre: ['Comedy', 'Adventure']).first.title }
-      it { is_expected.to eq "12:00".."18:00" }
+      it { is_expected.to eq ["12:00".."18:00"] }
     end
 
     context 'Dramas and Horrors' do
       let(:title) { movies.filter(genre: ['Drama', 'Horror']).first.title }
-      it { is_expected.to eq "18:00".."24:00" }
+      it { is_expected.to eq ["18:00".."24:00"] }
     end
 
     context 'Unknown title' do
       let(:title) { 'qwerty' }
-      it { is_expected.to eq 'No such movie' }
+      it { is_expected.to eq 'Неверное название фильма' }
     end
 
     context 'Unmatched movie' do
       let(:title) { 'The Terminator' }
-      it { is_expected.to eq 'That movie is not at the box office atm' }
+      it { is_expected.to eq 'В данный момент этот фильм не идет в кино' }
     end
   end
 
@@ -65,7 +65,7 @@ RSpec.describe MovieProduction::Theatre do
 
     context '00:00 - 06:00' do
       subject { theatre.show('00:22') }
-      it { is_expected.to eq "Working hours: 06:00 - 00:00" }
+      it { is_expected.to eq "Кинотеатр не работает в это время" }
     end
   end
 
@@ -75,29 +75,41 @@ RSpec.describe MovieProduction::Theatre do
   end
 
   describe '#buy_ticket' do
-    subject { theatre.buy_ticket 'Casablanca' }
+    subject { theatre.buy_ticket('Casablanca', :red) }
     it { expect(subject).to eq('Вы купили билет на Casablanca') }
     it { expect { subject }.to change(theatre, :cash).by Money.new(300) }
 
 
     describe 'puts money in cashbox' do
-      let(:filter) { MovieProduction::Theatre::SCHEDULE.values[0] }
+      let(:filter) { theatre.periods.detect { |k, v| v[:daytime] == :morning }.last[:filters] }
       let(:title) { movies.filter(filter).first.title }
-      subject { theatre.buy_ticket(title) }
 
       context 'when morning time' do
+        subject { theatre.buy_ticket(title, :red) }
         it { expect { subject }.to change(theatre, :cash).by Money.new(300) }
       end
 
       context 'when noon time' do
-        let(:filter) { MovieProduction::Theatre::SCHEDULE.values[1] }
+        let(:filter) { theatre.periods.detect { |k, v| v[:daytime] == :afternoon }.last[:filters] }
+        subject { theatre.buy_ticket(title, :green) }
         it { expect { subject }.to change(theatre, :cash).by Money.new(500) }
       end
 
       context 'when evening time' do
-        let(:filter) { MovieProduction::Theatre::SCHEDULE.values[2] }
+        let(:filter) { theatre.periods.detect { |k, v| v[:daytime] == :evening }.last[:filters] }
+        subject { theatre.buy_ticket(title, :blue) }
         it { expect { subject }.to change(theatre, :cash).by Money.new(1000) }
       end
     end
+  end
+
+  describe '#info' do
+    subject { theatre.info }
+    it { expect(subject).to eq "Сегодня в кино:
+                                \n\t 06:00 - 12:00 Ancient кино. Показываем: Такие-то фильмы
+                                \n\t 12:00 - 18:00 Comedy, Adventure кино. Показываем: такие-то фильмы
+                                \n\t 18:00 - 24:00 Drama, Horror кино. Показываем: такие-то фильмы
+                                \n\t 00:00 - 06:00 Перерыв"
+       }
   end
 end

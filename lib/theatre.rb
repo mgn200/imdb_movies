@@ -1,46 +1,73 @@
 module MovieProduction
   class Theatre < MovieProduction::MovieCollection
     include MovieProduction::Cashbox
+    include MovieProduction::TheatreBuilder
+    include MovieProduction::TheatreSchedule
+    # проверять дырки в расписании после создания + добавить метод season_break
+    # для законного указания "дырок"
 
-    SCHEDULE = { ("06:00".."12:00") => { period: :ancient },
-                 ("12:00".."18:00") => { genre: %w[Comedy Adventure] },
-                 ("18:00".."24:00") => { genre: %w[Drama Horror] },
-                 ("00:00".."06:00") => 'Working hours: 06:00 - 00:00' }.freeze
-
-    DAYTIME = { SCHEDULE.keys[0] => :morning,
-                SCHEDULE.keys[1] => :afternoon,
-                SCHEDULE.keys[2] => :evening }.freeze
-
-    PRICES = { DAYTIME.values[0] => 3,
-               DAYTIME.values[1] => 5,
-               DAYTIME.values[2] => 10 }.freeze
+    def initialize(&block)
+      super
+      instance_eval(&block) if block
+      fail ArgumentError, 'В расписании есть неучтенное время.' if holes?(periods)
+    end
 
     def show(time)
-      params = get_time(time)
-      return params if params.is_a? String
-      movies = filter(params)
-      movie = pick_movie(movies)
+      return "Кинотеатр не работает в это время" if session_break?(time)
+      params = periods.detect { |key, hash| key.include?(time) }.last[:filters]
+      movie = pick_movie(filter(params))
       "#{movie.title} will be shown at #{time}"
     end
 
-    def get_time(time)
-      SCHEDULE.detect { |key, _hash| key.include?(time) }.last
+    def periods
+      @periods || DEFAULT_SCHEDULE
     end
 
-    def when?(title)
+    def halls
+      @halls || DEFAULT_HALLS
+    end
+
+    def when?(title, hall = nil)
       movie = detect { |x| x.title == title }
-      return 'No such movie' unless movie
-      SCHEDULE.detect { |_range, filter| filter.select.any? { |key, value| movie.matches? key, value } }.first
-    rescue
-      'That movie is not at the box office atm'
+
+      return 'Неверное название фильма' unless movie
+      if hall
+        period = periods.select { |_range, values|
+          next if !values[:session_break].nil?
+          values[:filters].all? { |key, value| movie.matches?(key, value) }
+        }.select { |key, value| value[:hall].include? hall }.keys
+      fail ArgumentError, 'Выбран неверный зал' if period.empty?
+      else
+
+        period = periods.select { |_range, values|
+          next if !values[:session_break].nil?
+          values[:filters].all? { |key, value| movie.matches?(key, value) }
+        }.keys
+      end
+      return 'В данный момент этот фильм не идет в кино' if period.empty?
+      period
     end
 
-    def buy_ticket(movie_title)
-      range_time = when?(movie_title)
-      daytime = Theatre::DAYTIME.detect { |range, _time| range == range_time }.last
-      price = Theatre::PRICES.detect { |time, _price| daytime == time }.last
+    def buy_ticket(movie_title, hall = nil)
+      range_time = when?(movie_title, hall)
+    fail ArgumentError, 'Выберите нужный вам зал' if range_time.length > 1
+      price = periods[range_time.first][:price]
       store_cash(price)
       "Вы купили билет на #{movie_title}"
+    end
+
+    def session_break?(time)
+      period = periods.detect { |k, hash| k.include?(time) }.first
+      periods[period][:session_break]
+    end
+
+    def info
+
+      # каждый вызов будет менять период
+      # получает данные?
+      # выгружает инфу
+      #TheatreSchedule.new(theatre) - для каждой инстанции свой
+      @movies ||= gather_movies(periods)
     end
   end
 end

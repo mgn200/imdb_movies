@@ -27,7 +27,6 @@ module MovieProduction
 
     def filter(hash, array = nil)
       array ||= all
-
       hash.reduce(array) do |sequence, (k, v)|
         sequence.select { |x| x.matches?(k, v) }
       end
@@ -52,13 +51,13 @@ module MovieProduction
         year = row['year'].to_i
         case year
         when (1900..1945)
-          AncientMovie.new(self, row.to_h)
+          AncientMovie.new(row.to_h.merge(list: self))
         when (1946..1967)
-          ClassicMovie.new(self, row.to_h)
+          ClassicMovie.new(row.to_h.merge(list: self))
         when (1968..1999)
-          ModernMovie.new(self, row.to_h)
+          ModernMovie.new(row.to_h.merge(list: self))
         when (2000..3000)
-          NewMovie.new(self, row.to_h)
+          NewMovie.new(row.to_h.merge(list: self))
         end
       end
     end
