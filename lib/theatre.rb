@@ -68,6 +68,8 @@ module MovieProduction
       # выгружает инфу
       #TheatreSchedule.new(theatre) - для каждой инстанции свой
       @movies ||= gather_movies(periods)
+      # puts blablabla
+      binding.pry
     end
   end
 end

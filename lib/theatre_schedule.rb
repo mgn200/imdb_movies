@@ -21,13 +21,34 @@ module MovieProduction
                       :blue => { title: 'Синий зал', places: 50 },
                       :green => { title: 'Зелёный зал (deluxe)', places: 12 } }
 
-
     def gather_movies(schedule)
-      # binding.pry
-      #
-      #lters = 
-      # { "06:00 - 12:00" => { desc: Comedy, Adventure, movies: ['Abc', 'Has'] } }
+      ranges_and_movies = {}
+
+      schedule.each do |k, v|
+        next if v[:session_break]
+        max_duration = period_length(k)
+        movies = filter(v[:filters], max_duration)
+        ranges_and_movies[k] = [movies, v[:filters]]
+      end
+      binding.pry
+      ranges_and_movies
     end
 
+    def period_length(range)
+      start_time = Time.parse(range.first)
+      end_time = Time.parse(range.last)
+      ((start_time - end_time) / 60).abs.to_i
+    end
+
+    def filter(range_filters, max_duration)
+      movies = []
+      initial_movies = super(range_filters).select { |x| x.duration <= max_duration }
+      initial_movies.shuffle.each do |movie|
+        next if movie.duration > max_duration
+        movies << movie
+        max_duration -= movie.duration
+      end
+      movies
+    end
   end
 end
