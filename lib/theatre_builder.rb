@@ -63,7 +63,6 @@ module MovieProduction
       end
 
       def method_missing(key, value)
-        # принудительно вписывать duration? о
         if MovieProduction::MovieCollection::KEYS.any? { |k| k.to_sym == key }
         # оборачивать в фильтр параметры, данные вне хэша
         # типа { title: 'abc' } вместо { filters: { title: 'abc' } }

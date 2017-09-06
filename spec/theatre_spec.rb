@@ -112,4 +112,8 @@
                                 \n\t 00:00 - 06:00 Перерыв"
        }
   end
+
+  describe '#gather_movie' do
+    
+  end
 end

@@ -3,8 +3,6 @@ module MovieProduction
     include MovieProduction::Cashbox
     include MovieProduction::TheatreBuilder
     include MovieProduction::TheatreSchedule
-    # проверять дырки в расписании после создания + добавить метод season_break
-    # для законного указания "дырок"
 
     def initialize(&block)
       super
@@ -62,14 +60,19 @@ module MovieProduction
     end
 
     def info
-
-      # каждый вызов будет менять период
-      # получает данные?
-      # выгружает инфу
-      #TheatreSchedule.new(theatre) - для каждой инстанции свой
+      # не завершен
+      # собирает мувики под расписание и принтит его
       @movies ||= gather_movies(periods)
-      # puts blablabla
-      binding.pry
+      puts 'Сегодня показываем:'
+      @movies.each do |x|
+        titles = []
+        filter = x.last.last
+        movies = x.last.first.each { |x|
+          titles << x.title
+        }.join(",")
+        # так выводить?
+        puts "#{x.first} -" + "\n\t#{movies}"
+      end
     end
   end
 end

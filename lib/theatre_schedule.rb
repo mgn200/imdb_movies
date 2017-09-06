@@ -30,7 +30,6 @@ module MovieProduction
         movies = filter(v[:filters], max_duration)
         ranges_and_movies[k] = [movies, v[:filters]]
       end
-      binding.pry
       ranges_and_movies
     end
 
