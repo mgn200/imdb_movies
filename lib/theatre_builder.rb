@@ -6,19 +6,19 @@ module MovieProduction
     end
 
     def period(range = nil, &block)
-      @periods = {} if periods == MovieProduction::Theatre::DEFAULT_SCHEDULE
+      @schedule = {} if schedule == MovieProduction::Theatre::DEFAULT_SCHEDULE
       period = PeriodBuilder.new(range, &block).period
       fail ArgumentError, 'Periods and halls intersection detected. Please check parameters.' if intersection?(period)
-      @periods.merge! period
+      @schedule.merge! period
     end
 
     def intersection?(built_period)
       # skip to second elemesnt for comparison
-      return false if @periods.length < 1
+      return false if @schedule.empty?
 
-      @periods.keys.any? do |period|
+      @schedule.keys.any? do |period|
         if period.overlaps? built_period.keys.first
-          return true if (@periods[period][:hall] & built_period.values.first[:hall]).any?
+          return true if (@schedule[period][:hall] & built_period.values.first[:hall]).any?
         end
       end
     end

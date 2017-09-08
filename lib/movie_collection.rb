@@ -19,9 +19,9 @@ module MovieProduction
 
     def sort_by(field)
       if field == :director
-        puts sort_by { |x| x.director.split(' ').last }
+        puts (sort_by { |x| x.director.split(' ').last })
       else
-        puts sort_by { |x| x.send field }.map(&:to_s)
+        puts (sort_by { |x| x.send field }.map(&:to_s))
       end
     end
 

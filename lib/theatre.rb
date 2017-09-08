@@ -7,18 +7,18 @@ module MovieProduction
     def initialize(&block)
       super
       instance_eval(&block) if block
-      fail ArgumentError, 'В расписании есть неучтенное время.' if holes?(periods)
+      fail ArgumentError, 'В расписании есть неучтенное время.' if holes?(schedule)
     end
 
     def show(time)
       return "Кинотеатр не работает в это время" if session_break?(time)
-      params = periods.detect { |key, hash| key.include?(time) }.last[:filters]
+      params = schedule.detect { |key, _hash| key.include?(time) }.last[:filters]
       movie = pick_movie(filter(params))
       "#{movie.title} will be shown at #{time}"
     end
 
-    def periods
-      @periods || DEFAULT_SCHEDULE
+    def schedule
+      @schedule || DEFAULT_SCHEDULE
     end
 
     def halls
@@ -30,45 +30,50 @@ module MovieProduction
 
       return 'Неверное название фильма' unless movie
       if hall
-        period = periods.select { |_range, values|
-          next if !values[:session_break].nil?
-          values[:filters].all? { |key, value| movie.matches?(key, value) }
-        }.select { |key, value| value[:hall].include? hall }.keys
-      fail ArgumentError, 'Выбран неверный зал' if period.empty?
+        periods = fetch_periods(movie).select { |_key, value| value[:hall].include?(hall) }.keys
+        fail ArgumentError, 'Выбран неверный зал' if periods.empty?
       else
-
-        period = periods.select { |_range, values|
-          next if !values[:session_break].nil?
-          values[:filters].all? { |key, value| movie.matches?(key, value) }
-        }.keys
+        periods = fetch_periods(movie).keys
       end
-      return 'В данный момент этот фильм не идет в кино' if period.empty?
-      period
+      return 'В данный момент этот фильм не идет в кино' if periods.empty?
+      periods
+    end
+
+    def fetch_periods(movie)
+      schedule.select do |_range, values|
+        next unless values[:session_break].nil?
+        values[:filters].all? { |key, value| movie.matches?(key, value) }
+      end
     end
 
     def buy_ticket(movie_title, hall = nil)
       range_time = when?(movie_title, hall)
-    fail ArgumentError, 'Выберите нужный вам зал' if range_time.length > 1
-      price = periods[range_time.first][:price]
+
+      if range_time.length > 1
+        halls = range_time.flat_map { |range| schedule[range][:hall] }
+        fail ArgumentError, "Выберите нужный вам зал: #{halls.join(' | ')}"
+      end
+
+      price = schedule[range_time.first][:price]
       store_cash(price)
       "Вы купили билет на #{movie_title}"
     end
 
     def session_break?(time)
-      period = periods.detect { |k, hash| k.include?(time) }.first
-      periods[period][:session_break]
+      period = schedule.detect { |k, _hash| k.include?(time) }.first
+      schedule[period][:session_break]
     end
 
     def info
       # не завершен
       # собирает мувики под расписание и принтит его
-      @movies ||= gather_movies(periods)
+      @movies ||= gather_movies(schedule)
       puts 'Сегодня показываем:'
       @movies.each do |x|
         titles = []
-        filter = x.last.last
-        movies = x.last.first.each { |x|
-          titles << x.title
+        #filter = x.last.last
+        movies = x.last.first.each { |y|
+          titles << y.title
         }.join(",")
         # так выводить?
         puts "#{x.first} -" + "\n\t#{movies}"

@@ -17,7 +17,7 @@ module MovieProduction
     attribute :actors, Coercions::Splitter
     attribute :genre, Coercions::Splitter
     attribute :date, Coercions::DateParse
-    attribute :rating, Coercions::Float
+    attribute :rating, Float
     attribute :director
     attribute :title
     attribute :price
@@ -39,18 +39,17 @@ module MovieProduction
     end
 
     def matches?(key, value)
-      key.to_s.include?('exclude') ? attribute = send(key.to_s.split('_').last) : attribute = send(key)
+      attribute = key.to_s.include?('exclude') ? send(key.to_s.split('_').last) : send(key)
 
-      attr_proc = proc do
-        if attribute.is_a? Array
-          attribute.any? { |x| value.include? x }
-        elsif attribute.is_a? String
-          value.downcase == attribute.downcase
-        else
-          value === attribute
-        end
-      end
-      key.to_s.include?('exclude') ? !attr_proc.call : attr_proc.call
+      result = if attribute.is_a? Array
+                 attribute.any? { |x| value.include? x }
+               elsif attribute.is_a? String
+                 value.downcase == attribute.downcase
+               else
+                 value === attribute
+               end
+
+      key.to_s.include?('exclude') ? !result : result
     end
 
     def price

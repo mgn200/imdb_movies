@@ -14,12 +14,11 @@ module MovieProduction
                                                  daytime: :evening,
                                                  price: 10,
                                                  hall: [:blue] },
-                         ("00:00".."06:00") => { :session_break => true }
-                       }
+                         ("00:00".."06:00") => { session_break: true } }
 
-    DEFAULT_HALLS = { :red => { title: 'Красный зал', places: 100 },
-                      :blue => { title: 'Синий зал', places: 50 },
-                      :green => { title: 'Зелёный зал (deluxe)', places: 12 } }
+    DEFAULT_HALLS = { red: { title: 'Красный зал', places: 100 },
+                      blue: { title: 'Синий зал', places: 50 },
+                      green: { title: 'Зелёный зал (deluxe)', places: 12 } }
 
     def gather_movies(schedule)
       ranges_and_movies = {}
@@ -27,7 +26,7 @@ module MovieProduction
       schedule.each do |k, v|
         next if v[:session_break]
         max_duration = period_length(k)
-        movies = filter(v[:filters], max_duration)
+        movies = schedule_filter(v[:filters], max_duration)
         ranges_and_movies[k] = [movies, v[:filters]]
       end
       ranges_and_movies
@@ -39,9 +38,9 @@ module MovieProduction
       ((start_time - end_time) / 60).abs.to_i
     end
 
-    def filter(range_filters, max_duration)
+    def schedule_filter(range_filters, max_duration)
       movies = []
-      initial_movies = super(range_filters).select { |x| x.duration <= max_duration }
+      initial_movies = filter(range_filters).select { |x| x.duration <= max_duration }
       initial_movies.shuffle.each do |movie|
         next if movie.duration > max_duration
         movies << movie

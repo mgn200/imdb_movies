@@ -38,7 +38,7 @@ RSpec.describe MovieProduction::Theatre do
   end
 
   describe 'creates Theatre with given block params' do
-    it { expect(theatre).to have_attributes(periods: { ("09:00".."11:00") => { filters: { genre: 'Comedy', year: 1900..1980 },
+    it { expect(theatre).to have_attributes(schedule: { ("09:00".."11:00") => { filters: { genre: 'Comedy', year: 1900..1980 },
                                                                                 description: 'Утренний сеанс',
                                                                                 price: 10,
                                                                                 hall: [:red, :blue] },
@@ -63,7 +63,7 @@ RSpec.describe MovieProduction::Theatre do
                                                 )}
 
     context 'title params given explicitly is wrapped in params' do
-      it { expect(theatre.periods[("11:00".."16:00")][:filters]).to eq Hash[:title, 'The Terminator'] }
+      it { expect(theatre.schedule[("11:00".."16:00")][:filters]).to eq Hash[:title, 'The Terminator'] }
     end
 
     context 'when periods intersect by time and halls' do
@@ -124,7 +124,7 @@ RSpec.describe MovieProduction::Theatre do
 
       context 'when periods intersect by time' do
         subject { theatre.buy_ticket('The Apartment') }
-        it { expect { subject }.to raise_error(ArgumentError, 'Выберите нужный вам зал') }
+        it { expect { subject }.to raise_error(ArgumentError, 'Выберите нужный вам зал: red | blue | green') }
 
         context 'when hall params is provided' do
           subject { theatre.buy_ticket('The Apartment', :green) }

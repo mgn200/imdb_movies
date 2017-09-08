@@ -18,11 +18,5 @@ module MovieProduction
         value && value.length > 4 ? Date.strptime(value, '%Y-%m') : value
       end
     end
-
-    class Float < Virtus::Attribute
-      def coerce(value)
-        value.to_f
-      end
-    end
   end
 end
