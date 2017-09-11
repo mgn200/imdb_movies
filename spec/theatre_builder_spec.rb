@@ -86,14 +86,14 @@ RSpec.describe MovieProduction::Theatre do
     describe '#season_break' do
       context 'checks period for holes' do
         subject { MovieProduction::Theatre.new do
-                          period "09:00".."23:00" do
+                          period "09:00".."13:00" do
                             hall :red
                           end
 
-                          session_break "23:00".."08:00"
+                          session_break "14:00".."18:00"
                         end
                       }
-        it { expect { subject }.to raise_error(ArgumentError, 'В расписании есть неучтенное время.') }
+        it { expect { subject }.to raise_error(ArgumentError, 'В расписании есть неучтенное время: 13:00..14:00') }
       end
     end
 
@@ -134,7 +134,7 @@ RSpec.describe MovieProduction::Theatre do
 
         context 'when wrong hall is provided' do
           subject { theatre.buy_ticket('The Apartment', :grey) }
-          it { expect { subject }.to raise_error(ArgumentError, 'Выбран неверный зал') }
+          it { expect { subject }.to raise_error(ArgumentError, 'Выбран неверный зал. Фильм показывают в зале: red | blue | green') }
         end
       end
     end

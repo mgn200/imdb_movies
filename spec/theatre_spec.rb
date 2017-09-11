@@ -81,7 +81,7 @@
 
 
     describe 'puts money in cashbox' do
-      let(:filter) { theatre.periods.detect { |k, v| v[:daytime] == :morning }.last[:filters] }
+      let(:filter) { theatre.schedule.detect { |k, v| v[:daytime] == :morning }.last[:filters] }
       let(:title) { movies.filter(filter).first.title }
 
       context 'when morning time' do
@@ -90,13 +90,13 @@
       end
 
       context 'when noon time' do
-        let(:filter) { theatre.periods.detect { |k, v| v[:daytime] == :afternoon }.last[:filters] }
+        let(:filter) { theatre.schedule.detect { |k, v| v[:daytime] == :afternoon }.last[:filters] }
         subject { theatre.buy_ticket(title, :green) }
         it { expect { subject }.to change(theatre, :cash).by Money.new(500) }
       end
 
       context 'when evening time' do
-        let(:filter) { theatre.periods.detect { |k, v| v[:daytime] == :evening }.last[:filters] }
+        let(:filter) { theatre.schedule.detect { |k, v| v[:daytime] == :evening }.last[:filters] }
         subject { theatre.buy_ticket(title, :blue) }
         it { expect { subject }.to change(theatre, :cash).by Money.new(1000) }
       end
@@ -106,14 +106,14 @@
   describe '#info' do
     subject { theatre.info }
     it { expect(subject).to eq "Сегодня в кино:
-                                \n\t 06:00 - 12:00 Ancient кино. Показываем: Такие-то фильмы
-                                \n\t 12:00 - 18:00 Comedy, Adventure кино. Показываем: такие-то фильмы
-                                \n\t 18:00 - 24:00 Drama, Horror кино. Показываем: такие-то фильмы
+                                \n\t 06:00 - 12:00 Ancient кино. Показываем: #{stubbed_movies}
+                                \n\t 12:00 - 18:00 Comedy, Adventure кино. Показываем: #{stubbed_movies}
+                                \n\t 18:00 - 24:00 Drama, Horror кино. Показываем: #{stubbed_movies}
                                 \n\t 00:00 - 06:00 Перерыв"
        }
   end
 
-  describe '#gather_movie' do
-    
+  describe '#gather_movies' do
+    # to do
   end
 end

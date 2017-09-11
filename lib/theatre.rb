@@ -7,7 +7,7 @@ module MovieProduction
     def initialize(&block)
       super
       instance_eval(&block) if block
-      fail ArgumentError, 'В расписании есть неучтенное время.' if holes?(schedule)
+      check_holes(schedule)
     end
 
     def show(time)
@@ -27,16 +27,18 @@ module MovieProduction
 
     def when?(title, hall = nil)
       movie = detect { |x| x.title == title }
-
       return 'Неверное название фильма' unless movie
-      if hall
-        periods = fetch_periods(movie).select { |_key, value| value[:hall].include?(hall) }.keys
-        fail ArgumentError, 'Выбран неверный зал' if periods.empty?
-      else
-        periods = fetch_periods(movie).keys
-      end
+      periods = fetch_periods(movie)
       return 'В данный момент этот фильм не идет в кино' if periods.empty?
-      periods
+
+      if hall
+        period = periods.select { |_key, value| value[:hall].include?(hall) }.keys
+        return period unless period.empty?
+        available_halls = periods.values.flat_map { |k| k[:hall] }
+      fail ArgumentError, "Выбран неверный зал. Фильм показывают в зале: #{available_halls.join(' | ')}"
+      else
+        return periods.keys
+      end
     end
 
     def fetch_periods(movie)

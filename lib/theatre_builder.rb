@@ -27,22 +27,25 @@ module MovieProduction
       period(range) { session_break }
     end
 
-    def holes?(schedule)
-      # count total minutes in ranges, transform to hours
-      # if 24 hours are not filled, return false
-      minutes_passed = 0
-
-      schedule.keys.each do |range|
-        start_time = Time.parse(range.first)
-        end_time = Time.parse(range.last)
-
-        while start_time.strftime("%H:%M") != end_time.strftime("%H:%M")
-          start_time += 60
-          minutes_passed += 1
+    def check_holes(schedule)
+      time_holes = []
+      sorted_periods = schedule.keys.sort { |a, b| a.first <=> b.first }
+      tested_period = Array.new << sorted_periods.shift
+      sorted_periods.each do |range|
+        if tested_period.last.cover? range.first
+          tested_period.map! { |x| x = Range.new(x.first, range.last) }
+        else
+          tested_period << range
         end
       end
 
-      (minutes_passed / 60) < 24
+      if tested_period.length > 1
+        tested_period.each_with_index do |range, i|
+          break if i == tested_period.length - 1
+          time_holes << Range.new(range.max, tested_period[i+1].min)
+        end
+        fail ArgumentError, "В расписании есть неучтенное время: #{time_holes.join(', ')}"
+      end
     end
 
     class Object::Range
