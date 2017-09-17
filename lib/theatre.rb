@@ -30,21 +30,17 @@ module MovieProduction
       return 'Неверное название фильма' unless movie
       periods = fetch_periods(movie)
       return 'В данный момент этот фильм не идет в кино' if periods.empty?
-
-      if hall
-        period = periods.select { |_key, value| value[:hall].include?(hall) }.keys
-        return period unless period.empty?
-        available_halls = periods.values.flat_map { |k| k[:hall] }
-      fail ArgumentError, "Выбран неверный зал. Фильм показывают в зале: #{available_halls.join(' | ')}"
-      else
-        return periods.keys
-      end
+      return periods.keys unless hall
+      period = periods.select { |_time, p| p.hall.include?(hall) }.keys
+      return period unless period.empty?
+      fail ArgumentError, "Выбран неверный зал. Фильм показывают в зале: " +
+                          periods.values.flat_map { |k| k.hall }.join(" | ")
     end
 
     def fetch_periods(movie)
-      schedule.select do |_range, values|
-        next unless values[:session_break].nil?
-        values[:filters].all? { |key, value| movie.matches?(key, value) }
+      schedule.select do |_range, period|
+        next if period.session_break
+        period.filters.all? { |k, v| movie.matches?(k, v) }
       end
     end
 
@@ -67,19 +63,22 @@ module MovieProduction
     end
 
     def info
-      # не завершен
-      # собирает мувики под расписание и принтит его
-      @movies ||= gather_movies(schedule)
-      puts 'Сегодня показываем:'
-      @movies.each do |x|
-        titles = []
-        #filter = x.last.last
-        movies = x.last.first.each { |y|
-          titles << y.title
-        }.join(",")
-        # так выводить?
-        puts "#{x.first} -" + "\n\t#{movies}"
+      string = "Сегодня показываем: "
+      @movies ||= organize_schedule(schedule)
+      @movies.each do |time, movies|
+        start = (Time.parse(time.first)).strftime("%H:%M")
+        halls = schedule[time].hall
+        if movies.count > 1
+          movies.each do |m|
+            string += "\n\t#{start} #{m.title}(#{m.genre.join(", ")}, #{m.year}). #{halls.join(', ').capitalize} hall(s)."
+            start = (Time.parse(time.first) + (m.duration * 60)).strftime("%H:%M")
+          end
+        else
+          string += "\n\t#{start} #{movies.first.title}(#{movies.first.genre.join(", ")}, " +
+                    "#{movies.first.year}). #{halls.join(', ').capitalize} hall(s)."
+        end
       end
+      string
     end
   end
 end

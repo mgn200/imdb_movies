@@ -5,20 +5,20 @@ module MovieProduction
       halls[name] = params
     end
 
-    def period(range = nil, &block)
+    def period(new_range = nil, &block)
       @schedule = {} if schedule == MovieProduction::Theatre::DEFAULT_SCHEDULE
-      period = PeriodBuilder.new(range, &block).period
-      fail ArgumentError, 'Periods and halls intersection detected. Please check parameters.' if intersection?(period)
-      @schedule.merge! period
+      @new_period = PeriodBuilder.new(new_range, &block).period
+      fail ArgumentError, 'Periods and halls intersection detected. Please check parameters.' if intersection?(new_range)
+      @schedule[new_range] = @new_period
     end
 
-    def intersection?(built_period)
+    def intersection?(new_range)
       # skip to second elemesnt for comparison
       return false if @schedule.empty?
 
       @schedule.keys.any? do |period|
-        if period.overlaps? built_period.keys.first
-          return true if (@schedule[period][:hall] & built_period.values.first[:hall]).any?
+        if period.overlaps? new_range
+          return true if (@schedule[period].hall & @new_period.hall).any?
         end
       end
     end
@@ -29,23 +29,23 @@ module MovieProduction
 
     def check_holes(schedule)
       time_holes = []
-      sorted_periods = schedule.keys.sort { |a, b| a.first <=> b.first }
-      tested_period = Array.new << sorted_periods.shift
+      sorted_periods = schedule.keys.sort_by { |x| x.first }
+      tested_period = [sorted_periods.shift]
+
       sorted_periods.each do |range|
         if tested_period.last.cover? range.first
-          tested_period.map! { |x| x = Range.new(x.first, range.last) }
+          # или имелось ввиду создавать массив в массиве а не новый рейнж?
+          tested_period[-1] = Range.new(tested_period.first.min, range.last)
         else
           tested_period << range
         end
       end
 
-      if tested_period.length > 1
-        tested_period.each_with_index do |range, i|
-          break if i == tested_period.length - 1
-          time_holes << Range.new(range.max, tested_period[i+1].min)
-        end
-        fail ArgumentError, "В расписании есть неучтенное время: #{time_holes.join(', ')}"
+      return if tested_period.length == 1
+      tested_period.each_slice(2) do |p1, p2|
+        time_holes << Range.new(p1.max, p2.min)
       end
+      fail ArgumentError, "В расписании есть неучтенное время: #{time_holes.join(', ')}"
     end
 
     class Object::Range
@@ -60,28 +60,27 @@ module MovieProduction
       attr_accessor :period
 
       def initialize(range, &block)
-        @built_hash = {}
+        @period = MovieProduction::SchedulePeriod.new
         instance_eval(&block)
-        @period = { range => @built_hash }
       end
 
       def method_missing(key, value)
         if MovieProduction::MovieCollection::KEYS.any? { |k| k.to_sym == key }
         # оборачивать в фильтр параметры, данные вне хэша
         # типа { title: 'abc' } вместо { filters: { title: 'abc' } }
-          @built_hash[:filters] = { key => value }
+          @period.attributes = { filters: { key => value } }
         else
-          @built_hash[key] = value
+          @period.attributes = { key => value }
         end
       end
 
       # for setting periods to hall connection
       def hall(*halls)
-        @built_hash[:hall] = halls
+        @period.hall = halls
       end
 
       def session_break
-        @built_hash[:session_break] = true
+        @period.session_break = true
       end
     end
   end

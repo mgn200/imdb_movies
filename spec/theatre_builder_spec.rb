@@ -37,30 +37,45 @@ RSpec.describe MovieProduction::Theatre do
     end
   end
 
-  describe 'creates Theatre with given block params' do
-    it { expect(theatre).to have_attributes(schedule: { ("09:00".."11:00") => { filters: { genre: 'Comedy', year: 1900..1980 },
-                                                                                description: 'Утренний сеанс',
-                                                                                price: 10,
-                                                                                hall: [:red, :blue] },
-                                                        ("11:00".."16:00") => { description: 'Спецпоказ',
-                                                                                filters: { title: 'The Terminator' },
-                                                                                hall: [:green],
-                                                                                price: 50 },
-                                                        ("16:00".."20:00") => { description: 'Вечерний сеанс',
-                                                                                filters: { genre: ['Action', 'Drama'], year: 2007..Time.now.year },
-                                                                                price: 20,
-                                                                                hall: [:red, :blue] },
-                                                        ("19:00".."22:00") => { description: 'Вечерний сеанс для киноманов',
-                                                                                filters: { year: 1900..1945, exclude_country: 'USA' },
-                                                                                price: 30,
-                                                                                hall: [:green] },
-                                                        ("22:00".."09:00") => { session_break: true }
-                                                      },
-                                               halls: { :red => { title: 'Красный зал', places: 100 },
-                                                        :blue => { title: 'Синий зал', places: 50 },
-                                                        :green => { title: 'Зелёный зал (deluxe)', places: 12 }
-                                                      }
-                                                )}
+  describe 'creates schedule with given block params' do
+    it { expect(theatre.schedule.keys).to eq [("09:00".."11:00"),
+                                              ("11:00".."16:00"),
+                                              ("16:00".."20:00"),
+                                              ("19:00".."22:00"),
+                                              ("22:00".."09:00")] }
+    it { expect(theatre.schedule["09:00".."11:00"].attributes).to eq ({ :filters => { :genre => "Comedy", :year => 1900..1980 },
+                                                                        :daytime => nil,
+                                                                        :price => 10,
+                                                                        :hall => [:red, :blue],
+                                                                        :description => "Утренний сеанс",
+                                                                        :session_break => false }) }
+
+    it { expect(theatre.schedule["11:00".."16:00"].attributes).to eq ({ :filters => { :title => "The Terminator" },
+                                                                        :daytime => nil,
+                                                                        :price => 50,
+                                                                        :hall => [:green],
+                                                                        :description => "Спецпоказ",
+                                                                        :session_break => false }) }
+
+    it { expect(theatre.schedule["16:00".."20:00"].attributes).to eq ({ filters: { genre: ['Action', 'Drama'], year: 2007..Time.now.year },
+                                                                        :daytime => nil,
+                                                                        :price => 20,
+                                                                        :hall => [:red, :blue],
+                                                                        :description => "Вечерний сеанс",
+                                                                        :session_break => false }) }
+
+    it { expect(theatre.schedule["19:00".."22:00"].attributes).to eq ({ filters: { year: 1900..1945, exclude_country: 'USA' },
+                                                                       :daytime => nil,
+                                                                       :price => 30,
+                                                                       :hall => [:green],
+                                                                       :description => "Вечерний сеанс для киноманов",
+                                                                       :session_break => false }) }
+    it { expect(theatre.schedule["22:00".."09:00"].attributes).to eq ({ :session_break => true,
+                                                                        :daytime => nil,
+                                                                        :price => nil,
+                                                                        :hall => nil,
+                                                                        :description => nil,
+                                                                        :filters => nil }) }
 
     context 'title params given explicitly is wrapped in params' do
       it { expect(theatre.schedule[("11:00".."16:00")][:filters]).to eq Hash[:title, 'The Terminator'] }
@@ -83,7 +98,7 @@ RSpec.describe MovieProduction::Theatre do
   end
 
   describe 'methods' do
-    describe '#season_break' do
+    describe '#session_break' do
       context 'checks period for holes' do
         subject { MovieProduction::Theatre.new do
                           period "09:00".."13:00" do

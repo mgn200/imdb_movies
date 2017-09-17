@@ -2,34 +2,34 @@ module MovieProduction
   module TheatreSchedule
     # Содержит дефолтное расписание для театров
     # Содержит методы для обработки расписания театра
-    DEFAULT_SCHEDULE = { ("06:00".."12:00") => { filters: { period: :ancient },
-                                                 daytime: :morning,
-                                                 price: 3,
-                                                 hall: [:red] },
-                         ("12:00".."18:00") => { filters: { genre: %w[Comedy Adventure] },
-                                                 daytime: :afternoon,
-                                                 price: 5,
-                                                 hall: [:green] },
-                         ("18:00".."24:00") => { filters: { genre: %w[Drama Horror] },
-                                                 daytime: :evening,
-                                                 price: 10,
-                                                 hall: [:blue] },
-                         ("00:00".."06:00") => { session_break: true } }
+    DEFAULT_SCHEDULE = { ("06:00".."12:00") => MovieProduction::SchedulePeriod.new({ filters: { period: :ancient },
+                                                                                     daytime: :morning,
+                                                                                     price: 3,
+                                                                                     hall: [:red] } ),
+                         ("12:00".."18:00") => MovieProduction::SchedulePeriod.new({ filters: { genre: %w[Comedy Adventure] },
+                                                                                     daytime: :afternoon,
+                                                                                     price: 5,
+                                                                                     hall: [:green] } ),
+                         ("18:00".."24:00") => MovieProduction::SchedulePeriod.new({ filters: { genre: %w[Drama Horror] },
+                                                                                     daytime: :evening,
+                                                                                     price: 10,
+                                                                                     hall: [:blue] } ),
+                         ("00:00".."06:00") => MovieProduction::SchedulePeriod.new({ session_break: true }) }
 
     DEFAULT_HALLS = { red: { title: 'Красный зал', places: 100 },
                       blue: { title: 'Синий зал', places: 50 },
                       green: { title: 'Зелёный зал (deluxe)', places: 12 } }
 
-    def gather_movies(schedule)
-      ranges_and_movies = {}
+    def organize_schedule(schedule)
+      organized = {}
 
       schedule.each do |k, v|
-        next if v[:session_break]
+        arr = []
+        next if v.session_break
         max_duration = period_length(k)
-        movies = schedule_filter(v[:filters], max_duration)
-        ranges_and_movies[k] = [movies, v[:filters]]
+        organized[k] = pick_movies(v.filters, max_duration, arr).flatten
       end
-      ranges_and_movies
+      organized
     end
 
     def period_length(range)
@@ -38,15 +38,13 @@ module MovieProduction
       ((start_time - end_time) / 60).abs.to_i
     end
 
-    def schedule_filter(range_filters, max_duration)
-      movies = []
-      initial_movies = filter(range_filters).select { |x| x.duration <= max_duration }
-      initial_movies.shuffle.each do |movie|
-        next if movie.duration > max_duration
-        movies << movie
-        max_duration -= movie.duration
-      end
-      movies
+    def pick_movies(range_filters, max_duration, array)
+      movie = filter(range_filters).select { |x| x.duration <= max_duration }
+                                   .sample
+      return array if movie.nil?
+      array << movie
+      max_duration -= movie.duration
+      pick_movies(range_filters, max_duration, array)
     end
   end
 end

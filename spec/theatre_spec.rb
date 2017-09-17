@@ -104,16 +104,59 @@
   end
 
   describe '#info' do
+    let(:theatre) do
+      MovieProduction::Theatre.new do
+        hall :red, title: 'Красный зал', places: 100
+        hall :blue, title: 'Синий зал', places: 50
+        hall :green, title: 'Зелёный зал (deluxe)', places: 12
+
+        period '09:00'..'11:00' do
+          description 'Утренний сеанс'
+          filters genre: 'Comedy', year: 1900..1980, title: 'City Lights'
+          price 10
+          hall :red, :blue
+        end
+
+        period '11:00'..'16:00' do
+          description 'Спецпоказ'
+          title 'The Terminator'
+          price 50
+          hall :green
+        end
+
+        period '16:00'..'20:00' do
+          description 'Вечерний сеанс'
+          filters genre: ['Action', 'Drama'], year: 2007..Time.now.year, title: 'The Intouchables'
+          price 20
+          hall :red, :blue
+        end
+
+        period '19:00'..'22:00' do
+          description 'Вечерний сеанс для киноманов'
+          filters year: 1900..1945, exclude_country: 'USA', title: 'M'
+          price 30
+          hall :green
+        end
+
+        session_break '22:00'..'09:00'
+      end
+    end
+
     subject { theatre.info }
-    it { expect(subject).to eq "Сегодня в кино:
-                                \n\t 06:00 - 12:00 Ancient кино. Показываем: #{stubbed_movies}
-                                \n\t 12:00 - 18:00 Comedy, Adventure кино. Показываем: #{stubbed_movies}
-                                \n\t 18:00 - 24:00 Drama, Horror кино. Показываем: #{stubbed_movies}
-                                \n\t 00:00 - 06:00 Перерыв"
+
+    it { expect(subject).to eq "Сегодня показываем: \n" +
+                               "\t09:00 City Lights(Comedy, Drama, Romance, 1931). Red, blue hall(s).\n" +
+                               "\t11:00 The Terminator(Action, Sci-Fi, 1984). Green hall(s).\n" +
+                               "\t12:47 The Terminator(Action, Sci-Fi, 1984). Green hall(s).\n" +
+                               "\t16:00 The Intouchables(Biography, Comedy, Drama, 2011). Red, blue hall(s).\n" +
+                               "\t17:52 The Intouchables(Biography, Comedy, Drama, 2011). Red, blue hall(s).\n" +
+                               "\t19:00 M(Crime, Drama, Thriller, 1931). Green hall(s)."
        }
   end
 
-  describe '#gather_movies' do
-    # to do
+  describe '#pick_movies' do
+    subject { theatre.pick_movies({title: 'The Terminator'}, 360, Array.new)}
+    it { expect(subject.first.title).to eq 'The Terminator' }
+    it { expect(subject.count).to eq 3 }
   end
 end
