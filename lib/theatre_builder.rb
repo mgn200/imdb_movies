@@ -60,7 +60,7 @@ module MovieProduction
       attr_accessor :period
 
       def initialize(range, &block)
-        @period = MovieProduction::SchedulePeriod.new
+        @period = MovieProduction::SchedulePeriod.new(range_time: range)
         instance_eval(&block)
       end
 

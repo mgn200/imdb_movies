@@ -30,18 +30,15 @@ module MovieProduction
       return 'Неверное название фильма' unless movie
       periods = fetch_periods(movie)
       return 'В данный момент этот фильм не идет в кино' if periods.empty?
-      return periods.keys unless hall
-      period = periods.select { |_time, p| p.hall.include?(hall) }.keys
+      return periods.map(&:range_time) unless hall
+      period = periods.select { |p| p.hall.include?(hall) }.map(&:range_time)
       return period unless period.empty?
       fail ArgumentError, "Выбран неверный зал. Фильм показывают в зале: " +
-                          periods.values.flat_map { |k| k.hall }.join(" | ")
+                          periods.flat_map(&:hall).join(" | ")
     end
 
     def fetch_periods(movie)
-      schedule.select do |_range, period|
-        next if period.session_break
-        period.filters.all? { |k, v| movie.matches?(k, v) }
-      end
+      schedule.values.reject(&:session_break).select { |period| period.matches?(movie) }
     end
 
     def buy_ticket(movie_title, hall = nil)
