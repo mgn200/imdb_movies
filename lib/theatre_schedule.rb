@@ -36,27 +36,31 @@ module MovieProduction
       ((start_time - end_time) / 60).abs.to_i
     end
 
-    def pick_movies(range_filters, max_duration)
-      movies = filter(range_filters).shuffle
+    def pick_movies(filters, timeleft)
+      movies = filter(filters).shuffle
       picked = []
-      while max_duration > movie_duration ||= 0
-        picked << movies.select do |m|
-          # movie_duration нужен для сравнения в while, иначе селектит на 1 мувик больше
-          movie_duration = m.duration
-          m.duration <= max_duration
-          max_duration -= movie_duration
+
+      while timeleft > 0
+        movies.each do |m|
+          m.duration <= timeleft ? picked << m : timeleft = 0
+          timeleft -= m.duration
         end
       end
       picked.flatten
     end
 
-    def parse_schedule(range, movies, strings)
+    # Принимает время и массив фильмов
+    # Создает массив строк с точным временем показа, описанием фильма и залами
+    # Если фильмов в периоде несколько, создает время для каждого(идут один за другим)
+    def create_time_strings(range, movies)
       halls = schedule[range].hall
-      start = Time.parse(range.first).strftime("%H:%M") # + (m.duration * 60)).strftime("%H:%M")
-      movies.each do |x|
-        strings << "\t#{start} #{x.title}(#{x.genre.join(", ")}, #{x.year}). #{halls.join(', ').capitalize} hall(s).\n"
-        start = (Time.parse(start) + x.duration * 60).strftime("%H:%M") #(x.duration * 60)).strftime("%H:%M")
+      start = Time.parse(range.first).strftime("%H:%M")
+      str = ""
+      movies.each do |m|
+        str += "\t#{start} #{m.title}(#{m.genre.join(", ")}, #{m.year}). #{halls.join(', ').capitalize} hall(s).\n"
+        start = (Time.parse(start) + m.duration * 60).strftime("%H:%M")
       end
+      str
     end
   end
 end

@@ -62,8 +62,8 @@ module MovieProduction
     def info
       @organized_schedule ||= organize_schedule(schedule)
       strings = ["Сегодня показываем: \n"]
-      @organized_schedule.each do |range, movies|
-        parse_schedule(range, movies, strings)
+      @organized_schedule.reduce(strings) do |str, (range, movies)|
+        str << create_time_strings(range, movies)
       end
       strings.join
     end
