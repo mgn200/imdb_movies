@@ -150,12 +150,12 @@
                                "\t12:47 The Terminator(Action, Sci-Fi, 1984). Green hall(s).\n" +
                                "\t16:00 The Intouchables(Biography, Comedy, Drama, 2011). Red, blue hall(s).\n" +
                                "\t17:52 The Intouchables(Biography, Comedy, Drama, 2011). Red, blue hall(s).\n" +
-                               "\t19:00 M(Crime, Drama, Thriller, 1931). Green hall(s)."
+                               "\t19:00 M(Crime, Drama, Thriller, 1931). Green hall(s).\n"
        }
   end
 
   describe '#pick_movies' do
-    subject { theatre.pick_movies({title: 'The Terminator'}, 360, Array.new)}
+    subject { theatre.pick_movies({title: 'The Terminator'}, 360)}
     it { expect(subject.first.title).to eq 'The Terminator' }
     it { expect(subject.count).to eq 3 }
   end

@@ -60,22 +60,12 @@ module MovieProduction
     end
 
     def info
-      string = "Сегодня показываем: "
-      @movies ||= organize_schedule(schedule)
-      @movies.each do |time, movies|
-        start = (Time.parse(time.first)).strftime("%H:%M")
-        halls = schedule[time].hall
-        if movies.count > 1
-          movies.each do |m|
-            string += "\n\t#{start} #{m.title}(#{m.genre.join(", ")}, #{m.year}). #{halls.join(', ').capitalize} hall(s)."
-            start = (Time.parse(time.first) + (m.duration * 60)).strftime("%H:%M")
-          end
-        else
-          string += "\n\t#{start} #{movies.first.title}(#{movies.first.genre.join(", ")}, " +
-                    "#{movies.first.year}). #{halls.join(', ').capitalize} hall(s)."
-        end
+      @organized_schedule ||= organize_schedule(schedule)
+      strings = ["Сегодня показываем: \n"]
+      @organized_schedule.each do |range, movies|
+        parse_schedule(range, movies, strings)
       end
-      string
+      strings.join
     end
   end
 end

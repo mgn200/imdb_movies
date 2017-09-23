@@ -24,18 +24,10 @@ module MovieProduction
                       green: { title: 'Зелёный зал (deluxe)', places: 12 } }
 
     def organize_schedule(schedule)
-      organized = {}
-      binding.pry
-      schedule.values.reject(&:session_break).map do |x|
-        binding.pry
-      end
-      schedule.each do |k, v|
-        arr = []
-        next if v.session_break
-        max_duration = period_length(k)
-        organized[k] = pick_movies(v.filters, max_duration, arr).flatten
-      end
-      organized
+      schedule.values.reject(&:session_break).map { |x|
+        max_duration = period_length(x.range_time)
+        [x.range_time, pick_movies(x.filters, max_duration)]
+      }.to_h
     end
 
     def period_length(range)
@@ -44,13 +36,27 @@ module MovieProduction
       ((start_time - end_time) / 60).abs.to_i
     end
 
-    def pick_movies(range_filters, max_duration, array)
-      movie = filter(range_filters).select { |x| x.duration <= max_duration }
-                                   .sample
-      return array if movie.nil?
-      array << movie
-      max_duration -= movie.duration
-      pick_movies(range_filters, max_duration, array)
+    def pick_movies(range_filters, max_duration)
+      movies = filter(range_filters).shuffle
+      picked = []
+      while max_duration > movie_duration ||= 0
+        picked << movies.select do |m|
+          # movie_duration нужен для сравнения в while, иначе селектит на 1 мувик больше
+          movie_duration = m.duration
+          m.duration <= max_duration
+          max_duration -= movie_duration
+        end
+      end
+      picked.flatten
+    end
+
+    def parse_schedule(range, movies, strings)
+      halls = schedule[range].hall
+      start = Time.parse(range.first).strftime("%H:%M") # + (m.duration * 60)).strftime("%H:%M")
+      movies.each do |x|
+        strings << "\t#{start} #{x.title}(#{x.genre.join(", ")}, #{x.year}). #{halls.join(', ').capitalize} hall(s).\n"
+        start = (Time.parse(start) + x.duration * 60).strftime("%H:%M") #(x.duration * 60)).strftime("%H:%M")
+      end
     end
   end
 end

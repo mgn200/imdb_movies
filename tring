@@ -1,0 +1,32 @@
+
+[1mFrom:[0m /home/pfear/projects/imdb_movies/lib/theatre_schedule.rb @ line 58 MovieProduction::TheatreSchedule#parse_schedule:
+
+    [1;34m53[0m: [32mdef[0m [1;34mparse_schedule[0m(range, movies, string)
+    [1;34m54[0m:   halls = schedule[range].hall
+    [1;34m55[0m:   start = [1;34;4mTime[0m.parse(range.first).strftime([31m[1;31m"[0m[31m%H:%M[1;31m"[0m[31m[0m) [1;34m# + (m.duration * 60)).strftime("%H:%M")[0m
+    [1;34m56[0m:   movies.each [32mdo[0m |x|
+    [1;34m57[0m:     string += [31m[1;31m"[0m[31m[1;35m\t[0m[31m#{start}[0m[31m #{x.title}[0m[31m(#{x.genre.join([1;31m"[0m[31m, [1;31m"[0m[31m[0m[31m)}[0m[31m, #{x.year}[0m[31m). #{halls.join([1;31m'[0m[31m, [1;31m'[0m[31m[0m[31m).capitalize}[0m[31m hall(s).[1;35m\n[0m[31m[1;31m"[0m[31m[0m
+ => [1;34m58[0m:     binding.pry
+    [1;34m59[0m:     start = ([1;34;4mTime[0m.parse(start) + x.duration * [1;34m60[0m).strftime([31m[1;31m"[0m[31m%H:%M[1;31m"[0m[31m[0m) [1;34m#(x.duration * 60)).strftime("%H:%M")[0m
+    [1;34m60[0m:     [1;34m#binding.pry[0m
+    [1;34m61[0m:   [32mend[0m
+    [1;34m62[0m:   [1;34m#binding.pry[0m
+    [1;34m63[0m:   string
+    [1;34m64[0m:   [1;34m#if movies.count > 1[0m
+    [1;34m65[0m: 
+    [1;34m66[0m:     [1;34m#Hash[range.first, movies][0m
+    [1;34m67[0m:   [1;34m# => end[0m
+    [1;34m68[0m: 
+    [1;34m69[0m:   [1;34m#start_time = (Time.parse(time.first)).strftime("%H:%M")[0m
+    [1;34m70[0m:   [1;34m#halls = schedule[time].hall[0m
+    [1;34m71[0m:   [1;34m#if movies.count > 1[0m
+    [1;34m72[0m: [1;34m#    movies.each do |m|[0m
+    [1;34m73[0m: [1;34m#      string += "\n\t#{start} #{m.title}(#{m.genre.join(", ")}, #{m.year}). #{halls.join(', ').capitalize} hall(s)."[0m
+    [1;34m74[0m: [1;34m#      start = (Time.parse(time.first) + (m.duration * 60)).strftime("%H:%M")[0m
+    [1;34m75[0m: [1;34m#    end[0m
+    [1;34m76[0m: [1;34m#  else[0m
+    [1;34m77[0m: [1;34m#    string += "\n\t#{start} #{movies.first.title}(#{movies.first.genre.join(", ")}, " +[0m
+    [1;34m78[0m: [1;34m#              "#{movies.first.year}). #{halls.join(', ').capitalize} hall(s)."[0m
+    [1;34m79[0m: [1;34m#  end[0m
+    [1;34m80[0m: [32mend[0m
+
