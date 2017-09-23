@@ -37,21 +37,21 @@ module MovieProduction
     end
 
     def pick_movies(filters, timeleft)
-      movies = filter(filters).shuffle
+      movies = filter(filters)
       picked = []
-
+      # Отбросываем фильмы, которые точно не поместятся
+      # Выбираем из оставшихся рандомные, снижаем допустимое время
       while timeleft > 0
-        movies.each do |m|
-          m.duration <= timeleft ? picked << m : timeleft = 0
-          timeleft -= m.duration
-        end
+        movie = movies.reject { |m| m.duration > timeleft }.sample
+        return picked if movie.nil?
+        timeleft -= movie.duration
+        picked << movie
       end
-      picked.flatten
     end
 
-    # Принимает время и массив фильмов
-    # Создает массив строк с точным временем показа, описанием фильма и залами
-    # Если фильмов в периоде несколько, создает время для каждого(идут один за другим)
+
+    # Создает массив из строк с временем показа, описанием фильма и залами
+    # Если фильмов в периоде несколько, создаем время для каждого(идут подряд один за другим)
     def create_time_strings(range, movies)
       halls = schedule[range].hall
       start = Time.parse(range.first).strftime("%H:%M")
