@@ -60,7 +60,7 @@ module MovieProduction
         "\t#{time} #{movie.first.title}(#{movie.first.genre.join(", ")}, #{movie.first.year})." +
         " #{movie.last.join(', ').capitalize} hall(s).\n"
       end
-      "Cегодня показываем: \n" + strings.join
+      "Сегодня показываем: \n" + strings.join
     end
   end
 end
