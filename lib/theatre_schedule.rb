@@ -26,8 +26,8 @@ module MovieProduction
     def organize_schedule(schedule)
       schedule.values.reject(&:session_break).map { |x|
         max_duration = period_length(x.range_time)
-        [x.range_time, pick_movies(x.filters, max_duration)]
-      }.to_h
+        pick_movies(x.range_time, x.filters, max_duration)
+      }.flatten(1).to_h
     end
 
     def period_length(range)
@@ -36,31 +36,31 @@ module MovieProduction
       ((start_time - end_time) / 60).abs.to_i
     end
 
-    def pick_movies(filters, timeleft)
+    def pick_movies(range, filters, timeleft)
+      # Тянуть залы здесь, или когда принтим?(print_schedule)
       movies = filter(filters)
       picked = []
+      halls = schedule[range].hall
+      start = Time.parse(range.first).strftime("%H:%M")
       # Отбросываем фильмы, которые точно не поместятся
       # Выбираем из оставшихся рандомные, снижаем допустимое время
+      # Назначаем точное время показа
       while timeleft > 0
         movie = movies.reject { |m| m.duration > timeleft }.sample
         return picked if movie.nil?
+        picked << [start, [movie, halls]]
+        start = (Time.parse(start) + movie.duration * 60).strftime("%H:%M")
         timeleft -= movie.duration
-        picked << movie
       end
     end
 
-
-    # Создает массив из строк с временем показа, описанием фильма и залами
-    # Если фильмов в периоде несколько, создаем время для каждого(идут подряд один за другим)
-    def create_time_strings(range, movies)
-      halls = schedule[range].hall
-      start = Time.parse(range.first).strftime("%H:%M")
-      str = ""
-      movies.each do |m|
-        str += "\t#{start} #{m.title}(#{m.genre.join(", ")}, #{m.year}). #{halls.join(', ').capitalize} hall(s).\n"
-        start = (Time.parse(start) + m.duration * 60).strftime("%H:%M")
+    # Принтим организованное расписание
+    def print_schedule(organized_schedule)
+      strings = organized_schedule.map do |time, movie|
+        "\t#{time} #{movie.first.title}(#{movie.first.genre.join(", ")}, #{movie.first.year})." +
+        " #{movie.last.join(', ').capitalize} hall(s).\n"
       end
-      str
+      "Cегодня показываем: \n" + strings.join
     end
   end
 end

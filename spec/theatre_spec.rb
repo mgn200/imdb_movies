@@ -155,8 +155,9 @@
   end
 
   describe '#pick_movies' do
-    subject { theatre.pick_movies({title: 'The Terminator'}, 360)}
-    it { expect(subject.first.title).to eq 'The Terminator' }
+    subject { theatre.pick_movies("18:00".."24:00", {title: 'The Terminator'}, 360)}
+    # Выглядит не очень.
+    it { expect(subject.sample.last.first.title).to eq 'The Terminator' }
     it { expect(subject.count).to eq 3 }
   end
 end
