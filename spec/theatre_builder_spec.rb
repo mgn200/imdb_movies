@@ -45,7 +45,7 @@ RSpec.describe MovieProduction::Theatre do
                                               ("22:00".."09:00")] }
     it { expect(theatre.schedule["09:00".."11:00"].attributes).to eq ({ :filters => { :genre => "Comedy", :year => 1900..1980 },
                                                                         :daytime => nil,
-                                                                        :range_time => "09:00".."11:00",
+                                                                        :range_time => 32400..39600,
                                                                         :price => 10,
                                                                         :hall => [:red, :blue],
                                                                         :description => "Утренний сеанс",
@@ -53,7 +53,7 @@ RSpec.describe MovieProduction::Theatre do
 
     it { expect(theatre.schedule["11:00".."16:00"].attributes).to eq ({ :filters => { :title => "The Terminator" },
                                                                         :daytime => nil,
-                                                                        :range_time => "11:00".."16:00",
+                                                                        :range_time => 39600..57600,
                                                                         :price => 50,
                                                                         :hall => [:green],
                                                                         :description => "Спецпоказ",
@@ -61,7 +61,7 @@ RSpec.describe MovieProduction::Theatre do
 
     it { expect(theatre.schedule["16:00".."20:00"].attributes).to eq ({ filters: { genre: ['Action', 'Drama'], year: 2007..Time.now.year },
                                                                         :daytime => nil,
-                                                                        :range_time => "16:00".."20:00",
+                                                                        :range_time => 57600..72000,
                                                                         :price => 20,
                                                                         :hall => [:red, :blue],
                                                                         :description => "Вечерний сеанс",
@@ -69,14 +69,14 @@ RSpec.describe MovieProduction::Theatre do
 
     it { expect(theatre.schedule["19:00".."22:00"].attributes).to eq ({ filters: { year: 1900..1945, exclude_country: 'USA' },
                                                                        :daytime => nil,
-                                                                       :range_time => "19:00".."22:00",
+                                                                       :range_time => 68400..79200,
                                                                        :price => 30,
                                                                        :hall => [:green],
                                                                        :description => "Вечерний сеанс для киноманов",
                                                                        :session_break => false }) }
     it { expect(theatre.schedule["22:00".."09:00"].attributes).to eq ({ :session_break => true,
                                                                         :daytime => nil,
-                                                                        :range_time => "22:00".."09:00",
+                                                                        :range_time => 79200..32400,
                                                                         :price => nil,
                                                                         :hall => nil,
                                                                         :description => nil,

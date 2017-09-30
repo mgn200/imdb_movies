@@ -1,10 +1,9 @@
-require 'ostruct'
 module MovieProduction
   class SchedulePeriod
     include Enumerable
     include Virtus.model
 
-    attribute :range_time
+    attribute :range_time, Coercions::RangeInSeconds
     attribute :filters
     attribute :daytime
     attribute :price

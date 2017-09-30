@@ -3,7 +3,7 @@ module MovieProduction
     include MovieProduction::Cashbox
     include MovieProduction::TheatreBuilder
     include MovieProduction::TheatreSchedule
-
+    include MovieProduction::TimeHelper
     def initialize(&block)
       super
       instance_eval(&block) if block
@@ -12,7 +12,7 @@ module MovieProduction
 
     def show(time)
       return "Кинотеатр не работает в это время" if session_break?(time)
-      params = schedule.detect { |key, _hash| key.include?(time) }.last[:filters]
+      params = schedule.detect { |_k, period| period.range_time.include?(to_seconds(time)) }.last.filters
       movie = pick_movie(filter(params))
       "#{movie.title} will be shown at #{time}"
     end
@@ -30,9 +30,9 @@ module MovieProduction
       return 'Неверное название фильма' unless movie
       periods = fetch_periods(movie)
       return 'В данный момент этот фильм не идет в кино' if periods.empty?
-      return periods.map(&:range_time) unless hall
+      return to_time_string(periods.map(&:range_time)) unless hall
       period = periods.select { |p| p.hall.include?(hall) }.map(&:range_time)
-      return period unless period.empty?
+      return to_time_string(period) unless period.empty?
       fail ArgumentError, "Выбран неверный зал. Фильм показывают в зале: " +
                           periods.flat_map(&:hall).join(" | ")
     end
@@ -45,18 +45,17 @@ module MovieProduction
       range_time = when?(movie_title, hall)
 
       if range_time.length > 1
-        halls = range_time.flat_map { |range| schedule[range][:hall] }
+        halls = range_time.flat_map { |range| schedule[range].hall }
         fail ArgumentError, "Выберите нужный вам зал: #{halls.join(' | ')}"
       end
-
-      price = schedule[range_time.first][:price]
+      price = schedule[range_time.first].price
       store_cash(price)
       "Вы купили билет на #{movie_title}"
     end
 
     def session_break?(time)
-      period = schedule.detect { |k, _hash| k.include?(time) }.first
-      schedule[period][:session_break]
+      period = schedule.detect { |_k, period| period.range_time.include?(to_seconds(time)) }.first
+      schedule[period].session_break
     end
 
     def info

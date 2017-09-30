@@ -6,6 +6,7 @@ module MovieProduction
     end
 
     def period(new_range = nil, &block)
+      #range_in_seconds = to_seconds(new_range.first)..to_seconds(new_range.last) if new_range
       @schedule = {} if schedule == MovieProduction::Theatre::DEFAULT_SCHEDULE
       @new_period = PeriodBuilder.new(new_range, &block).period
       fail ArgumentError, 'Periods and halls intersection detected. Please check parameters.' if intersection?(new_range)
@@ -15,7 +16,6 @@ module MovieProduction
     def intersection?(new_range)
       # skip to second elemesnt for comparison
       return false if @schedule.empty?
-
       @schedule.keys.any? do |period|
         if period.overlaps? new_range
           return true if (@schedule[period].hall & @new_period.hall).any?
@@ -34,7 +34,6 @@ module MovieProduction
 
       sorted_periods.each do |range|
         if tested_period.last.cover? range.first
-          # или имелось ввиду создавать массив в массиве а не новый рейнж?
           tested_period[-1] = Range.new(tested_period.first.min, range.last)
         else
           tested_period << range
@@ -49,10 +48,10 @@ module MovieProduction
     end
 
     class Object::Range
-      def overlaps?(other)
+      def overlaps?(range)
         # "11:00" not overlapping another "11:00"
-        return false if other.last == first || other.first == last
-        cover?(other.first) || other.cover?(first)
+        return false if range.last == first || range.first == last
+        cover?(range.first) || range.cover?(first)
       end
     end
 

@@ -4,6 +4,7 @@ require 'money'
 require './demo.rb'
 
 RSpec.configure do |config|
+  include MovieProduction::TimeHelper
   config.expect_with :rspec do |expectations|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
   end

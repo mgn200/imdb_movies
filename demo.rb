@@ -1,6 +1,8 @@
 require 'csv'
 require 'date'
 require 'money'
+require 'virtus'
+require_relative 'lib/time_helper'
 require_relative 'lib/coercions'
 require_relative 'lib/movie'
 require_relative 'lib/movie_collection'
