@@ -78,29 +78,6 @@ RSpec.describe MovieProduction::Theatre do
     subject { theatre.buy_ticket('Casablanca', :red) }
     it { expect(subject).to eq('Вы купили билет на Casablanca') }
     it { expect { subject }.to change(theatre, :cash).by Money.new(300) }
-
-
-    describe 'puts money in cashbox' do
-      let(:filter) { theatre.schedule.detect { |k, v| v[:daytime] == :morning }.last[:filters] }
-      let(:title) { movies.filter(filter).first.title }
-
-      context 'when morning time' do
-        subject { theatre.buy_ticket(title, :red) }
-        it { expect { subject }.to change(theatre, :cash).by Money.new(300) }
-      end
-
-      context 'when noon time' do
-        let(:filter) { theatre.schedule.detect { |k, v| v[:daytime] == :afternoon }.last[:filters] }
-        subject { theatre.buy_ticket(title, :green) }
-        it { expect { subject }.to change(theatre, :cash).by Money.new(500) }
-      end
-
-      context 'when evening time' do
-        let(:filter) { theatre.schedule.detect { |k, v| v[:daytime] == :evening }.last[:filters] }
-        subject { theatre.buy_ticket(title, :blue) }
-        it { expect { subject }.to change(theatre, :cash).by Money.new(1000) }
-      end
-    end
   end
 
   describe '#info' do
@@ -137,8 +114,6 @@ RSpec.describe MovieProduction::Theatre do
           price 30
           hall :green
         end
-
-        session_break '22:00'..'09:00'
       end
     end
 
@@ -153,6 +128,7 @@ RSpec.describe MovieProduction::Theatre do
                                "\t19:00 M(Crime, Drama, Thriller, 1931). Green hall(s).\n"
        }
   end
+
 
   #describe '#pick_movies' do
   #  subject { theatre.pick_movies(Time.parse("18:00")..Time.parse("24:00"), {title: 'The Terminator'}, 360)}

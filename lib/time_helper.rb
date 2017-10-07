@@ -15,21 +15,11 @@ module MovieProduction
       Time.at(seconds).utc.strftime("%H:%M")
     end
 
-    def range_in_seconds(string_time)
-      # 86400sec = 12 hours
-      # Если период начинается с 00 00, то посекунднам начинать с 0
-      # если заканчивается 00 00, то считать как 12 часов, с 00:00 до 00:00
-      if string_time.first == "00:00"
-        t1 = 0
-        t2 = to_seconds(string_time.last)
-      elsif string_time.last == "00:00"
-        t1 = to_seconds(string_time.first)
-        t2 = 86400
-      else
-        t1 = to_seconds(string_time.first)
-        t2 = to_seconds(string_time.last)
-      end
-      Range.new(t1, t2)
+    def range_in_seconds(period)
+      from = to_seconds(period.begin)
+      to = to_seconds(period.end)
+      to += 24*60*60 if to < from
+      from..to
     end
   end
 end

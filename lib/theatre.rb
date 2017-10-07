@@ -4,6 +4,7 @@ module MovieProduction
     include MovieProduction::TheatreBuilder
     include MovieProduction::TheatreSchedule
     include MovieProduction::TimeHelper
+
     def initialize(&block)
       super
       instance_eval(&block) if block
@@ -11,8 +12,8 @@ module MovieProduction
     end
 
     def show(time)
-      return "Кинотеатр не работает в это время" if session_break?(time)
-      params = schedule.detect { |_k, period| period.range_time.include?(to_seconds(time)) }.last.filters
+      return "Кинотеатр не работает в это время" if session_break?(to_seconds(time))
+      params = schedule.find { |period| period.range_time.include?(to_seconds(time)) }.filters
       movie = pick_movie(filter(params))
       "#{movie.title} will be shown at #{time}"
     end
@@ -38,29 +39,32 @@ module MovieProduction
     end
 
     def fetch_periods(movie)
-      schedule.values.reject(&:session_break).select { |period| period.matches?(movie) }
+      schedule.select { |period| period.matches?(movie) }
     end
 
     def buy_ticket(movie_title, hall = nil)
       range_time = when?(movie_title, hall)
 
       if range_time.length > 1
-        halls = range_time.flat_map { |range| schedule[range].hall }
+        halls = range_time.flat_map { |range| schedule.find { |p| p.range_time == range_in_seconds(range) }.hall }
         fail ArgumentError, "Выберите нужный вам зал: #{halls.join(' | ')}"
       end
-      price = schedule[range_time.first].price
+      price = schedule.detect { |period| period.range_time == range_in_seconds(range_time.first) }.price
       store_cash(price)
       "Вы купили билет на #{movie_title}"
     end
 
     def session_break?(time)
-      period = schedule.detect { |_k, period| period.range_time.include?(to_seconds(time)) }.first
-      schedule[period].session_break
+      # Возвращает true, если время находится вне всех периодов
+      # Время вне установленных периодов автоматически считается перерывом
+      schedule.none? { |p| p.range_time.include? time }
     end
 
     def info
-      @organized_schedule ||= organize_schedule(schedule)
-      print_schedule(@organized_schedule)
+      # Один раз создает массив ScheduleLine'ов, в которых содержится
+      # отформатированное расписание, в методе print
+      organized_schedule ||= organize_schedule(schedule)
+      return "Сегодня показываем: \n" + organized_schedule.map { |line| line.print }.join
     end
   end
 end

@@ -32,58 +32,40 @@ RSpec.describe MovieProduction::Theatre do
         price 30
         hall :green
       end
-
-      session_break '22:00'..'09:00'
     end
   end
 
   describe 'creates schedule with given block params' do
-    it { expect(theatre.schedule.keys).to eq [("09:00".."11:00"),
-                                              ("11:00".."16:00"),
-                                              ("16:00".."20:00"),
-                                              ("19:00".."22:00"),
-                                              ("22:00".."09:00")] }
-    it { expect(theatre.schedule["09:00".."11:00"].attributes).to eq ({ :filters => { :genre => "Comedy", :year => 1900..1980 },
-                                                                        :daytime => nil,
-                                                                        :range_time => 32400..39600,
-                                                                        :price => 10,
-                                                                        :hall => [:red, :blue],
-                                                                        :description => "Утренний сеанс",
-                                                                        :session_break => false }) }
+    it { expect(theatre.schedule.map(&:range_time)).to eq [32400..39600,
+                                                           39600..57600,
+                                                           57600..72000,
+                                                           68400..79200] }
+    it { expect(theatre.schedule[0].attributes).to eq ({ :filters => { :genre => "Comedy", :year => 1900..1980 },
+                                                                    :range_time => 32400..39600,
+                                                                    :price => 10,
+                                                                    :hall => [:red, :blue],
+                                                                    :description => "Утренний сеанс"}) }
 
-    it { expect(theatre.schedule["11:00".."16:00"].attributes).to eq ({ :filters => { :title => "The Terminator" },
-                                                                        :daytime => nil,
-                                                                        :range_time => 39600..57600,
-                                                                        :price => 50,
-                                                                        :hall => [:green],
-                                                                        :description => "Спецпоказ",
-                                                                        :session_break => false }) }
+    it { expect(theatre.schedule[1].attributes).to eq ({ :filters => { :title => "The Terminator" },
+                                                                    :range_time => 39600..57600,
+                                                                    :price => 50,
+                                                                    :hall => [:green],
+                                                                    :description => "Спецпоказ"}) }
 
-    it { expect(theatre.schedule["16:00".."20:00"].attributes).to eq ({ filters: { genre: ['Action', 'Drama'], year: 2007..Time.now.year },
-                                                                        :daytime => nil,
-                                                                        :range_time => 57600..72000,
-                                                                        :price => 20,
-                                                                        :hall => [:red, :blue],
-                                                                        :description => "Вечерний сеанс",
-                                                                        :session_break => false }) }
+    it { expect(theatre.schedule[2].attributes).to eq ({ filters: { genre: ['Action', 'Drama'], year: 2007..Time.now.year },
+                                                                    :range_time => 57600..72000,
+                                                                    :price => 20,
+                                                                    :hall => [:red, :blue],
+                                                                    :description => "Вечерний сеанс"}) }
 
-    it { expect(theatre.schedule["19:00".."22:00"].attributes).to eq ({ filters: { year: 1900..1945, exclude_country: 'USA' },
-                                                                       :daytime => nil,
-                                                                       :range_time => 68400..79200,
-                                                                       :price => 30,
-                                                                       :hall => [:green],
-                                                                       :description => "Вечерний сеанс для киноманов",
-                                                                       :session_break => false }) }
-    it { expect(theatre.schedule["22:00".."09:00"].attributes).to eq ({ :session_break => true,
-                                                                        :daytime => nil,
-                                                                        :range_time => 79200..32400,
-                                                                        :price => nil,
-                                                                        :hall => nil,
-                                                                        :description => nil,
-                                                                        :filters => nil }) }
+    it { expect(theatre.schedule[3].attributes).to eq ({ filters: { year: 1900..1945, exclude_country: 'USA' },
+                                                                    :range_time => 68400..79200,
+                                                                    :price => 30,
+                                                                    :hall => [:green],
+                                                                    :description => "Вечерний сеанс для киноманов"}) }
 
     context 'title params given explicitly is wrapped in params' do
-      it { expect(theatre.schedule[("11:00".."16:00")][:filters]).to eq Hash[:title, 'The Terminator'] }
+      it { expect(theatre.schedule[1].filters).to eq Hash[:title, 'The Terminator'] }
     end
 
     context 'when periods intersect by time and halls' do
@@ -103,17 +85,20 @@ RSpec.describe MovieProduction::Theatre do
   end
 
   describe 'methods' do
-    describe '#session_break' do
-      context 'checks period for holes' do
+    describe '#check_holes' do
+      context 'raise error on gap between two periods' do
         subject { MovieProduction::Theatre.new do
                           period "09:00".."13:00" do
-                            hall :red
                           end
 
-                          session_break "14:00".."18:00"
+                          period "14:00".."15:00" do
+                          end
+
+                          period "16:00".."17:00" do
+                          end
                         end
                       }
-        it { expect { subject }.to raise_error(ArgumentError, 'В расписании есть неучтенное время: 13:00..14:00') }
+        it { expect { subject }.to raise_error(ArgumentError, 'В расписании есть неучтенное время: 13:00..14:00, 15:00..16:00') }
       end
     end
 
@@ -137,8 +122,6 @@ RSpec.describe MovieProduction::Theatre do
             price 10
             hall :green
           end
-
-          session_break '12:00'..'09:00'
         end
       end
 
@@ -182,8 +165,6 @@ RSpec.describe MovieProduction::Theatre do
             price 10
             hall :red, :blue
           end
-
-          session_break '23:00'..'06:00'
         end
       end
 

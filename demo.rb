@@ -2,6 +2,8 @@ require 'csv'
 require 'date'
 require 'money'
 require 'virtus'
+require 'ostruct'
+
 require_relative 'lib/time_helper'
 require_relative 'lib/coercions'
 require_relative 'lib/movie'
@@ -18,6 +20,7 @@ require_relative 'lib/ancient_movie'
 require_relative 'lib/classic_movie'
 require_relative 'lib/modern_movie'
 require_relative 'lib/new_movie'
+require_relative 'lib/schedule_line'
 # netflix = MovieProduction::Netflix.new
 # netflix.show { |movie| !movie.title.include?('Terminator') && movie.genre.include?('Action') && movie.year > 2003}
 # netflix.define_filter(:test) { |movie| movie.director != 'David Fincher' && movie.year > 1999 }
