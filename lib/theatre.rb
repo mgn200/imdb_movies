@@ -1,46 +1,80 @@
 module MovieProduction
   class Theatre < MovieProduction::MovieCollection
     include MovieProduction::Cashbox
+    include MovieProduction::TheatreBuilder
+    include MovieProduction::TheatreSchedule
+    include MovieProduction::TimeHelper
 
-    SCHEDULE = { ("06:00".."12:00") => { period: :ancient },
-                 ("12:00".."18:00") => { genre: %w[Comedy Adventure] },
-                 ("18:00".."24:00") => { genre: %w[Drama Horror] },
-                 ("00:00".."06:00") => 'Working hours: 06:00 - 00:00' }.freeze
-
-    DAYTIME = { SCHEDULE.keys[0] => :morning,
-                SCHEDULE.keys[1] => :afternoon,
-                SCHEDULE.keys[2] => :evening }.freeze
-
-    PRICES = { DAYTIME.values[0] => 3,
-               DAYTIME.values[1] => 5,
-               DAYTIME.values[2] => 10 }.freeze
+    def initialize(&block)
+      super
+      instance_eval(&block) if block
+      check_holes(schedule)
+    end
 
     def show(time)
-      params = get_time(time)
-      return params if params.is_a? String
-      movies = filter(params)
-      movie = pick_movie(movies)
+      return "Кинотеатр не работает в это время" if session_break?(to_seconds(time))
+      params = schedule.find { |period| period.range_time.include?(to_seconds(time)) }.filters
+      movie = pick_movie(filter(params))
       "#{movie.title} will be shown at #{time}"
     end
 
-    def get_time(time)
-      SCHEDULE.detect { |key, _hash| key.include?(time) }.last
+    def schedule
+      @schedule || DEFAULT_SCHEDULE
     end
 
+    def halls
+      @halls || DEFAULT_HALLS
+    end
+
+    # берет тайтл - возвращает периоды, когда его показывают
     def when?(title)
       movie = detect { |x| x.title == title }
-      return 'No such movie' unless movie
-      SCHEDULE.detect { |_range, filter| filter.select.any? { |key, value| movie.matches? key, value } }.first
-    rescue
-      'That movie is not at the box office atm'
+      return 'Неверное название фильма' unless movie
+      periods = fetch_periods(movie)
+      return 'В данный момент этот фильм не идет в кино' if periods.empty?
+      to_time_string(periods.map(&:range_time))
     end
 
-    def buy_ticket(movie_title)
+    def fetch_periods(movie)
+      schedule.select { |period| period.matches?(movie) }
+    end
+
+    # берет тайтл и зал, если всё ок - тащит его цену и снимает деньги за просмотр
+    def buy_ticket(movie_title, hall = nil)
       range_time = when?(movie_title)
-      daytime = Theatre::DAYTIME.detect { |range, _time| range == range_time }.last
-      price = Theatre::PRICES.detect { |time, _price| daytime == time }.last
+      if range_time.length > 1 && hall.nil?
+        halls = range_time.flat_map { |range| schedule.find { |p| p.range_time == range_in_seconds(range) }.hall }
+        fail ArgumentError, "Выберите нужный вам зал: #{halls.join(' | ')}"
+      end
+
+      price = fetch_price(range_time, hall)
+      fail ArgumentError, "Выбран неверный зал. Фильм показывают в зале: " + fetch_halls(range_time).join(" | ") if price.nil?
       store_cash(price)
       "Вы купили билет на #{movie_title}"
+    end
+
+    def fetch_price(range_time, hall)
+      period = schedule.detect { |period|
+        (range_time.include? to_time_string(period.range_time)) && (period.hall.include?(hall))
+      }
+      period.price unless period.nil?
+    end
+
+    def fetch_halls(range_time)
+      schedule.select { |period| range_time.include? to_time_string(period.range_time) }.flat_map(&:hall)
+    end
+
+    def session_break?(time)
+      # Возвращает true, если время находится вне всех периодов
+      # Время вне установленных периодов автоматически считается перерывом
+      schedule.none? { |p| p.range_time.include? time }
+    end
+
+    def info
+      # Один раз создает массив ScheduleLine'ов, в которых содержится
+      # отформатированное расписание, в методе print
+      organized_schedule ||= organize_schedule(schedule)
+      return "Сегодня показываем: \n" + organized_schedule.map { |line| line.print }.join
     end
   end
 end

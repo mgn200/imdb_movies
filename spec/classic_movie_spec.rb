@@ -5,10 +5,11 @@ RSpec.describe MovieProduction::ClassicMovie do
                        actors: 'A, B, C',
                        genre: 'Comedy',
                        date: '1954-04-03',
-                       director: 'Frank Darabont'
+                       director: 'Frank Darabont',
+                       list: list
                    } }
 
-  subject(:classic_movie) { MovieProduction::ClassicMovie.new(list, movie_info) }
+  subject(:classic_movie) { MovieProduction::ClassicMovie.new(movie_info) }
 
   describe '#initialze' do
     it {

@@ -4,7 +4,7 @@ RSpec.describe MovieProduction::Theatre do
 
   describe '#take' do
     before {
-      theatre.buy_ticket 'Casablanca'
+      theatre.buy_ticket('Casablanca', :red)
     }
 
     context "when 'Bank' params" do
@@ -23,27 +23,27 @@ RSpec.describe MovieProduction::Theatre do
     subject { theatre.when? title }
     context 'Ancient Movies' do
       let(:title) { movies.filter(period: :ancient).first.title }
-      it { is_expected.to eq "06:00".."12:00" }
+      it { is_expected.to eq ["06:00".."12:00", "18:00".."00:00"] }
     end
 
     context 'Comedies and Adventures' do
       let(:title) { movies.filter(genre: ['Comedy', 'Adventure']).first.title }
-      it { is_expected.to eq "12:00".."18:00" }
+      it { is_expected.to eq ["12:00".."18:00"] }
     end
 
     context 'Dramas and Horrors' do
       let(:title) { movies.filter(genre: ['Drama', 'Horror']).first.title }
-      it { is_expected.to eq "18:00".."24:00" }
+      it { is_expected.to eq ["18:00".."00:00"] }
     end
 
     context 'Unknown title' do
       let(:title) { 'qwerty' }
-      it { is_expected.to eq 'No such movie' }
+      it { is_expected.to eq 'Неверное название фильма' }
     end
 
     context 'Unmatched movie' do
       let(:title) { 'The Terminator' }
-      it { is_expected.to eq 'That movie is not at the box office atm' }
+      it { is_expected.to eq 'В данный момент этот фильм не идет в кино' }
     end
   end
 
@@ -58,14 +58,14 @@ RSpec.describe MovieProduction::Theatre do
       it { is_expected.to include 'will be shown at 12:22' }
     end
 
-    context '18:00 - 24:00' do
+    context '18:00 - 00:00' do
       subject { theatre.show('19:22') }
       it { is_expected.to include 'will be shown at 19:22' }
     end
 
     context '00:00 - 06:00' do
       subject { theatre.show('00:22') }
-      it { is_expected.to eq "Working hours: 06:00 - 00:00" }
+      it { is_expected.to eq "Кинотеатр не работает в это время" }
     end
   end
 
@@ -75,29 +75,64 @@ RSpec.describe MovieProduction::Theatre do
   end
 
   describe '#buy_ticket' do
-    subject { theatre.buy_ticket 'Casablanca' }
-    it { expect(subject).to eq('Вы купили билет на Casablanca') }
-    it { expect { subject }.to change(theatre, :cash).by Money.new(300) }
+    context 'when hall is given' do
+      subject { theatre.buy_ticket('Casablanca', :red) }
+      it { expect(subject).to eq('Вы купили билет на Casablanca') }
+      it { expect { subject }.to change(theatre, :cash).by Money.new(300) }
+    end
 
+    context 'when hall is not given' do
+      subject { theatre.buy_ticket('Casablanca') }
+      it { expect { subject }.to raise_error(ArgumentError, 'Выберите нужный вам зал: red | blue') }
+    end
+  end
 
-    describe 'puts money in cashbox' do
-      let(:filter) { MovieProduction::Theatre::SCHEDULE.values[0] }
-      let(:title) { movies.filter(filter).first.title }
-      subject { theatre.buy_ticket(title) }
+  describe '#info' do
+    let(:theatre) do
+      MovieProduction::Theatre.new do
+        hall :red, title: 'Красный зал', places: 100
+        hall :blue, title: 'Синий зал', places: 50
+        hall :green, title: 'Зелёный зал (deluxe)', places: 12
 
-      context 'when morning time' do
-        it { expect { subject }.to change(theatre, :cash).by Money.new(300) }
-      end
+        period '09:00'..'11:00' do
+          description 'Утренний сеанс'
+          filters genre: 'Comedy', year: 1900..1980, title: 'City Lights'
+          price 10
+          hall :red, :blue
+        end
 
-      context 'when noon time' do
-        let(:filter) { MovieProduction::Theatre::SCHEDULE.values[1] }
-        it { expect { subject }.to change(theatre, :cash).by Money.new(500) }
-      end
+        period '11:00'..'16:00' do
+          description 'Спецпоказ'
+          title 'The Terminator'
+          price 50
+          hall :green
+        end
 
-      context 'when evening time' do
-        let(:filter) { MovieProduction::Theatre::SCHEDULE.values[2] }
-        it { expect { subject }.to change(theatre, :cash).by Money.new(1000) }
+        period '16:00'..'20:00' do
+          description 'Вечерний сеанс'
+          filters genre: ['Action', 'Drama'], year: 2007..Time.now.year, title: 'The Intouchables'
+          price 20
+          hall :red, :blue
+        end
+
+        period '19:00'..'22:00' do
+          description 'Вечерний сеанс для киноманов'
+          filters year: 1900..1945, exclude_country: 'USA', title: 'M'
+          price 30
+          hall :green
+        end
       end
     end
+
+    subject { theatre.info }
+
+    it { expect(subject).to eq "Сегодня показываем: \n" +
+                               "\t09:00 City Lights(Comedy, Drama, Romance, 1931). Red, blue hall(s).\n" +
+                               "\t11:00 The Terminator(Action, Sci-Fi, 1984). Green hall(s).\n" +
+                               "\t12:47 The Terminator(Action, Sci-Fi, 1984). Green hall(s).\n" +
+                               "\t16:00 The Intouchables(Biography, Comedy, Drama, 2011). Red, blue hall(s).\n" +
+                               "\t17:52 The Intouchables(Biography, Comedy, Drama, 2011). Red, blue hall(s).\n" +
+                               "\t19:00 M(Crime, Drama, Thriller, 1931). Green hall(s).\n"
+       }
   end
 end

@@ -4,10 +4,7 @@ RSpec.describe MovieProduction::MovieCollection do
   describe 'create 4 movie categores on initialize' do
     context 'year < 1945' do
       subject { movie_collection.filter(year: 1900...1945) }
-      it '' do
-        is_expected.to all be_a MovieProduction::AncientMovie
-      end
-
+      it { is_expected.to all be_a MovieProduction::AncientMovie }
     end
 
     context 'year 1945-1968' do

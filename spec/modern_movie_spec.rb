@@ -1,13 +1,13 @@
 RSpec.describe MovieProduction::ModernMovie do
-  let(:list) { nil }
   let(:movie_info) { { title: 'Test movie',
                        year: 1984,
                        actors: 'A, B, C',
                        genre: 'Comedy',
-                       date: '1984-04-03'
+                       date: '1984-04-03',
+                       nil: nil
                     } }
 
-  subject(:modern_movie) { MovieProduction::ModernMovie.new(list, movie_info) }
+  subject(:modern_movie) { MovieProduction::ModernMovie.new(movie_info) }
 
   describe '#initialze' do
     it {
