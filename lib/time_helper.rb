@@ -7,12 +7,19 @@ module MovieProduction
     end
 
     def to_time_string(seconds)
+      # Cases of seconds rangees:
+      #[123..123, 123..123]
+      #123..123
+      #123
       if seconds.is_a? Array
         return seconds.map { |range|
           Time.at(range.first).utc.strftime("%H:%M")..Time.at(range.last).utc.strftime("%H:%M")
         }
+      elsif seconds.is_a? Range
+        Time.at(seconds.first).utc.strftime("%H:%M")..Time.at(seconds.last).utc.strftime("%H:%M")
+      else
+        Time.at(seconds).utc.strftime("%H:%M")
       end
-      Time.at(seconds).utc.strftime("%H:%M")
     end
 
     def range_in_seconds(period)

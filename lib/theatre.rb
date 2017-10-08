@@ -26,32 +26,42 @@ module MovieProduction
       @halls || DEFAULT_HALLS
     end
 
-    def when?(title, hall = nil)
+    # берет тайтл - возвращает периоды, когда его показывают
+    def when?(title)
       movie = detect { |x| x.title == title }
       return 'Неверное название фильма' unless movie
       periods = fetch_periods(movie)
       return 'В данный момент этот фильм не идет в кино' if periods.empty?
-      return to_time_string(periods.map(&:range_time)) unless hall
-      period = periods.select { |p| p.hall.include?(hall) }.map(&:range_time)
-      return to_time_string(period) unless period.empty?
-      fail ArgumentError, "Выбран неверный зал. Фильм показывают в зале: " +
-                          periods.flat_map(&:hall).join(" | ")
+      to_time_string(periods.map(&:range_time))
     end
 
     def fetch_periods(movie)
       schedule.select { |period| period.matches?(movie) }
     end
 
+    # берет тайтл и зал, если всё ок - тащит его цену и снимает деньги за просмотр
     def buy_ticket(movie_title, hall = nil)
-      range_time = when?(movie_title, hall)
-
-      if range_time.length > 1
+      range_time = when?(movie_title)
+      if range_time.length > 1 && hall.nil?
         halls = range_time.flat_map { |range| schedule.find { |p| p.range_time == range_in_seconds(range) }.hall }
         fail ArgumentError, "Выберите нужный вам зал: #{halls.join(' | ')}"
       end
-      price = schedule.detect { |period| period.range_time == range_in_seconds(range_time.first) }.price
+
+      price = fetch_price(range_time, hall)
+      fail ArgumentError, "Выбран неверный зал. Фильм показывают в зале: " + fetch_halls(range_time).join(" | ") if price.nil?
       store_cash(price)
       "Вы купили билет на #{movie_title}"
+    end
+
+    def fetch_price(range_time, hall)
+      period = schedule.detect { |period|
+        (range_time.include? to_time_string(period.range_time)) && (period.hall.include?(hall))
+      }
+      period.price unless period.nil?
+    end
+
+    def fetch_halls(range_time)
+      schedule.select { |period| range_time.include? to_time_string(period.range_time) }.flat_map(&:hall)
     end
 
     def session_break?(time)

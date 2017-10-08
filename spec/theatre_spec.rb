@@ -75,9 +75,16 @@ RSpec.describe MovieProduction::Theatre do
   end
 
   describe '#buy_ticket' do
-    subject { theatre.buy_ticket('Casablanca', :red) }
-    it { expect(subject).to eq('Вы купили билет на Casablanca') }
-    it { expect { subject }.to change(theatre, :cash).by Money.new(300) }
+    context 'when hall is given' do
+      subject { theatre.buy_ticket('Casablanca', :red) }
+      it { expect(subject).to eq('Вы купили билет на Casablanca') }
+      it { expect { subject }.to change(theatre, :cash).by Money.new(300) }
+    end
+
+    context 'when hall is not given' do
+      subject { theatre.buy_ticket('Casablanca') }
+      it { expect { subject }.to raise_error(ArgumentError, 'Выберите нужный вам зал: red | blue') }
+    end
   end
 
   describe '#info' do
@@ -128,12 +135,4 @@ RSpec.describe MovieProduction::Theatre do
                                "\t19:00 M(Crime, Drama, Thriller, 1931). Green hall(s).\n"
        }
   end
-
-
-  #describe '#pick_movies' do
-  #  subject { theatre.pick_movies(Time.parse("18:00")..Time.parse("24:00"), {title: 'The Terminator'}, 360)}
-    # Выглядит не очень.
-  #  it { expect(subject.sample.last.first.title).to eq 'The Terminator' }
-  #  it { expect(subject.count).to eq 3 }
-  #end
 end
