@@ -20,6 +20,7 @@ module MovieProduction
       # создает готовый файл
       rendered_template = create_template(haml_layout).render(self)
       File.open(html_layout, 'a') { |line| line.write(rendered_template) }
+      "Index file created"
     end
 
     def create_template(template)

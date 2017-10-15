@@ -193,4 +193,9 @@ RSpec.describe MovieProduction::Netflix do
       it { expect(subject).to eq "Now showing: The Pianist 12:00:00 - 14:30:00" }
     end
   end
+
+  describe "#build_html" do
+    subject { netflix.build_html(MovieProduction::HamlBuilder) }
+    it { is_expected.to eq 'Index file created' }
+  end
 end

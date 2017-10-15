@@ -36,7 +36,7 @@ module MovieProduction
 
     def pick_movies(range, filters, timeleft)
       movies = filter(filters)
-      picked = schedule_line
+      picked = []
       halls = schedule.detect { |p| p.range_time == range }.hall
       start = range.first
       # Отбросываем фильмы, которые точно не поместятся
