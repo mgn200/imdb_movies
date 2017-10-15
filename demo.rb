@@ -3,7 +3,7 @@ require 'date'
 require 'money'
 require 'virtus'
 require 'ostruct'
-
+require_relative 'lib/haml_builder'
 require_relative 'lib/time_helper'
 require_relative 'lib/coercions'
 require_relative 'lib/movie'
