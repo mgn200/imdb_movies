@@ -19,7 +19,7 @@ module MovieProduction
       # берет мувик и по каждому атриюуту создаёт строку
       # создает готовый файл
       rendered_template = create_template(haml_layout).render(self)
-      File.open(html_layout, 'a') { |line| line.write(rendered_template) }
+      File.open(html_layout, 'a') { |file| file.write(rendered_template) }
       "Index file created"
     end
 
