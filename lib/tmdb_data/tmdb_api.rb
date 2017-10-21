@@ -13,10 +13,12 @@ class TMDBApi
   # как скрыть?
   API_KEY = "63610838faff3554e990e04c5edb3ed3"
 
-  def initialize
-    @yml_file = "movies_info.yml"
-    File.new(@yml_file, "w+")
+  attr_reader :yml_file
 
+  def initialize(yml_file_path = "/home/pfear/projects/imdb_movies/lib/tmdb_data/movies_info.yml")
+    # чтобы была возможность изменить файл для тестов
+    @yml_file = yml_file_path
+    File.new(@yml_file, "w+")
   end
 
   def imdb_keys
@@ -30,18 +32,18 @@ class TMDBApi
 
   def fetch_info
     prepared_data = []
-    imdb_keys.sample(10).each do |imdb_key|
-      get_result(imdb_key)
-      prepared_data << { key => result }
+    imdb_keys.sample(2).each do |imdb_key|
+      response = send_request(imdb_key)
+      result = JSON.parse(response.body)["movie_results"].first
+      prepared_data << { imdb_key => result }
     end
     write_yml(prepared_data)
-    puts "Finished writing yml file"
+    "OK"
   end
 
-  def get_result(imdb_key)
-    uri = URI("https://api.themoviedb.org/3/find/#{key}?api_key=#{API_KEY}&language=ru-RU&external_source=imdb_id")
+  def send_request(imdb_key)
+    uri = URI("https://api.themoviedb.org/3/find/#{imdb_key}?api_key=#{API_KEY}&language=ru-RU&external_source=imdb_id")
     response = Net::HTTP.get_response(uri)
-    result = JSON.parse(response.body)["movie_results"].first
   end
 
   def write_yml(array_of_json)
@@ -51,4 +53,4 @@ class TMDBApi
   end
 end
 
-TMDBApi.new.fetch_info
+#TMDBApi.new.fetch_info

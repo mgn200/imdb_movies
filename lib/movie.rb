@@ -59,5 +59,21 @@ module MovieProduction
     def period
       self.class.name.match(/(\w+)Movie/)[1].to_s.downcase.to_sym
     end
+
+    def additional_info
+      # служебный объект работает с yml файлом
+      #informator.get_info
+
+    end
+
+    def get_imdb_id
+      self.link.split("|").first.split("/")[4]
+    end
+
+    def fetch_additional_info(yml_file = TMDBApi.new.yml_file)
+      # достает для каждого мувика доп. инфу для отображения в index.html
+      imdb_id = get_imdb_id
+      binding.pry
+    end
   end
 end
