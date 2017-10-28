@@ -24,6 +24,7 @@ module MovieProduction
     attribute :year, Coercions::Integer
     attribute :link
     attribute :country
+    attribute :additional_info, Hash
 
     def to_s
       "#{@title}, #{@detailed_year}, #{@director}, #{@rating}"
@@ -60,20 +61,22 @@ module MovieProduction
       self.class.name.match(/(\w+)Movie/)[1].to_s.downcase.to_sym
     end
 
-    def additional_info
-      # служебный объект работает с yml файлом
-      #informator.get_info
-
-    end
-
-    def get_imdb_id
+    def imdb_id
       self.link.split("|").first.split("/")[4]
     end
 
-    def fetch_additional_info(yml_file = TMDBApi.new.yml_file)
+    # запрос к объекту, который возвращает хэш нужной доп. инфы - чья функция лезть в YML файл с инфой
+    def save_additional_info(*keys)
+      self.additional_info = MovieProduction::AdditionalMovieInfo.fetch_data(self, keys)
+      #binding.pry
+
       # достает для каждого мувика доп. инфу для отображения в index.html
-      imdb_id = get_imdb_id
-      binding.pry
+      #imdb_id = get_imdb_id
+      #data = YAML.load_file(yml_file)
+      # Создать служебный объект для работы c YML и предоставлением данных Movie?
+      #options = data.find { |data_hash| data_hash.has_key? imdb_id }[imdb_id]
+      #self.additional_info = options
+      #binding.pry
     end
   end
 end

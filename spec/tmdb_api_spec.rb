@@ -1,5 +1,5 @@
 RSpec.describe TMDBApi do
-  let(:tmdb) { TMDBApi.new("/home/pfear/projects/imdb_movies/spec/yml_data/movies_info.yml") }
+  let(:tmdb) { TMDBApi.new("/home/pfear/projects/imdb_movies/spec/yml_data/test_movies_info.yml") }
 
   describe "#send_request" do
     let(:key) { tmdb.imdb_keys.first }
@@ -32,7 +32,7 @@ RSpec.describe TMDBApi do
       it 'can be parsed' do
         VCR.use_cassette('send_request_response') do
           subject
-          yaml_data = YAML.load_file('/home/pfear/projects/imdb_movies/spec/yml_data/movies_info.yml')
+          yaml_data = YAML.load_file('/home/pfear/projects/imdb_movies/spec/yml_data/test_movies_info.yml')
           expect(yaml_data.first.has_key?('poster_path'))
         end
       end

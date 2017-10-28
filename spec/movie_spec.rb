@@ -3,10 +3,9 @@
 RSpec.describe MovieProduction::Movie do
   let(:movie) { MovieProduction::MovieCollection.new.all.sample }
 
-  describe '#fetch_additional_info' do
+  describe '#save_additional_info' do
     subject { movie }
-    before { movie.fetch_additional_info }
-
-    it { is_expected.to have_attributes(bg_picture, ru_title) }
+    before { movie.save_additional_info(:title, :poster_path) }
+    it { VCR.use_cassette('send_request_response') { expect(subject.additional_info).not_to be nil } }
   end
 end

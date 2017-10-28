@@ -1,17 +1,18 @@
 require 'haml'
 module MovieProduction
-  # Создает html-шаблон по мувикам из класса
+  # Создает html-шаблон по мувикам
   class HamlBuilder
-    attr_reader :movies
-
     def initialize(movies_collection)
       # разбиваем фильмы на субмассивы по две штуки
-      # один массив - один ряд фильмов из двух наименований
+      # один массив - один ряд фильмов d представлении(два наименования в однои ряде бутстрап сетки)
+      # для каждого фильма тянем доп. инфу?(очень долго, тесты тормозят здесь, беру только 12 мувиков)
       @movies_row = movies_collection.all
                                      .sample(12)
                                      .each_slice(2)
                                      .to_a
-      # Удаляем старый файл и создаем чистый
+
+      @movies_row.flatten.each { |movie| movie.save_additional_info(:title, :poster_path) }
+      # Удаляем старый файл и создаем чистый при очередной записи шаблона
       File.new(html_layout, 'w+')
     end
 
@@ -20,6 +21,7 @@ module MovieProduction
       # создает готовый файл
       rendered_template = create_template(haml_layout).render(self)
       File.open(html_layout, 'a') { |file| file.write(rendered_template) }
+      #binding.pry
       "Index file created"
     end
 

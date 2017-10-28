@@ -1,0 +1,37 @@
+!!! 5
+%html{:lang => 'en'}
+  %head
+    %meta{"charset" => "utf-8"}/
+    %meta{"name" => "viewport", :content => "width=device-width, initial-scale=1"}/
+    %meta{"name" => "description", "content" => ""}/
+
+    / Bootstrap Core CSS
+    %link{:href => "../../views/css/bootstrap.min.css", :rel => :stylesheet}/
+
+  %body
+    .container
+      - @movies_row.each do |row|
+        .row
+          .card-deck
+            - row.each do |movie|
+              .card.text-white.bg-info.mb-3{style: "width: 30rem;"}
+                %img{class: "card-img-top", src: "https://image.tmdb.org/t/p/w640/#{movie.additional_info[:poster_path]}", alt: "Poster image"}
+                .card-body
+                  %h4{class: "card-title"}
+                    =movie.title + ' ' + "(" + movie.additional_info[:title] + ")"
+                  %h6{class: "card-subtitle mb-2 text-muted"}
+                    =movie.country + ", "
+                    =movie.year
+                  %p{class: "card-text"}
+                    %strong= movie.director
+                  %p{class: "card-text"}
+                    =movie.genre.join(', ')
+                  %p{class: "card-text"}
+                    Starring:
+                    =movie.actors.join(', ')
+
+
+    / Bootstrap Core JavaScript
+    / =================================================================================
+    / Placed at the end of the document so that pages can load faster.
+    %script{:src => "../../views/js/bootstrap.min.js"}

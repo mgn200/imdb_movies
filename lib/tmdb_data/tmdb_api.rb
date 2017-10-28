@@ -10,12 +10,13 @@ require 'progressbar'
 
 class TMDBApi
   MOVIES_FILE = '/home/pfear/projects/imdb_movies/movies.txt'
+  YML_FILE_PATH = "/home/pfear/projects/imdb_movies/lib/tmdb_data/movies_info.yml"
   # как скрыть?
   API_KEY = "63610838faff3554e990e04c5edb3ed3"
 
   attr_reader :yml_file
 
-  def initialize(yml_file_path = "/home/pfear/projects/imdb_movies/lib/tmdb_data/movies_info.yml")
+  def initialize(yml_file_path = YML_FILE_PATH)
     # чтобы была возможность изменить файл для тестов
     @yml_file = yml_file_path
     File.new(@yml_file, "w+")
@@ -32,7 +33,7 @@ class TMDBApi
 
   def fetch_info
     prepared_data = []
-    imdb_keys.sample(2).each do |imdb_key|
+    imdb_keys.each do |imdb_key|
       response = send_request(imdb_key)
       result = JSON.parse(response.body)["movie_results"].first
       prepared_data << { imdb_key => result }
