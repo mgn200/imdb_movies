@@ -26,7 +26,6 @@ class TMDBApi
     # Создает массив уникальных id'шников фильмов на IMDB
     # API TMDB знает эти айдишники
     array = []
-    # use regex?
     File.read(MOVIES_FILE).each_line { |line| array << line.split("|").first.split("/")[4] }
     array
   end

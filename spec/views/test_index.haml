@@ -18,8 +18,8 @@
                 %img{class: "card-img-top", src: "https://image.tmdb.org/t/p/w640/#{movie.additional_info[:poster_path]}", alt: "Poster image"}
                 .card-body
                   %h4{class: "card-title"}
-                    =movie.title + ' ' + "(" + movie.additional_info[:title] + ")"
-                  %h6{class: "card-subtitle mb-2 text-muted"}
+                    = "#{movie.title} (#{movie.additional_info[:title]})"
+                  %h6{class: "card-subtitle mb-2"}
                     =movie.country + ", "
                     =movie.year
                   %p{class: "card-text"}

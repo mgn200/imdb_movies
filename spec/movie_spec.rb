@@ -2,10 +2,19 @@
 # Тестируеся обработка доп. параметров постера и перевода из YML файла
 RSpec.describe MovieProduction::Movie do
   let(:movie) { MovieProduction::MovieCollection.new.all.sample }
-
   describe '#save_additional_info' do
-    subject { movie }
-    before { movie.save_additional_info(:title, :poster_path) }
-    it { VCR.use_cassette('send_request_response') { expect(subject.additional_info).not_to be nil } }
+    context 'YAML parser' do
+      before { movie.save_additional_info(MovieProduction::Scrappers::Yaml, :title, :poster_path) }
+      it { VCR.use_cassette('send_request_response') { expect(movie.additional_info).not_to be nil } }
+    end
+
+    context 'IMDB parser' do
+      it {
+        VCR.use_cassette('imdb_page') do
+         movie.save_additional_info(MovieProduction::Scrappers::Imdb)
+         expect(movie.additional_info).not_to be nil
+       end
+      }
+    end
   end
 end

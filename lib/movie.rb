@@ -66,17 +66,15 @@ module MovieProduction
     end
 
     # запрос к объекту, который возвращает хэш нужной доп. инфы - чья функция лезть в YML файл с инфой
-    def save_additional_info(*keys)
-      self.additional_info = MovieProduction::AdditionalMovieInfo.fetch_data(self, keys)
+    def save_additional_info(scrapper, *keys)
+      self.additional_info.merge! scrapper.run(self, keys)
       #binding.pry
-
       # достает для каждого мувика доп. инфу для отображения в index.html
       #imdb_id = get_imdb_id
       #data = YAML.load_file(yml_file)
       # Создать служебный объект для работы c YML и предоставлением данных Movie?
       #options = data.find { |data_hash| data_hash.has_key? imdb_id }[imdb_id]
       #self.additional_info = options
-      #binding.pry
     end
   end
 end
