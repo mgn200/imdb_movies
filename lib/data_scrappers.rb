@@ -6,7 +6,7 @@ module MovieProduction
   module Scrappers
     # get info from prepared YML file from themoviedb api
     class Tmdb
-      def self.run(movie, keys = [])
+      def self.run(movie, *keys)
         raise ArgumentError, 'Укажите, какие доп. параметры нужно получить.' if keys.empty?
         keys.map!(&:to_s)
         data = YAML.load_file(TMDBApi::YML_FILE_PATH)

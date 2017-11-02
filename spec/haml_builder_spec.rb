@@ -1,5 +1,5 @@
 RSpec.describe MovieProduction::HamlBuilder do
-  let(:movies) { MovieProduction::MovieCollection.new }
+  let(:movies) { MovieProduction::MovieCollection.new.all.sample(10) }
   let(:haml_builder) { MovieProduction::HamlBuilder.new(movies) }
   #before { allow(haml_builder).to receive(:haml_layout).and_return("spec/views/test_index.html") }
   describe "Build html file from haml layout" do
@@ -20,7 +20,7 @@ RSpec.describe MovieProduction::HamlBuilder do
         VCR.use_cassette("send_request_response") do
           before { haml_builder.build_html }
           let(:file_content) { File.read "spec/views/test_index.html" }
-          it { expect(file_content).to_not be nil }
+          it { expect(file_content).not_to be nil }
         end
       end
     end

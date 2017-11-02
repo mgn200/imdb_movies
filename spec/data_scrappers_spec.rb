@@ -1,20 +1,22 @@
-RSpec.describe MovieProduction::DataScrappers::Imdb do
+RSpec.describe MovieProduction::Scrappers::Imdb do
+  let(:movie) { MovieProduction::MovieCollection.new.all.sample}
+
   describe '#run' do
-    subject { MovieProduction::DataScrappers::Imdb.run }
+    subject { MovieProduction::Scrappers::Imdb.run(movie) }
 
-    context 'returns ostruct of parsed strings' do
-      it { is_expected.to be_a OpenStruct }
-    end
-
-    context 'use existing html file' do
-
+    context 'returns Hash with parsed imdb info' do
+      it { is_expected.to be_a Hash }
+      it { expect(subject[:budget]).not_to be nil }
     end
   end
 end
 
-RSPec.describe MovieProduction::DataScrappers::Tmdb do
+RSpec.describe MovieProduction::Scrappers::Tmdb do
+  let(:movie) { MovieProduction::MovieCollection.new.all.sample}
+
   describe '#run' do
-    subject { MovieProduction::DataScrappers::Tmdb.run(movie, :title) }
-    it { is_expected.to be_a OpenStruct }
+    subject { MovieProduction::Scrappers::Tmdb.run(movie, :title) }
+    it { is_expected.to be_a Hash }
+    it { expect(subject["title"]).not_to be nil }
   end
 end

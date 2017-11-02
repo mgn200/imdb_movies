@@ -4,7 +4,7 @@ RSpec.describe MovieProduction::Movie do
   let(:movie) { MovieProduction::MovieCollection.new.all.sample }
   describe '#save_additional_info' do
     context 'YAML parser' do
-      before { movie.save_additional_info(MovieProduction::Scrappers::Yaml, :title, :poster_path) }
+      before { movie.save_additional_info(MovieProduction::Scrappers::Tmdb, :title, :poster_path) }
       it { VCR.use_cassette('send_request_response') { expect(movie.additional_info).not_to be nil } }
     end
 
