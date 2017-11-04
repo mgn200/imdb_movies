@@ -1,10 +1,13 @@
 # rubocop:disable Style/CaseEquality
 # rubocop:disable Namin/PredicateName
 require 'pry'
+require 'money'
 
 module MovieProduction
   class Movie
     include Virtus.model
+    TMDB_YML_FILE = "/home/pfear/projects/imdb_movies/lib/tmdb_data/movies_tmdb_info.yml"
+    IMDB_YML_FILE = "/home/pfear/projects/imdb_movies/lib/tmdb_data/movies_imdb_info.yml"
     PRICES = { ancient: Money.new(100, 'USD'),
                classic: Money.new(150, 'USD'),
                modern: Money.new(300, 'USD'),
@@ -24,7 +27,6 @@ module MovieProduction
     attribute :year, Coercions::Integer
     attribute :link
     attribute :country
-    attribute :additional_info, Hash
 
     def to_s
       "#{@title}, #{@detailed_year}, #{@director}, #{@rating}"
@@ -65,9 +67,23 @@ module MovieProduction
       self.link.split("|").first.split("/")[4]
     end
 
-    # запрос к объекту, который возвращает хэш нужной доп. инфы - чья функция лезть в YML файл с инфой
-    def save_additional_info(scrapper, *keys)
-      self.additional_info.merge! scrapper.run(self, keys)
+    def poster
+      YAML.load_file(TMDB_FILE_PATH)[imdb_id][:poster_path]
+    end
+
+    def rus_title
+      YAML.load_file(TMDB_FILE_PATH)[imdb_id][:title]
+    end
+
+    def budget
+      YAML.load_file(IMDB_FILE_PATH)[imdb_id][:budget]
+    end
+    # достает инфу из YML-файла
+    def additional_info
+
+      # по imdb_id? и ключам обращается к файлу?
+
+      # self.additional_info.merge! scrapper.run(self, keys)
     end
   end
 end

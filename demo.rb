@@ -3,8 +3,8 @@ require 'date'
 require 'money'
 require 'virtus'
 require 'ostruct'
-require_relative 'lib/data_scrappers'
-require_relative 'lib/tmdb_data/tmdb_api'
+require_relative 'lib/tmdb_yml_parser'
+require_relative 'lib/imdb_scrapper'
 require_relative 'lib/time_helper'
 require_relative 'lib/coercions'
 require_relative 'lib/movie'
@@ -23,6 +23,7 @@ require_relative 'lib/schedule_period'
 require_relative 'lib/theatre_schedule'
 require_relative 'lib/theatre'
 require_relative 'lib/schedule_line'
+binding.pry
 # netflix = MovieProduction::Netflix.new
 # netflix.show { |movie| !movie.title.include?('Terminator') && movie.genre.include?('Action') && movie.year > 2003}
 # netflix.define_filter(:test) { |movie| movie.director != 'David Fincher' && movie.year > 1999 }
