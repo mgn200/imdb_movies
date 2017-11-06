@@ -1,27 +1,26 @@
 RSpec.describe MovieProduction::HamlBuilder do
-  let(:movies) { MovieProduction::MovieCollection.new.all.sample(10) }
+  # берем определенный мувик для сравнения данных
+  let(:movies) { MovieProduction::MovieCollection.new.filter(title: 'Fight Club') }
   let(:haml_builder) { MovieProduction::HamlBuilder.new(movies) }
   #before { allow(haml_builder).to receive(:haml_layout).and_return("spec/views/test_index.html") }
   describe "Build html file from haml layout" do
     describe "#build_html" do
       before {
-        allow_any_instance_of(MovieProduction::HamlBuilder).to receive(:html_layout).and_return("spec/views/test_index.html")
+        stub_const("MovieProduction::HamlBuilder::HTML_FILE", "spec/views/test_index.html")
         allow_any_instance_of(MovieProduction::HamlBuilder).to receive(:haml_layout).and_return(File.read('spec/views/test_index.haml'))
       }
 
-      context 'puts succes message' do
-        VCR.use_cassette("send_request_response") do
-          subject { haml_builder.build_html }
-          it { is_expected.to eq 'Index file created' }
-        end
+      context 'return success message' do
+        subject { haml_builder.build_html }
+        it { is_expected.to eq 'Index file created' }
       end
 
       context 'created file with content' do
-        VCR.use_cassette("send_request_response") do
-          before { haml_builder.build_html }
-          let(:file_content) { File.read "spec/views/test_index.html" }
-          it { expect(file_content).not_to be nil }
-        end
+        before { haml_builder.build_html }
+        subject { File.read "spec/views/test_index.html" }
+        it { is_expected.to have_tag('h6.card-subtitle.mb-2', :seen => /USA, 1999, $63,000,000/ )}
+        it { is_expected.to have_tag('h4.card-title', :seen => "Fight Club (Бойцовский клуб)" )}
+        it { is_expected.to have_tag('img.card-img-top', :with => { :src => "https://image.tmdb.org/t/p/w640//hTjHSmQGiaUMyIx3Z25Q1iktCFD.jpg" }) }
       end
     end
   end

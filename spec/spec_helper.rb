@@ -4,7 +4,7 @@ require 'money'
 require './demo.rb'
 require 'webmock/rspec'
 require 'vcr'
-
+require 'rspec-html-matchers'
 
 VCR.configure do |c|
   c.cassette_library_dir     = 'spec/cassettes'
@@ -26,6 +26,6 @@ RSpec.configure do |config|
   config.mock_with :rspec do |mocks|
     mocks.verify_partial_doubles = true
   end
-
+  include RSpecHtmlMatchers
   config.shared_context_metadata_behavior = :apply_to_host_groups
 end

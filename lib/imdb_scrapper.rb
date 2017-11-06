@@ -3,21 +3,17 @@ require 'nokogiri'
 require 'yaml'
 class IMDBScrapper
   PAGES_PATH = "/home/pfear/projects/imdb_movies/lib/imdb_pages"
-  YML_FILE_PATH = "/home/pfear/projects/imdb_movies/lib/imdb_data"
-  # ключи пока строго прописаны(бюджет)
+  YML_FILE_PATH = "/home/pfear/projects/imdb_movies/lib/imdb_data/movies_imdb_info.yml"
+  # ключи строго прописаны(бюджет)
   # тянет хтмл страницы всех фильмов из коллекции
   # сохранет данные о бюджете из этих страниц в yml
-  def self.run(movie_collection)
+  def self.run(movies_array)
     data = {}
-    movie_collection.all.each do |movie|
+    movies_array.each do |movie|
       data["#{movie.imdb_id}"] = { budget: parse_html_page(movie) }
     end
 
-    save_to_yaml(data)
-  end
-
-  def self.save_to_yaml(data)
-    File.open("#{YML_FILE_PATH}/movies_imdb_info.yml", "w+") { |file| file.write data.to_yaml }
+    File.open(YML_FILE_PATH, "w+") { |file| file.write data.to_yaml }
   end
 
   def self.parse_html_page(movie)

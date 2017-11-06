@@ -1,0 +1,172 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://api.themoviedb.org/3/find/tt0137523?api_key=&external_source=imdb_id&lanuage=ru-RU
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      Host:
+      - api.themoviedb.org
+  response:
+    status:
+      code: 401
+      message: Unauthorized
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - ETag, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset, Retry-After
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Sun, 05 Nov 2017 20:42:09 GMT
+      Server:
+      - openresty
+      X-Ratelimit-Limit:
+      - '40'
+      X-Ratelimit-Remaining:
+      - '39'
+      X-Ratelimit-Reset:
+      - '1509914539'
+      Content-Length:
+      - '86'
+      Connection:
+      - keep-alive
+    body:
+      encoding: UTF-8
+      string: '{"status_code":7,"status_message":"Invalid API key: You must be granted
+        a valid key."}'
+    http_version: 
+  recorded_at: Sun, 05 Nov 2017 20:42:09 GMT
+- request:
+    method: get
+    uri: https://api.themoviedb.org/3/find/tt0137523?api_key=63610838faff3554e990e04c5edb3ed3&external_source=imdb_id&lanuage=ru-RU
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      Host:
+      - api.themoviedb.org
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - ETag, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset, Retry-After
+      Cache-Control:
+      - public, max-age=21600
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Sun, 05 Nov 2017 20:44:22 GMT
+      Etag:
+      - '"c647b2f350a36a00d30c46944d5431f3"'
+      Server:
+      - openresty
+      X-Memc:
+      - HIT
+      X-Memc-Age:
+      - '7387'
+      X-Memc-Expires:
+      - '14213'
+      X-Memc-Key:
+      - 667391c15b9828e941696690838ca38d
+      X-Ratelimit-Limit:
+      - '40'
+      X-Ratelimit-Remaining:
+      - '39'
+      X-Ratelimit-Reset:
+      - '1509914672'
+      Content-Length:
+      - '747'
+      Connection:
+      - keep-alive
+    body:
+      encoding: UTF-8
+      string: '{"movie_results":[{"adult":false,"backdrop_path":"/8uO0gUM8aNqYLs1OsTBQiXu0fEv.jpg","genre_ids":[18],"id":550,"original_language":"en","original_title":"Fight
+        Club","overview":"A ticking-time-bomb insomniac and a slippery soap salesman
+        channel primal male aggression into a shocking new form of therapy. Their
+        concept catches on, with underground \"fight clubs\" forming in every town,
+        until an eccentric gets in the way and ignites an out-of-control spiral toward
+        oblivion.","release_date":"1999-10-15","poster_path":"/adw6Lq9FiC9zjYEpOqfq03ituwp.jpg","popularity":66.926852,"title":"Fight
+        Club","video":false,"vote_average":8.300000000000001,"vote_count":9979}],"person_results":[],"tv_results":[],"tv_episode_results":[],"tv_season_results":[]}'
+    http_version: 
+  recorded_at: Sun, 05 Nov 2017 20:44:22 GMT
+- request:
+    method: get
+    uri: https://api.themoviedb.org/3/find/tt0137523?api_key=63610838faff3554e990e04c5edb3ed3&external_source=imdb_id&language=ru-RU
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+      Host:
+      - api.themoviedb.org
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Expose-Headers:
+      - ETag, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset, Retry-After
+      Cache-Control:
+      - public, max-age=21600
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Mon, 06 Nov 2017 09:31:40 GMT
+      Etag:
+      - W/"714366bbb9b2a8b29698f1e36d538f6a"
+      Server:
+      - openresty
+      Vary:
+      - Accept-Encoding
+      X-Memc:
+      - MISS, STORE
+      X-Memc-Age:
+      - '0'
+      X-Memc-Expires:
+      - '21600'
+      X-Memc-Key:
+      - f14f5be7037ddc7c858203c433cb563e
+      X-Ratelimit-Limit:
+      - '40'
+      X-Ratelimit-Remaining:
+      - '39'
+      X-Ratelimit-Reset:
+      - '1509960710'
+      Content-Length:
+      - '652'
+      Connection:
+      - keep-alive
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        eyJtb3ZpZV9yZXN1bHRzIjpbeyJhZHVsdCI6ZmFsc2UsImJhY2tkcm9wX3BhdGgiOiIvOHVPMGdVTThhTnFZTHMxT3NUQlFpWHUwZkV2LmpwZyIsImdlbnJlX2lkcyI6WzE4XSwiaWQiOjU1MCwib3JpZ2luYWxfbGFuZ3VhZ2UiOiJlbiIsIm9yaWdpbmFsX3RpdGxlIjoiRmlnaHQgQ2x1YiIsIm92ZXJ2aWV3Ijoi0KLQtdGA0LfQsNC10LzRi9C5INGF0YDQvtC90LjRh9C10YHQutC+0Lkg0LHQtdGB0YHQvtC90LjRhtC10Lkg0Lgg0L7RgtGH0LDRj9C90L3QviDQv9GL0YLQsNGO0YnQuNC50YHRjyDQstGL0YDQstCw0YLRjNGB0Y8g0LjQtyDQvNGD0YfQuNGC0LXQu9GM0L3QviDRgdC60YPRh9C90L7QuSDQttC40LfQvdC4INC60LvQtdGA0Log0LLRgdGC0YDQtdGH0LDQtdGCINC90LXQutC+0LXQs9C+INCi0LDQudC70LXRgNCwINCU0LDRgNC00LXQvdCwLCDRhdCw0YDQuNC30LzQsNGC0LjRh9C10YHQutC+0LPQviDRgtC+0YDQs9C+0LLRhtCwINC80YvQu9C+0Lwg0YEg0LjQt9Cy0YDQsNGJ0LXQvdC90L7QuSDRhNC40LvQvtGB0L7RhNC40LXQuS4g0KLQsNC50LvQtdGAINGD0LLQtdGA0LXQvSwg0YfRgtC+INGB0LDQvNC+0YHQvtCy0LXRgNGI0LXQvdGB0YLQstC+0LLQsNC90LjQtSDigJQg0YPQtNC10Lsg0YHQu9Cw0LHRi9GFLCDQsCDRgdCw0LzQvtGA0LDQt9GA0YPRiNC10L3QuNC1IOKAlCDQtdC00LjQvdGB0YLQstC10L3QvdC+0LUsINGA0LDQtNC4INGH0LXQs9C+INGB0YLQvtC40YIg0LbQuNGC0YwuIiwicmVsZWFzZV9kYXRlIjoiMTk5OS0xMC0xNSIsInBvc3Rlcl9wYXRoIjoiL2hUakhTbVFHaWFVTXlJeDNaMjVRMWlrdENGRC5qcGciLCJwb3B1bGFyaXR5Ijo3OC45NTA4MjYwMDAwMDAwMSwidGl0bGUiOiLQkdC+0LnRhtC+0LLRgdC60LjQuSDQutC70YPQsSIsInZpZGVvIjpmYWxzZSwidm90ZV9hdmVyYWdlIjo4LjMwMDAwMDAwMDAwMDAwMSwidm90ZV9jb3VudCI6OTk3OX1dLCJwZXJzb25fcmVzdWx0cyI6W10sInR2X3Jlc3VsdHMiOltdLCJ0dl9lcGlzb2RlX3Jlc3VsdHMiOltdLCJ0dl9zZWFzb25fcmVzdWx0cyI6W119
+    http_version: 
+  recorded_at: Mon, 06 Nov 2017 09:31:40 GMT
+recorded_with: VCR 3.0.3

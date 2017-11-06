@@ -7,7 +7,7 @@ module MovieProduction
   class Movie
     include Virtus.model
     TMDB_YML_FILE = "/home/pfear/projects/imdb_movies/lib/tmdb_data/movies_tmdb_info.yml"
-    IMDB_YML_FILE = "/home/pfear/projects/imdb_movies/lib/tmdb_data/movies_imdb_info.yml"
+    IMDB_YML_FILE = "/home/pfear/projects/imdb_movies/lib/imdb_data/movies_imdb_info.yml"
     PRICES = { ancient: Money.new(100, 'USD'),
                classic: Money.new(150, 'USD'),
                modern: Money.new(300, 'USD'),
@@ -68,22 +68,21 @@ module MovieProduction
     end
 
     def poster
-      YAML.load_file(TMDB_FILE_PATH)[imdb_id][:poster_path]
+      YAML.load_file(TMDB_YML_FILE)[imdb_id]['poster_path']
+      rescue Errno::ENOENT
+        "No info"
     end
 
     def rus_title
-      YAML.load_file(TMDB_FILE_PATH)[imdb_id][:title]
+      YAML.load_file(TMDB_YML_FILE)[imdb_id]['title']
+      rescue Errno::ENOENT
+        "No info"
     end
 
     def budget
-      YAML.load_file(IMDB_FILE_PATH)[imdb_id][:budget]
-    end
-    # достает инфу из YML-файла
-    def additional_info
-
-      # по imdb_id? и ключам обращается к файлу?
-
-      # self.additional_info.merge! scrapper.run(self, keys)
+      YAML.load_file(IMDB_YML_FILE)[imdb_id][:budget]
+      rescue Errno::ENOENT
+        "No info"
     end
   end
 end

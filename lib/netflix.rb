@@ -46,8 +46,8 @@ module MovieProduction
       from && arg ? user_filters[filter_name] = proc { |m| user_filters[from].call(m, arg) } : user_filters[filter_name] = block
     end
 
-    def build_html(builder)
-      builder.new(self).build_html
+    def build_html(builder, movie_collection = all)
+      builder.new(movie_collection).build_html
     end
 
     private
