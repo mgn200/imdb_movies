@@ -4,7 +4,7 @@ RSpec.describe TMDBApi do
   let(:movies) { MovieProduction::MovieCollection.new.filter(title: 'Fight Club') }
 
   before do
-    stub_const("TMDBApi::YML_FILE_PATH", "/home/pfear/projects/imdb_movies/spec/yml_data/test_movies_info.yml")
+    stub_const("TMDBApi::YML_FILE_PATH", File.expand_path("spec/yml_data/test_movies_info.yml"))
   end
 
   describe "#fetch_data" do

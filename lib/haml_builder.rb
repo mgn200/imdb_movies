@@ -17,8 +17,8 @@ module MovieProduction
       # берет мувик и по каждому атриюуту создаёт строку
       # создает готовый  html файл
       rendered_template = Haml::Engine.new(haml_layout).render(self)
-      File.open(HTML_FILE, 'w+') { |file| file.write(rendered_template) }
-      "Index file created"
+      File.write(HTML_FILE, rendered_template)
+      return true
     end
 
     def haml_layout

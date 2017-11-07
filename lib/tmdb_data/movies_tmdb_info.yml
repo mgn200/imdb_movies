@@ -264,7 +264,7 @@ tt0080684:
   title: 'Звёздные войны: Эпизод 5 - Империя наносит ответный удар'
   video: false
   vote_average: 8.2
-  vote_count: 6160
+  vote_count: 6165
 tt0109830:
   adult: false
   backdrop_path: "/ctOEhQiFIHWkiaYp7b0ibSTe5IL.jpg"
@@ -423,7 +423,7 @@ tt0076759:
   title: 'Звёздные войны: Эпизод 4 - Новая надежда'
   video: false
   vote_average: 8.1
-  vote_count: 6999
+  vote_count: 7002
 tt0047478:
   adult: false
   backdrop_path: "/mzI1JXm8sX5fia3ifPS2jGPUh2n.jpg"
@@ -693,7 +693,7 @@ tt0120586:
   title: Американская история Х
   video: false
   vote_average: 8.2
-  vote_count: 3238
+  vote_count: 3269
 tt0034583:
   adult: false
   backdrop_path: "/xRqsFFteJrvLHxswk78NzU7zOrU.jpg"
@@ -1634,7 +1634,7 @@ tt0086190:
   title: 'Звёздные войны: Эпизод 6 - Возвращение Джедая'
   video: false
   vote_average: 7.9
-  vote_count: 4904
+  vote_count: 4909
 tt0211915:
   adult: false
   backdrop_path: "/nxhfenC1jb5EcTI5GYxqnjYZMId.jpg"
@@ -3202,7 +3202,7 @@ tt0434409:
   title: "«V» значит Вендетта"
   video: false
   vote_average: 7.7
-  vote_count: 4724
+  vote_count: 4734
 tt0118715:
   adult: false
   backdrop_path: "/okbbgki0sUFgDHWSInMIQgC86Pc.jpg"
@@ -4245,8 +4245,8 @@ tt0401792:
   popularity: 19.3937
   title: Город грехов
   video: false
-  vote_average: 7.3
-  vote_count: 2821
+  vote_average: 7.2
+  vote_count: 2844
 tt1130884:
   adult: false
   backdrop_path: "/fmLWuAfDPaUa3Vi5nO1YUUyZaX6.jpg"
@@ -5516,7 +5516,7 @@ tt0094625:
   title: Акира
   video: false
   vote_average: 7.8
-  vote_count: 819
+  vote_count: 833
 tt0037008:
   adult: false
   backdrop_path: "/gw2cyjkc9AdBwywHZoRuYEdurIU.jpg"

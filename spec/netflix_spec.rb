@@ -203,6 +203,6 @@ RSpec.describe MovieProduction::Netflix do
     }
 
     subject { netflix.build_html(MovieProduction::HamlBuilder, movies) }
-    it { is_expected.to eq 'Index file created' }
+    it { is_expected.to be true }
   end
 end

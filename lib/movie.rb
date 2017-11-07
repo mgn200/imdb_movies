@@ -6,13 +6,12 @@ require 'money'
 module MovieProduction
   class Movie
     include Virtus.model
-    TMDB_YML_FILE = "/home/pfear/projects/imdb_movies/lib/tmdb_data/movies_tmdb_info.yml"
-    IMDB_YML_FILE = "/home/pfear/projects/imdb_movies/lib/imdb_data/movies_imdb_info.yml"
+    TMDB_YML_FILE = File.expand_path("lib/tmdb_data/movies_tmdb_info.yml")
+    IMDB_YML_FILE = File.expand_path("lib/imdb_data/movies_imdb_info.yml")
     PRICES = { ancient: Money.new(100, 'USD'),
                classic: Money.new(150, 'USD'),
                modern: Money.new(300, 'USD'),
                new: Money.new(500, 'USD') }.freeze
-
     # set to reader only
     attribute :list
     attribute :movie_info
@@ -68,21 +67,23 @@ module MovieProduction
     end
 
     def poster
-      YAML.load_file(TMDB_YML_FILE)[imdb_id]['poster_path']
-      rescue Errno::ENOENT
-        "No info"
+      tmdb_info['poster_path']
     end
 
     def rus_title
-      YAML.load_file(TMDB_YML_FILE)[imdb_id]['title']
-      rescue Errno::ENOENT
-        "No info"
+      tmdb_info['title']
     end
 
     def budget
-      YAML.load_file(IMDB_YML_FILE)[imdb_id][:budget]
-      rescue Errno::ENOENT
-        "No info"
+      imdb_info[:budget]
+    end
+
+    def tmdb_info
+      @tmdb_info ||= File.exist?(TMDB_YML_FILE) ? YAML.load_file(TMDB_YML_FILE)[imdb_id] : {}
+    end
+
+    def imdb_info
+      @imdb_info ||= File.exist?(IMDB_YML_FILE) ? YAML.load_file(IMDB_YML_FILE)[imdb_id] : {}
     end
   end
 end

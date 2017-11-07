@@ -20,7 +20,7 @@ RSpec.describe MovieProduction::Movie do
     context 'when YML file is not created' do
       before { stub_const("MovieProduction::Movie::TMDB_YML_FILE", "non_existent") }
       subject { movie.rus_title }
-      it { is_expected.to eq 'No info' }
+      it { is_expected.to eq nil }
     end
   end
 end

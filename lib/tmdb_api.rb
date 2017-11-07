@@ -8,7 +8,7 @@ require 'progressbar'
 # делает запрос к апи tmdb, создает yml файл c информацией
 # этот файл затем обрабатыватся TmdbYmlParser'ом, чтобы вытянуть доп. инфу по фильму
 class TMDBApi
-  YML_FILE_PATH = "/home/pfear/projects/imdb_movies/lib/tmdb_data/movies_tmdb_info.yml"
+  YML_FILE_PATH = File.expand_path("lib/tmdb_data/movies_tmdb_info.yml")
   URL_PATTERN = "https://api.themoviedb.org/3/find/%s?api_key=%s&language=ru-RU&external_source=imdb_id"
   API_KEY = YAML.load_file('config.yml')['ApiKey']
 
@@ -17,9 +17,7 @@ class TMDBApi
   end
 
   def save(data)
-    File.open(YML_FILE_PATH, 'w+') do |file|
-      file.write data.to_yaml
-    end
+    File.write(YML_FILE_PATH, data.to_yaml)
   end
   # берет imdb ключи из коллекции мувиков
   # делаем запросы к tmdb api, который знате эти ключи
