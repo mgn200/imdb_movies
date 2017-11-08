@@ -193,4 +193,16 @@ RSpec.describe MovieProduction::Netflix do
       it { expect(subject).to eq "Now showing: The Pianist 12:00:00 - 14:30:00" }
     end
   end
+
+  describe "#build_html" do
+    let(:movies) { MovieProduction::MovieCollection.new.filter(title: 'Fight Club') }
+
+    before {
+      stub_const("MovieProduction::HamlBuilder::HTML_FILE", "spec/views/test_index.html")
+      allow_any_instance_of(MovieProduction::HamlBuilder).to receive(:haml_layout).and_return(File.read('spec/views/test_index.haml'))
+    }
+
+    subject { netflix.build_html(MovieProduction::HamlBuilder, movies) }
+    it { is_expected.to be true }
+  end
 end
