@@ -1,4 +1,4 @@
-RSpec.describe MovieProduction::NewMovie do
+RSpec.describe ImdbPlayfield::NewMovie do
   let(:movie_info)  { { title: 'Test movie',
                          year: 2002,
                          actors: 'A, B, C',
@@ -7,7 +7,7 @@ RSpec.describe MovieProduction::NewMovie do
                          nil: nil
                        } }
 
-  subject(:new_movie) { MovieProduction::NewMovie.new(movie_info) }
+  subject(:new_movie) { ImdbPlayfield::NewMovie.new(movie_info) }
 
   describe '#initialze' do
     it {

@@ -1,5 +1,5 @@
-RSpec.describe MovieProduction::ClassicMovie do
-  let(:list) { MovieProduction::MovieCollection.new }
+RSpec.describe ImdbPlayfield::ClassicMovie do
+  let(:list) { ImdbPlayfield::MovieCollection.new }
   let(:movie_info) { { title: 'Test movie',
                        year: 1954,
                        actors: 'A, B, C',
@@ -9,7 +9,7 @@ RSpec.describe MovieProduction::ClassicMovie do
                        list: list
                    } }
 
-  subject(:classic_movie) { MovieProduction::ClassicMovie.new(movie_info) }
+  subject(:classic_movie) { ImdbPlayfield::ClassicMovie.new(movie_info) }
 
   describe '#initialze' do
     it {

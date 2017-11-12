@@ -1,6 +1,6 @@
-RSpec.describe MovieProduction::Theatre do
+RSpec.describe ImdbPlayfield::Theatre do
   let(:theatre) do
-    MovieProduction::Theatre.new do
+    ImdbPlayfield::Theatre.new do
       hall :red, title: 'Красный зал', places: 100
       hall :blue, title: 'Синий зал', places: 50
       hall :green, title: 'Зелёный зал (deluxe)', places: 12
@@ -69,7 +69,7 @@ RSpec.describe MovieProduction::Theatre do
     end
 
     context 'when periods intersect by time and halls' do
-      subject { MovieProduction::Theatre.new do
+      subject { ImdbPlayfield::Theatre.new do
                   period "09:00".."11:00" do
                     hall :red
                   end
@@ -87,7 +87,7 @@ RSpec.describe MovieProduction::Theatre do
   describe 'methods' do
     describe '#check_holes' do
       context 'raise error on gap between two periods' do
-        subject { MovieProduction::Theatre.new do
+        subject { ImdbPlayfield::Theatre.new do
                           period "09:00".."13:00" do
                           end
 
@@ -104,7 +104,7 @@ RSpec.describe MovieProduction::Theatre do
 
     describe '#buy_ticket' do
       let(:theatre) do
-        MovieProduction::Theatre.new do
+        ImdbPlayfield::Theatre.new do
           hall :red, title: 'Красный зал', places: 100
           hall :blue, title: 'Синий зал', places: 50
           hall :green, title: 'Зелёный зал (deluxe)', places: 12
@@ -150,7 +150,7 @@ RSpec.describe MovieProduction::Theatre do
 
     describe '#show with exclude_*attr params' do
       let(:theatre) do
-        MovieProduction::Theatre.new do
+        ImdbPlayfield::Theatre.new do
           hall :red, title: 'Красный зал', places: 100
           hall :blue, title: 'Синий зал', places: 50
           hall :green, title: 'Зелёный зал (deluxe)', places: 12

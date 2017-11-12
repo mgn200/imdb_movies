@@ -1,5 +1,5 @@
-RSpec.describe MovieProduction::Cashbox do
-  let(:object) { Object.new.extend MovieProduction::Cashbox}
+RSpec.describe ImdbPlayfield::Cashbox do
+  let(:object) { Object.new.extend ImdbPlayfield::Cashbox}
 
   describe '#cash' do
     subject { object.cash }

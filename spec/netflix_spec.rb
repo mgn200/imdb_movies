@@ -1,5 +1,5 @@
-RSpec.describe MovieProduction::Netflix do
-  let(:netflix) { MovieProduction::Netflix.new }
+RSpec.describe ImdbPlayfield::Netflix do
+  let(:netflix) { ImdbPlayfield::Netflix.new }
   let(:params) { { period: :ancient } }
   let(:prepayment) { 10 }
 
@@ -9,26 +9,26 @@ RSpec.describe MovieProduction::Netflix do
   end
 
   describe '#cash' do
-    let(:netflix2) { MovieProduction::Netflix.new }
-    let(:netflix3) { MovieProduction::Netflix.new }
+    let(:netflix2) { ImdbPlayfield::Netflix.new }
+    let(:netflix3) { ImdbPlayfield::Netflix.new }
     before {
       netflix2.pay 12
       netflix3.pay 1
     }
-    it { expect(MovieProduction::Netflix.cash).to eq Money.new(1300) }
+    it { expect(ImdbPlayfield::Netflix.cash).to eq Money.new(1300) }
   end
 
   describe '#take' do
     before { netflix.pay(prepayment) }
-    subject { MovieProduction::Netflix.take "Bank" }
+    subject { ImdbPlayfield::Netflix.take "Bank" }
 
     context "when 'Bank' params" do
       it { expect(subject).to eq 'Проведена инкассация' }
-      it { expect { subject }.to change(MovieProduction::Netflix, :cash).to 0 }
+      it { expect { subject }.to change(ImdbPlayfield::Netflix, :cash).to 0 }
     end
 
     context 'other params' do
-      subject { MovieProduction::Netflix.take "Another" }
+      subject { ImdbPlayfield::Netflix.take "Another" }
       it { expect { subject }.to raise_error(ArgumentError, 'Вызываю полицию') }
     end
   end
@@ -64,7 +64,7 @@ RSpec.describe MovieProduction::Netflix do
 
       describe 'Returns string' do
         context 'single param' do
-          let(:stubed_movie) { MovieProduction::MovieCollection.new.filter(title: 'Fight Club').first }
+          let(:stubed_movie) { ImdbPlayfield::MovieCollection.new.filter(title: 'Fight Club').first }
           before { allow(netflix).to receive(:pick_movie).and_return(stubed_movie) }
           it { expect(subject).to eq "Now showing: Fight Club 12:00:00 - 14:19:00" }
         end
@@ -135,11 +135,11 @@ RSpec.describe MovieProduction::Netflix do
   describe '#pay' do
     it { expect { netflix.pay(24) }.to change(netflix, :balance).by Money.new(2400) }
     it { expect { netflix.pay(-24) }.to raise_error(ArgumentError, 'Wrong amount') }
-    it { expect { netflix.pay(23) }.to change(MovieProduction::Netflix, :cash).by Money.new(2300) }
+    it { expect { netflix.pay(23) }.to change(ImdbPlayfield::Netflix, :cash).by Money.new(2300) }
   end
 
   describe '#store_cash' do
-    it { expect { MovieProduction::Netflix.store_cash 12 }.to change(MovieProduction::Netflix, :cash).by Money.new(1200) }
+    it { expect { ImdbPlayfield::Netflix.store_cash 12 }.to change(ImdbPlayfield::Netflix, :cash).by Money.new(1200) }
   end
 
   describe '#how_much?' do
@@ -195,14 +195,14 @@ RSpec.describe MovieProduction::Netflix do
   end
 
   describe "#build_html" do
-    let(:movies) { MovieProduction::MovieCollection.new.filter(title: 'Fight Club') }
+    let(:movies) { ImdbPlayfield::MovieCollection.new.filter(title: 'Fight Club') }
 
     before {
-      stub_const("MovieProduction::HamlBuilder::HTML_FILE", "spec/views/test_index.html")
-      allow_any_instance_of(MovieProduction::HamlBuilder).to receive(:haml_layout).and_return(File.read('spec/views/test_index.haml'))
+      stub_const("ImdbPlayfield::HamlBuilder::HTML_FILE", "spec/views/test_index.html")
+      allow_any_instance_of(ImdbPlayfield::HamlBuilder).to receive(:haml_layout).and_return(File.read('spec/views/test_index.haml'))
     }
 
-    subject { netflix.build_html(MovieProduction::HamlBuilder, movies) }
+    subject { netflix.build_html(ImdbPlayfield::HamlBuilder, movies) }
     it { is_expected.to be true }
   end
 end

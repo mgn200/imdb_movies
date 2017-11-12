@@ -1,6 +1,6 @@
-RSpec.describe MovieProduction::NetflixDSL do
+RSpec.describe ImdbPlayfield::NetflixDSL do
   describe 'Netflix methods' do
-    let(:netflix) { MovieProduction::Netflix.new }
+    let(:netflix) { ImdbPlayfield::Netflix.new }
     context '#by_genre' do
       subject { netflix.by_genre.comedy.sample.genre }
       it { expect(subject.include? 'Comedy').to be true }

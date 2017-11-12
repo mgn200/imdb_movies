@@ -16,7 +16,7 @@ VCR.configure do |c|
 end
 
 RSpec.configure do |config|
-  include MovieProduction::TimeHelper
+  include ImdbPlayfield::TimeHelper
   WebMock.disable_net_connect!(allow_localhost: true)
 
   config.expect_with :rspec do |expectations|

@@ -1,7 +1,7 @@
 RSpec.describe TMDBApi do
   # Тестируем создание YML файла с нужными данными на одном заранее известном мувике
   let(:tmdb) { TMDBApi.new }
-  let(:movies) { MovieProduction::MovieCollection.new.filter(title: 'Fight Club') }
+  let(:movies) { ImdbPlayfield::MovieCollection.new.filter(title: 'Fight Club') }
 
   before do
     stub_const("TMDBApi::YML_FILE_PATH", File.expand_path("spec/yml_data/test_movies_info.yml"))

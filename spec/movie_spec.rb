@@ -1,6 +1,6 @@
 # доп. методы для шаблона страницы
-RSpec.describe MovieProduction::Movie do
-  let(:movie) { MovieProduction::MovieCollection.new.filter(title: 'Fight Club').first}
+RSpec.describe ImdbPlayfield::Movie do
+  let(:movie) { ImdbPlayfield::MovieCollection.new.filter(title: 'Fight Club').first}
   describe 'info from YML files' do
     context '#poster' do
       subject { movie.poster }
@@ -18,7 +18,7 @@ RSpec.describe MovieProduction::Movie do
     end
 
     context 'when YML file is not created' do
-      before { stub_const("MovieProduction::Movie::TMDB_YML_FILE", "non_existent") }
+      before { stub_const("ImdbPlayfield::Movie::TMDB_YML_FILE", "non_existent") }
       subject { movie.rus_title }
       it { is_expected.to eq nil }
     end

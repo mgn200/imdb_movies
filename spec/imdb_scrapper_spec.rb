@@ -1,7 +1,7 @@
 RSpec.describe IMDBScrapper do
   # Тестируем запись данных(бюджета) в YML файл после обработки html страницы мувика на imdb.com
   # На примере коллекции из одного мувика
-  let(:movie) { MovieProduction::MovieCollection.new.filter(title: 'Fight Club')}
+  let(:movie) { ImdbPlayfield::MovieCollection.new.filter(title: 'Fight Club')}
   before { stub_const("IMDBScrapper::YML_FILE_PATH", File.expand_path("spec/yml_data/test_imdb_budget.yml")) }
 
   describe '#run' do
