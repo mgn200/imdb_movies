@@ -169,7 +169,7 @@ netflix.by_genre.comedy # returns all the comedies
 netflix.by_country.usa # returns all movies made in USA
 ```
 
-Theatre - a representation of real world theater.
+Theatre is a representation of real world theater.
 
 ```ruby
 theater = ImdbPlayfield::Theatre.new
@@ -233,14 +233,16 @@ theatre.halls
 IMDBScrapper and TMDBApi are "data miners" that collect data needed for netflix.build_html method.
 It uses this data in haml and bootstrap template file in data/views/index.haml.
 Info is stored in YML files at data/movies_imdb_info.yml and data/movies_tmdb_info.yml.
+
 You can use HamlBuilder outside of Netflix, to render html when you need it.
 
 Run rake tasks to create yml files: `rake fetch_imdb` and `rake fetch_tmdb`
 After that you can:
+
 ```ruby
 ImdbPlayfield::HamlBuilder.new.build_html     # creates data/views/index.html
 ```
 
 ## Supported Ruby versions
 
-This app supports Ruby >= 2.3.0 
+This app supports Ruby >= 2.3.0
