@@ -1,4 +1,4 @@
 !lib/imdb_pages/.keep
-data/views/imdb_pages/*
+data/imdb_pages/*
 spec/views/*
 config.yml
