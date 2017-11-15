@@ -1,5 +1,4 @@
 require 'haml'
-require 'pry'
 
 module ImdbPlayfield
   # Создает html-шаблон по мувикам

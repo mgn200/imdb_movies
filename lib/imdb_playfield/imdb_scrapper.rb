@@ -27,6 +27,6 @@ module ImdbPlayfield
     end
   end
 end
-require 'open-uri'
-require 'nokogiri'
-require 'yaml'
+#require 'open-uri'
+#require 'nokogiri'
+#require 'yaml'

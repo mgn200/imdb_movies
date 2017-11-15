@@ -17,4 +17,4 @@ module ImdbPlayfield
     end
   end
 end
-require 'money'
+#require 'money'

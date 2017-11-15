@@ -63,7 +63,6 @@ module ImdbPlayfield
   end
 end
 
-require 'csv'
-require 'ostruct'
-require 'date'
-require 'date'
+#require 'csv'
+#require 'ostruct'
+#require 'date'

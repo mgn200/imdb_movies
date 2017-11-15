@@ -16,7 +16,7 @@ It implements:
  - Using HAML with bootstrap template to create html page of top 250 movies
  - Learning correct documentation and project structure
 
-## Instal
+## Install
 
 Install gem and don't forget to require it
 ```ruby
@@ -30,8 +30,8 @@ require 'imdb_playfield'
 
 ### Basic usage
 
-You have several options to play around:
-Filtering and sorting movies from movies.txt collection:
+You have several options to play around, such as
+filtering and sorting movies from movies.txt
 ```ruby
 imdb_movies = ImdbPlayfield::MovieCollection.new
 imdb_movies.filter(country: 'USA')                   # returns array of movies made in USA

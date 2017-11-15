@@ -34,7 +34,7 @@ module ImdbPlayfield
   end
 end
 
-require 'uri'
-require 'net/http'
-require 'json'
-require 'yaml'
+#require 'uri'
+#require 'net/http'
+#require 'json'
+#require 'yaml'

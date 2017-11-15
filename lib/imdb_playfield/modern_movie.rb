@@ -6,4 +6,4 @@ module ImdbPlayfield
     end
   end
 end
-require_relative 'movie'
+#require_relative 'movie'
