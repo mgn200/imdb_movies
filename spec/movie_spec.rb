@@ -1,6 +1,11 @@
 # доп. методы для шаблона страницы
 RSpec.describe ImdbPlayfield::Movie do
   let(:movie) { ImdbPlayfield::MovieCollection.new.filter(title: 'Fight Club').first}
+  before {
+    allow(movie).to receive(:imdb_yml_file).and_return(File.expand_path "spec/yml_data/test_imdb_budget.yml")
+    allow(movie).to receive(:tmdb_yml_file).and_return(File.expand_path "spec/yml_data/test_movies_info.yml")
+  }
+
   describe 'info from YML files' do
     context '#poster' do
       subject { movie.poster }
@@ -15,12 +20,6 @@ RSpec.describe ImdbPlayfield::Movie do
     context '#budget' do
       subject { movie.budget }
       it { is_expected.to eq "$63,000,000" }
-    end
-
-    context 'when YML file is not created' do
-      before { stub_const("ImdbPlayfield::Movie::TMDB_YML_FILE", "non_existent") }
-      subject { movie.rus_title }
-      it { is_expected.to eq nil }
     end
   end
 end

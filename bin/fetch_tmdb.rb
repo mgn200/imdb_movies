@@ -1,5 +1,4 @@
 #!/usr/bin/env ruby
 # запрос к АПИ tmdb
-require_relative '../demo.rb'
-require_relative '../lib/tmdb_api'
+require_relative '../lib/imdb_playfield'
 ImdbPlayfield::TMDBApi.new.fetch_info

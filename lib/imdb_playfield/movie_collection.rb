@@ -6,9 +6,9 @@ module ImdbPlayfield
 
     attr_reader :all
 
-    def initialize(file = 'movies.txt')
+    def initialize(file = File.join(File.dirname(File.expand_path("../../", __FILE__)), 'data/movies.txt'))
       @filename = file
-      abort('No such file') unless File.exist? file
+      abort('No movie file') unless File.exist? file
       @all = parse_file(file)
     end
 
@@ -62,7 +62,3 @@ module ImdbPlayfield
     end
   end
 end
-
-#require 'csv'
-#require 'ostruct'
-#require 'date'

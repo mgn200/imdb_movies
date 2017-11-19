@@ -1,9 +1,7 @@
-#require 'pry'
 lib = File.expand_path("../lib", __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'imdb_playfield/version'
 
-#binding.pry
 Gem::Specification.new do |spec|
   spec.name           = 'imdb_playfield'
   spec.version        =  ImdbPlayfield::VERSION
@@ -31,4 +29,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'vcr'
   spec.add_development_dependency 'webmock'
   spec.add_development_dependency 'rspec-html-matchers'
+  spec.add_development_dependency 'timecop'
+  spec.add_development_dependency 'rake'
+  spec
 end

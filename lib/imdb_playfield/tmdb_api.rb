@@ -1,17 +1,22 @@
 # Вытягивалка фильмов(информации по ним) и сохранялка их в файл
 # делает запрос к апи tmdb, создает yml файл c информацией
 # этот файл затем обрабатыватся TmdbYmlParser'ом, чтобы вытянуть доп. инфу по фильму
+
 module ImdbPlayfield
   class TMDBApi
-    YML_FILE_PATH = File.expand_path("lib/tmdb_data/movies_tmdb_info.yml")
+    YML_FILE_PATH = File.expand_path("data/movies_tmdb_info.yml")
     URL_PATTERN = "https://api.themoviedb.org/3/find/%s?api_key=%s&language=ru-RU&external_source=imdb_id"
-    API_KEY = YAML.load_file('config.yml')['ApiKey']
+    API_KEY = File.exist?('config.yml') ? YAML.load_file('config.yml')['ApiKey'] : nil
 
     def initialize
+      # when user runs request it creates local file and uses them instead of
+      # the ones stored in gem
+      File.new "data/movies_tmdb_info.yml" unless File.exist? "data/movies_tmdb_info.yml"
       @prepared_data = {}
     end
 
     def save(data)
+      # When user calls fetch_info, it saves info to local file and uses it instead
       File.write(YML_FILE_PATH, data.to_yaml)
     end
     # берет imdb ключи из коллекции мувиков
@@ -33,8 +38,3 @@ module ImdbPlayfield
     end
   end
 end
-
-#require 'uri'
-#require 'net/http'
-#require 'json'
-#require 'yaml'

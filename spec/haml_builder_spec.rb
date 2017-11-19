@@ -6,7 +6,7 @@ RSpec.describe ImdbPlayfield::HamlBuilder do
   describe "Build html file from haml layout" do
     describe "#build_html" do
       before {
-        stub_const("ImdbPlayfield::HamlBuilder::HTML_FILE", "spec/views/test_index.html")
+        allow_any_instance_of(ImdbPlayfield::HamlBuilder).to receive(:html_file).and_return("spec/views/test_index.html")
         allow_any_instance_of(ImdbPlayfield::HamlBuilder).to receive(:haml_layout).and_return(File.read('spec/views/test_index.haml'))
       }
 

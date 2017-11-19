@@ -1,16 +1,14 @@
 # rubocop:disable Style/CaseEquality
 # rubocop:disable Namin/PredicateName
-
 module ImdbPlayfield
   class Movie
     include Virtus.model
-    TMDB_YML_FILE = File.expand_path("lib/tmdb_data/movies_tmdb_info.yml")
-    IMDB_YML_FILE = File.expand_path("lib/imdb_data/movies_imdb_info.yml")
+
     PRICES = { ancient: Money.new(100, 'USD'),
                classic: Money.new(150, 'USD'),
                modern: Money.new(300, 'USD'),
                new: Money.new(500, 'USD') }.freeze
-    # set to reader only
+
     attribute :list
     attribute :movie_info
     attribute :duration, Coercions::Integer
@@ -24,6 +22,16 @@ module ImdbPlayfield
     attribute :year, Coercions::Integer
     attribute :link
     attribute :country
+
+    def tmdb_yml_file
+      return File.expand_path("data/movies_tmdb_info.yml") if File.exist?("data/movies_tmdb_info.yml")
+      File.join(File.dirname(File.expand_path("../../", __FILE__)), 'data/movies_tmdb_info.yml')
+    end
+
+    def imdb_yml_file
+      return File.expand_path("data/movies_imdb_info.yml") if File.exist?("data/movies_imdb_info.yml")
+      File.join(File.dirname(File.expand_path("../../", __FILE__)), 'data/movies_imdb_info.yml')
+    end
 
     def to_s
       "#{@title}, #{@detailed_year}, #{@director}, #{@rating}"
@@ -77,13 +85,11 @@ module ImdbPlayfield
     end
 
     def tmdb_info
-      @tmdb_info ||= File.exist?(TMDB_YML_FILE) ? YAML.load_file(TMDB_YML_FILE)[imdb_id] : {}
+      @tmdb_info ||= YAML.load_file(tmdb_yml_file)[imdb_id] # : {} File.exist?(tmdb_yml_file) ?
     end
 
     def imdb_info
-      @imdb_info ||= File.exist?(IMDB_YML_FILE) ? YAML.load_file(IMDB_YML_FILE)[imdb_id] : {}
+      @imdb_info ||= YAML.load_file(imdb_yml_file)[imdb_id] # : {}File.exist?(imdb_yml_file) ?
     end
   end
 end
-
-#require 'money'

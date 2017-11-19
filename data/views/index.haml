@@ -6,7 +6,7 @@
     %meta{"name" => "description", "content" => ""}/
 
     / Bootstrap Core CSS
-    %link{:href => "../../views/css/bootstrap.min.css", :rel => :stylesheet}/
+    %link{:href => "#{@bootstrap_css}", :rel => :stylesheet}/
 
   %body
     .container
@@ -34,4 +34,4 @@
     / Bootstrap Core JavaScript
     / =================================================================================
     / Placed at the end of the document so that pages can load faster.
-    %script{:src => "../../views/js/bootstrap.min.js"}
+    %script{:src => "#{@bootstrap_js}"}

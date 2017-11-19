@@ -1,5 +1,5 @@
 module ImdbPlayfield
-  class NetflixReference < ImdbPlayfield::Netflix
+  class NetflixReference
     attr_reader :obj, :key
 
     def initialize(obj, key)

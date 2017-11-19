@@ -1,10 +1,8 @@
-require 'pry'
-require 'timecop'
-require 'money'
-require './demo.rb'
+require 'imdb_playfield'
 require 'webmock/rspec'
 require 'vcr'
 require 'rspec-html-matchers'
+require 'timecop'
 
 VCR.configure do |c|
   c.cassette_library_dir     = 'spec/cassettes'
