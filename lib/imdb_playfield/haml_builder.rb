@@ -15,17 +15,14 @@ module ImdbPlayfield
       # берет мувик и по каждому атриюуту создаёт строку
       # создает готовый  html файл
       rendered_template = Haml::Engine.new(haml_layout).render(self)
-      File.write(html_file, rendered_template)
+      # Create index.html in the current folder, where script is run
+      File.write('index.html', rendered_template)
       return true
     end
 
     def haml_layout
       file = File.join(File.dirname(File.expand_path("../../", __FILE__)), 'data/views/index.haml')
       File.read file
-    end
-
-    def html_file
-      File.expand_path("data/views/index.html")
     end
   end
 end
