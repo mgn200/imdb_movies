@@ -2,6 +2,8 @@
 module ImdbPlayfield
   # Создает html-шаблон по мувикам
   class HamlBuilder
+    HTML_FILE = "index.html"
+
     def initialize(movies_array = ImdbPlayfield::MovieCollection.new)
        # разбиваем фильмы на субмассивы по две штуки
        # один массив - один ряд фильмов d представлении(два наименования в однои ряде бутстрап сетки)
@@ -16,7 +18,7 @@ module ImdbPlayfield
       # создает готовый  html файл
       rendered_template = Haml::Engine.new(haml_layout).render(self)
       # Create index.html in the current folder, where script is run
-      File.write('index.html', rendered_template)
+      File.write(HTML_FILE, rendered_template)
       return true
     end
 

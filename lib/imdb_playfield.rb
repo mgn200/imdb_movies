@@ -5,10 +5,11 @@ require 'money'
 require 'virtus'
 require 'haml'
 require 'csv'
-require 'money'
 require 'pry'
 require 'open-uri'
-#require 'net/http'
+require 'net/http'
+require 'optparse'
+require 'ostruct'
 
 module ImdbPlayfield
   # Public: Gets or sets the path that the ImdbPlayfield libs are loaded from
@@ -43,6 +44,5 @@ module ImdbPlayfield
                "movie", "movie_collection", "haml_builder", "imdb_scrapper", "tmdb_api","netflix_dsl",
                "netflix_reference", "netflix", "schedule_period", "theatre_builder",
                "theatre_schedule", "theatre", "ancient_movie", "classic_movie", "modern_movie",
-               "new_movie"
-
+               "new_movie", "optparse"
 end

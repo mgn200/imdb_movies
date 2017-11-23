@@ -24,13 +24,13 @@ module ImdbPlayfield
     attribute :country
 
     def tmdb_yml_file
-      return File.expand_path("data/movies_tmdb_info.yml") if File.exist?("data/movies_tmdb_info.yml")
-      File.join(File.dirname(File.expand_path("../../", __FILE__)), 'data/movies_tmdb_info.yml')
+      return File.expand_path(ImdbPlayfield::TMDBApi::USER_FILE) if File.exist?(ImdbPlayfield::TMDBApi::USER_FILE)
+      ImdbPlayfield::TMDBApi::GEM_YML_FILE
     end
 
     def imdb_yml_file
-      return File.expand_path("data/movies_imdb_info.yml") if File.exist?("data/movies_imdb_info.yml")
-      File.join(File.dirname(File.expand_path("../../", __FILE__)), 'data/movies_imdb_info.yml')
+      return File.expand_path(ImdbPlayfield::IMDBScrapper::USER_FILE) if File.exist?(ImdbPlayfield::IMDBScrapper::USER_FILE)
+      ImdbPlayfield::IMDBScrapper::GEM_YML_FILE
     end
 
     def to_s
