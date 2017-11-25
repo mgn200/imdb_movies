@@ -1,7 +1,4 @@
 #!/usr/bin/env ruby
 require 'imdb_playfield'
 
-options = ImdbPlayfield::Optparse.parse(ARGV)
-
-binding.pry
-#puts options[:pay]
+ImdbPlayfield::Optparse.parse(ARGV)
