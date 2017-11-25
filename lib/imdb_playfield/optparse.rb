@@ -33,7 +33,7 @@ module ImdbPlayfield
         end
       end
       opt_parser.parse!(args)
-      p options.movie
+      p options.movie unless options.movie.nil?
     end
   end
 end
