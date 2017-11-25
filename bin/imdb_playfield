@@ -1,1 +1,5 @@
+require 'imdb_playfield'
 binding.pry
+ARGV.shift do |x|
+  binding.pry
+end
