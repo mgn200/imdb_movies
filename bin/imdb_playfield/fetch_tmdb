@@ -1,4 +1,3 @@
 #!/usr/bin/env ruby
-# запрос к АПИ tmdb
 require 'imdb_playfield'
 ImdbPlayfield::TMDBApi.new.fetch_info
