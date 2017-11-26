@@ -1,5 +1,5 @@
 require 'imdb_playfield'
 binding.pry
-ARGV.shift do |x|
-  binding.pry
-end
+a = File.join(File.dirname(File.expand_path("../bin", __FILE__)), ARGV.shift)
+binding.pry
+#`File.join(File.dirname(File.expand_path("../bin", __FILE__)), ARGV.shift) ARGV`
