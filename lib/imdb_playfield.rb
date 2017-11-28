@@ -8,7 +8,7 @@ require 'csv'
 require 'pry'
 require 'open-uri'
 require 'net/http'
-require 'optparse'
+require 'thor'
 require 'ostruct'
 
 module ImdbPlayfield

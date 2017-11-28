@@ -13,7 +13,7 @@ module ImdbPlayfield
 
     def show(params = {}, &block)
       movies = filter(params, &block)
-      raise ArgumentError, 'Wrong arguments' unless movies.any?
+      raise ArgumentError, 'Wrong arguments, or no such movies can be found' unless movies.any?
       movie = pick_movie(movies)
       raise 'Insufficient funds' unless (@balance - movie.price) >= 0
       @balance -= movie.price

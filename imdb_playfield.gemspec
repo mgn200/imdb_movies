@@ -21,6 +21,7 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(spec)/})
   spec.require_paths = ["lib"]
 
+  spec.add_dependency 'thor'
   spec.add_dependency 'money'
   spec.add_dependency 'virtus'
   spec.add_dependency 'haml'

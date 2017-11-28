@@ -1,5 +1,80 @@
 require 'imdb_playfield'
-a = File.join(File.dirname(File.expand_path("../bin", __FILE__)), ARGV.shift)
-#binding.pry
-#`File.join(File.dirname(File.expand_path("../bin", __FILE__)), ARGV.shift) ARGV`
-`#{a} #{ARGV}`
+
+# Store command line commands and arguments
+# ImdbPlayfieldCLI is a wrapper for class specific commands
+# For now it exposes two public Netflix methods as commands
+
+class ImdbPlayfieldCLI < Thor
+  desc "netflix --command <params>", "calls netflix method with given params"
+  long_desc <<-LONGDESC
+    netflix command is used to adress a Netflix class and two of it's public methods: pay and show.
+    You can specify movie filters based on movie attributes, such as genre, year, rating etc.
+    Before ordering a movie, you need to put money on balance with --pay command
+
+    `imdb_playfield netflix --pay number --show genre:Comedy,year:1988,rating:8.8`
+  LONGDESC
+
+  option :pay, :type => :numeric
+  option :show, :type => :hash
+  def netflix
+    netflix = ImdbPlayfield::Netflix.new
+    netflix.pay options[:pay] if options[:pay]
+
+    if options[:show].any?
+      options[:show].update(options[:show]) do |key, value|
+        case key
+        when "year" || "duration"
+          value.to_i
+        when "rating"
+          value.to_f
+        else
+          value
+        end
+      end
+
+      # Save return value from show method and then return it
+      # Is there a more clever way?
+      response = netflix.show options[:show]
+    end
+
+    puts response
+
+    # old way:
+    # options.each do |method, value|
+    #   netflix.send(method, value)
+    # end
+  end
+
+  desc "scaffold_new", "creates dirs and files needed by IDMB and TMDB data"
+  long_desc <<-LONGDESC
+    scaffold_new will create /data/views folders in your current directory and put two empty files:
+    movies_imdb_info.yml and movies_tmdb_info.yml in /data
+    These are needed if you plan to update movies info and not use default gem data.
+    Data miners will give you an error if it will not find these files.
+  LONGDESC
+  def scaffold_new
+    ImdbPlayfield.create_data_files
+  end
+
+  desc "create_config", "creates a config.yml file needed by TMDBApi"
+  long_desc <<-LONGDESC
+    config.yml is used to store your TMDB API key. It is needed for proper work of TMDBApi
+    and HamlBuilder classes.
+  LONGDESC
+  def create_config
+    ImdbPlayfield.create_config
+  end
+
+  desc 'fetch_imdb', 'runs imdb scrapper and saves data about budget in yml file'
+  def fetch_imdb
+    ImdbPlayfield::IMDBScrapper.run
+  end
+
+  desc 'fetch_tmdb', 'sends request to TMDB API to fetch poster and russian title'
+  def fetch_tmdb
+    ImdbPlayfield::TMDBApi.run
+  end
+end
+
+
+ImdbPlayfieldCLI.start(ARGV)
