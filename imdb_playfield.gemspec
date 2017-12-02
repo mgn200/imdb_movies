@@ -26,6 +26,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'virtus'
   spec.add_dependency 'haml'
   spec.add_dependency 'nokogiri'
+  spec.add_dependency 'yard'
 
   spec.add_development_dependency 'rspec'
   spec.add_development_dependency 'vcr'

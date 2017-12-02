@@ -20,7 +20,7 @@ class ImdbPlayfieldCLI < Thor
     netflix = ImdbPlayfield::Netflix.new
     netflix.pay options[:pay] if options[:pay]
 
-    if options[:show].any?
+    if options[:show]
       options[:show].update(options[:show]) do |key, value|
         case key
         when "year" || "duration"
@@ -54,6 +54,7 @@ class ImdbPlayfieldCLI < Thor
   LONGDESC
   def scaffold_new
     ImdbPlayfield.create_data_files
+    puts "data/ created"
   end
 
   desc "create_config", "creates a config.yml file needed by TMDBApi"
@@ -63,16 +64,19 @@ class ImdbPlayfieldCLI < Thor
   LONGDESC
   def create_config
     ImdbPlayfield.create_config
+    puts 'config.yml created'
   end
 
   desc 'fetch_imdb', 'runs imdb scrapper and saves data about budget in yml file'
   def fetch_imdb
     ImdbPlayfield::IMDBScrapper.run
+    puts 'done'
   end
 
   desc 'fetch_tmdb', 'sends request to TMDB API to fetch poster and russian title'
   def fetch_tmdb
     ImdbPlayfield::TMDBApi.run
+    puts 'done'
   end
 end
 
