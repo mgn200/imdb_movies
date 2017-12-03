@@ -1,20 +1,20 @@
 # ImdbPlayfield
 
 ImdbPlayfield is a Ruby study project, built with the mentoring help of mkdev.me team member.
-It covers everything a good junior-level developer should know about Ruby. It uses imdb top 250 as a playground
+It covers everything a good junior-level developer should know about Ruby. It uses imdb top 250 movies as a playground
 for Ruby features and design patterns.
 
 It implements:
  - Parsing text files, creating objects from data
- - Sorting and filtering collections, data manipulation(with movies)
- - Playing around with classes relationships(movies, theatres and useful modules.
+ - Sorting and filtering collections, data manipulation(movies)
+ - Playing around with classes relationships: movies, theaters, helper modules, service objects
  - Test Driven Development
  - DSL
- - Basic objects design with composition and inheritance
+ - Basic objects designing, composition and inheritance
  - Scrapping with Nokogiri
- - Working with TMDB.com API
- - Using HAML with bootstrap template to create html page of top 250 movies
- - Learning correct documentation and project structure
+ - Working with tmdb.com API
+ - Using HAML and bootstrap template to create html page of top 250 movies
+ - Learning correct documentation and project structure, wrapping code in gem
 
 ## Install
 
@@ -26,113 +26,14 @@ gem install imdb_playfield
 require 'imdb_playfield'
 ```
 
+You can also use some commands from CLI, сalling imdb and tmdp data fetchers and folder/files builders.
+Check more at [link](#Netflix), [link](#TMDBApi), [link](#IMDBScrapper)
+
 ## Usage
 
-### Basic usage
+Main entities and their functionality.
 
-You have several options to play around, such as
-filtering and sorting movies from movies.txt
-```ruby
-imdb_movies = ImdbPlayfield::MovieCollection.new
-imdb_movies.filter(country: 'USA')                   # returns array of movies made in USA
-imdb_movies.filter(rating: 8.2)                      # returns array of movies with rating of 8.2
-imdb_movies.sample(10).has_genre?('Comedy')          # returns true of false if any comedy movie present in array
-imdb_movie_.filter(period: :ancient)                 # returns all movies that were made before 1945
-```
-
-Creating online and offline movie theatres:
-```ruby
-netflix = ImdbPlayfield::Netflix.new                             
-theatre = ImdbPlayfield::Theatre.new
-
-netflix.cash                                          # shows how much cash Netflix has
-netflix.pay                                           # puts cash to balance
-netflix.how_much 'The Terminator'                     # returns price for movie in dollars
-netflix.show 'The Terminator'                         # "shows" movie, withdraw it's price from balance
-
-theatre.when? 'The Terminator'                        # returns time when movie will be shown
-theatre.buy_ticket('The Terminator', hall: :red)      # buy ticket and withdraw it's price from balance
-```
-Creating complex filters for Netflix:
-```ruby
-netflix = ImdbPlayfield::Netflix.new
-netflix.define_filter(:new_sci_fi) { !movie.title.include?('Terminator') && movie.genre.include?('Action') && movie.year > 2003 }
-# create and save new_sci_file filter
-netflix.show(new_sci_fi: true)                        # returns filtered array of movies
-```
-
-Creating schedule for movie theatre with DSL:
-```ruby
-theatre = ImdbPlayfield::Theater.new do                              # creates a Theatre with given schedule
-    hall :red, title: 'Красный зал', places: 100
-    hall :blue, title: 'Синий зал', places: 50
-    hall :green, title: 'Зелёный зал (deluxe)', places: 12
-
-    period '09:00'..'11:00' do
-      description 'Morning session'
-      filters genre: 'Comedy', year: 1900..1980
-
-    end
-
-    period '11:00'..'16:00' do
-      description 'Noon non-old dramas'
-      filters genre: 'Drama', exclude_period: :ancient
-    end
-  end
-
-theatre.info                                        # prints current schedule
-```
-
-Create html page of movies from Netflix
-```ruby
-netflix = ImdbPlayfield::Netflix.new
-netflix.build_html                                  # creates and index.html file in data/views/
-```
-
-### Full actions for every object
-MovieCollection is the movies container from movies.txt file (prepared list of top 250 imdb movies)
-It stores collection methods and creates Movies objects based on movie attributes.
-
-Default movie attributes are: link, title, year, country, date, genre, duration, rating, director, actors.
-
-MovieCollection methods:
-```ruby
-movies_collection = ImdbPlayfield::MovieCollection.new
-
-# Array of every parsed movie from movies.txt
-movies_collection.all   
-
-# Sort movies array by given attribute name
-movies_collection.sort_by(:director)
-
-# Filters movies collection with hash parameters
-# Params are default movie attributes
-# You can also use exclude_attribute filter
-movies_collection.filter(period: :new, exclude_country: 'USA', genre: 'Action')
-
-# Pick one more from given array
-# The more rating movie has, the more "weight" it has in comparison to other
-# Higher rated movies will be a bit more likely to be selected
-movies_collection.pick_movie movies_collection.sample(10)
-
-# Counts attribute values and returns a hash. For example:
-# { 'Comedy' => 28, 'Action' => 15, 'Drama' => 89, ... }
-movies_collection.stats(:genre)
-# or
-movies_collection.stats(:director)
-```
-
-Movie is an abstract class for every movie parsed and created from movies.txt
-It has 4 different types, based on film year: AncientMovie, ModernMovie, NewMovie, ClassicMovie.
-Every movie is created when MovieCollection is initialized.
-
-```ruby
-movie = ImdbPlayfield::MovieCollection.new.all.first
-
-movie.to_s        # Returns a string with basic movie info
-movie.month       # "January"
-movie.price       # 10 (in dollars)
-```
+### <a name="Netflix"></a> Netflix
 
 Netflix is a representation of online movie theater.
 
@@ -144,11 +45,10 @@ netflix = ImdbPlayfield::Netflix.new
 netflix.pay 10
 netflix.balance       # 10
 
-# You can order movies, if you have enough money
-# It will use #pick_movie from MovieCollection
+# You can order movies, if you have enough money, by providing desired movie parameters
 netflix.show(year: 2000, genre: 'Drama')
 
-# You can also use more advanced filtering and save your filters
+# You can also use more advanced filtering and save your filters for future use
 netflix.show { |movie| !movie.title.include?('Terminator') && movie.genre.include?('Action') && movie.year > 2003 }
 netflix.define_filter(:new_sci_fi) { movie.period: :new, movie.genre: 'Sci-Fi' }
 netflix.show(new_sci_fi: true)
@@ -162,21 +62,38 @@ netflix.how_much? 'The Terminator'        # 10
 # as the method uses additional data from YML files generated by these external requests
 # (they are covered in IMDBScrapper and TMDBApi classes)
 
-netflix.build_html        # creates index.html in data/views
-
 # Some DSL for more convenient filters
 netflix.by_genre.comedy # returns all the comedies
 netflix.by_country.usa # returns all movies made in USA
 ```
+
+You can also call #pay and #show in you terminal instead of code:
+imdb_playfield netflix pay 25
+imdb_playfield netflix show genre:Comedy year:2002
+
+**Netflix#build_html** method will create an index.html file with movies from movie collection and their info
+It uses HamlBuilder class, that handles all the work.
+
+Bear in mind, by default ImdbPlayfield gem packed two data files with additional information about movies:
+"imdb_movie_info.yml" and "tmdb_movie_info". Both of these files are created using TMDBApi.run and IMDBScrapper.run
+Additional data in these files are used in rendering index.html page. Files are packed inside the gem, but will be overwritten
+with fresh info if TMDBApi.run or IMDBScrapper.run called by user. In order for that to work, you need to build required files and folders.
+
+Please check more at [link](#TMDBApi) [link](#IMDBScrapper)
+
+```ruby
+netflix.build_html                                   # Build index.html and puts it in data/views files with movies representation
+```
+
+### Theatre
 
 Theatre is a representation of real world theater.
 
 ```ruby
 theater = ImdbPlayfield::Theatre.new
 
-# USE DSL to build your own schedule
-# It uses default one otherwise. The time holes(i.e night time) will be considered as session break
-# If your schedule periods intersect with each other or have holes between first and last of them - an error will be range_in_seconds
+# Use DSL to build your own schedule, it uses default one otherwise.
+# If your schedule periods intersect with each other or have holes between first and last of them, an error will be raised
 
 theatre = ImdbPlayfield::Theater.new do                              
     hall :red, title: 'Красный зал', places: 100
@@ -212,37 +129,137 @@ theatre = ImdbPlayfield::Theater.new do
     end
   end
 
-# Convenietnly pronts schedule info
+# Prints schedule for user
 theatre.info
 
-# Buy ticket for the given movie. Hall must be specified if movie can be seen in different halls.
+# Buy ticket for the given movie. Hall must be specified if movie is showed in two or more halls.
 theatre.buy_ticket('The Terminator', :red)
 
-# Shows number of cash in the current theatre
+# Shows number of cash in theatre.
 theatre.cash
 
-# Returns periods if time, when the given movie is shown
-# Puts a message, when movie is not shown in the current schedule
-# or is not found in the MovieCollection.all
+# Returns periods of time when the given movie is show
 theatre.when? 'The Terminator'
 
-# Show all halls
+# Show all halls in theatre
 theatre.halls
 ```
 
-IMDBScrapper and TMDBApi are "data miners" that collect data needed for netflix.build_html method.
-It uses this data in haml and bootstrap template file in data/views/index.haml.
-Info is stored in YML files at data/movies_imdb_info.yml and data/movies_tmdb_info.yml.
+#### MovieCollection
 
-You can use HamlBuilder outside of Netflix, to render html when you need it.
-
-Run rake tasks to create yml files: `rake fetch_imdb` and `rake fetch_tmdb`
-After that you can:
+MovieCollection is a base class that parses movie.txt(or similar user-provided file) and creates
+movie library. It also provides sorting and filtering methods.
 
 ```ruby
-ImdbPlayfield::HamlBuilder.new.build_html     # creates data/views/index.html
+# Creates movie collection from file specified as argument. By default uses movies.txt packed in gem.
+# Default movies. txt is top 250 movies from imdb.
+movies_collection = ImdbPlayfield::MovieCollection.new()
+
+# Basic examplee
+imdb_movies.filter(country: 'USA')                   # returns array of movies made in USA
+imdb_movies.filter(rating: 8.2)                      # returns array of movies with rating of 8.2
+imdb_movies.sample(10).has_genre?('Comedy')          # returns true of false if any comedy movie present in array
+
+# Array of every parsed movie from movies.txt or user file.
+movies_collection.all                              # [ModernMOvie, AncientMovie, ClassicMovie, ... ]
+
+# Sort movies array by given attribute name.
+movies_collection.sort_by(:director)
+
+# Filters movie collection based on parameters(movie attributes) provided in hash.
+# You can also use exclude_#{attribute} parameter.
+movies_collection.filter(period: :new, exclude_country: 'USA', genre: 'Action')
+
+# Random weighted movie pick from array.
+# Higher rated movies will be a bit more likely to be selected
+movies_collection.pick_movie movies_collection.sample(10)
+
+# Counts every attribute values and returns a statistic in hash. For example:
+movies_collection.stats(:genre)                 # { 'Comedy' => 28, 'Action' => 15, 'Drama' => 89, ... }
+# or
+movies_collection.stats(:director)
+```
+
+#### Movie
+
+Movie is an abstract class for every movie parsed and created from movies.txt
+It inherits to 4 movie classes, based on film year: AncientMovie, ModernMovie, NewMovie, ClassicMovie.
+Every movie is created when MovieCollection is initialized.
+
+```ruby
+movie = ImdbPlayfield::MovieCollection.new.all.first
+
+movie.to_s        # Returns a string with basic movie info
+movie.month       # "January"
+movie.price       # 10 (in dollars)
+```
+
+#### HamlBuilder
+
+This class builds index.html page and saves it in your_current_folder/data/views.
+It is mainly used in Netflix#build_html method, but can be accessed straightforward.
+
+```ruby
+ImdbPlayfield::HamlBuilder.new.build_html
+```
+
+### <a name="TMDBApi"></a> TMDBApi
+
+Class that handles querying to tmdb.com api and saving data to local yml file.
+It fetches additional movie data provided by tmdb.com, that is used by HamlBuilder when building html.
+By default, ImdbPlayfield gem is already packed with tmdb_movie_info.yml, that provide additional movie info.
+But user can manually make request to update information and create local tmdb_movie_info.yml file.
+HamlBuilder will use that file instead.
+
+**NOTE**
+Before calling TMDBApi and updating movie info, you need to prepare folders, clean tmdb_movie_info.yml file
+and config.yml file which will store you tmdb.com API key. If you don't have it. You need to register at tmdb.com and get the key.
+
+You can do all this in terminal, or in your code:
+**CLI**
+imdb_playfield create_config      => creates config.yml in current directory, dont't forget to insert API key in it.
+imdb_playfield scaffold_new       => created data/views and all empty fiels that are needed for data miners
+                                             (TMDBApi and IMDBScrapper)
+
+Ruby code, doest same as above
+```ruby
+ImdbPlayfield.create_config
+ImdbPlayfield.create_data_files
+```
+
+After that you can call TMDBApi runner, that will save information to your_current_folder/data/tmdb_movie_info.yml
+**CLi**
+imdb_playfield fetch_tmdb       => data/tmdb_movie_info.yml
+
+Ruby
+```ruby
+ImdbPlayfield::TMDBAPi.run      #  data/tmdb_movie_info.yml
+```
+### <a name="IMDBScrapper"></a> IDMBScrapper
+
+Imdb.com web scrapper. It opens movie page for every movie in a given array of movies
+based on their imdb id, and fetches additional information about movie budget.
+Default array of movies is MovieCollection.all
+
+It functions just as ImdbPlayfield::TMDBApi. It uses imdb_movie_info.yml file as default one
+and copies TMDBApi behavior in termns of manual user update - will overwrite yml file, but needs
+folders and file created preemptively(not config.yml though)
+
+Check [link][#TMDBApi] last section for CLI and Ruby builder.
+
+To run scrapper:
+**CLI**
+imdb_playfield fetch_imdb                => data/imdb_movie_info.yml
+
+Ruby
+```ruby                                  
+ImdbPlayfield::IMDBScrapper.run           # data/imdb_movie_info.yml
 ```
 
 ## Supported Ruby versions
 
 This app supports Ruby >= 2.3.0
+
+####
+
+Thanks for checking my ruby project. I had fun building it.

@@ -3,23 +3,35 @@
 # этот файл затем обрабатыватся TmdbYmlParser'ом, чтобы вытянуть доп. инфу по фильму
 
 module ImdbPlayfield
+  # Send api requests to tmdb.com api and saves provided
+  # Data is later used to build index html page
+  # @see ImdbPlayfield::HamlBuilder#build_html
   class TMDBApi
+    # Tmdb api query string
     URL_PATTERN = "https://api.themoviedb.org/3/find/%s?api_key=%s&language=ru-RU&external_source=imdb_id"
     API_KEY = File.exist?('config.yml') ? YAML.load_file('config.yml')['ApiKey'] : nil
+    # Absolute path to yml data file stored in gem
     GEM_YML_FILE = File.join(File.dirname(File.expand_path("../../", __FILE__)), "data/movies_tmdb_info.yml")
+    # Path to user yml file, created when TMDBApi.run is called by user
     USER_FILE = "data/movies_tmdb_info.yml"
 
     class << self
+      # When user calls #run, it saves info to local USER_FILE and used it instread of GEM_YML_FILE
+      # @param data [Hash] of parsed response from tmdb api
+      # @return [Integer] number of bytes written after calling File.write and creating a USER_FILE
+      # @see ImdbPlayfield::TMDBApi::USER_FILE
       def save(data)
-        # When user calls fetch_info, it saves info to local file and uses it instead
         File.write(USER_FILE, data.to_yaml)
       end
-      # берет imdb ключи из коллекции мувиков
-      # делаем запросы к tmdb api, который знате эти ключи
-      # сохраняет данные в yml
+
+      # Pick imdb movie keys from movie collection, queries tmdb api(knows imdd movie ids), saves data from response in USER_FILE
+      # @note
+      #   when user calls #run it creates local file and uses them instead(USER_FILE) of
+      #   the ones stored in gem(GEM_YML_FILE)
+      # @param movies_collection [Array] of movies, default to ImdbPlayfield::MovieCollection.all
+      # @see ImdbPlayfield::MovieCollection
+      # @return [Integer] number of bytes written after writing yml file with response data(USER_FILE)
       def run(movies_collection = ImdbPlayfield::MovieCollection.new)
-        # when user runs request it creates local file and uses them instead of
-        # the ones stored in gem
         File.new USER_FILE unless File.exist? USER_FILE
         @prepared_data = {}
 
@@ -32,6 +44,12 @@ module ImdbPlayfield
         save(@prepared_data)
       end
 
+      # Send request to tmdp api, formatting query string with movie imdb id(tmdb knows these keys)
+      # @see ImdbPlayfield::TMDBApi::URL_PATTERN
+      # @see ImdbPlayfield::TMDBApi::API_KEY
+      # @see ImdbPlayfield::MovieCollection#imdb_id
+      # @param imdb_key [String] imdb movie id
+      # @return [Net::HTTPResponse] object with body that contains additional movie info
       def send_request(imdb_key)
         url = format(URL_PATTERN, imdb_key, API_KEY)
         response = Net::HTTP.get_response(URI url)

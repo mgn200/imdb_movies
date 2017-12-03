@@ -1,13 +1,18 @@
 module ImdbPlayfield
+  # Helper module, time format change methods
   module TimeHelper
+    # @param time [String] "09:00"
+    # @return [Integer] seconds from 00:00 til given time
     def to_seconds(time)
       t = Time.parse(time)
-      # 3600sec = 60min in
       t.min.zero? ? (t.hour * 3600) : (t.hour * 3600 + t.min * 60)
     end
 
+    # Return formatted time string, i.e "09:00"
+    # @param seconds [Integer] number of seconds
+    # @return [String, Array] of seconds passed from 00:00 in HH:MM format
     def to_time_string(seconds)
-      # Cases of seconds rangees:
+      # Seconds ranges can be given like that:
       #[123..123, 123..123]
       #123..123
       #123
@@ -22,6 +27,9 @@ module ImdbPlayfield
       end
     end
 
+    # Formats "09:00".."11:00" to 123123..123123 seconds format
+    # @param period [Range]
+    # @return [Range] formatted range in seconds
     def range_in_seconds(period)
       from = to_seconds(period.begin)
       to = to_seconds(period.end)

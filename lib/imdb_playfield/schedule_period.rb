@@ -1,4 +1,7 @@
 module ImdbPlayfield
+  # Class that build schedule period in Theatre schedule
+  # Picks appropriate movies that will be showed
+  # @see TheatreSchedule
   class SchedulePeriod
     include Enumerable
     include Virtus.model
@@ -9,36 +12,27 @@ module ImdbPlayfield
     attribute :hall
     attribute :description
 
-    # Переопределяем initialize, чтобы виртус увидел неименованный time
-    # и coercions нормально работал
+    # Override Virtus #initialize to properly work with time parameter
     def initialize(time, **options)
       super(options.merge(range_time: time))
     end
 
+    # Check if movie matches schedule filters
+    # @param movie [AncientMovie, ModernMovie, NewMovie, ClassicMovie] movie title
+    # @return [Boolean] true if given movie matches schedule filters
     def matches?(movie)
       @filters.all? { |k, v| movie.matches?(k, v) }
     end
 
-    def pick_movies(range, filters, timeleft)
-      # Тянуть залы здесь, или когда принтим?(print_schedule)
-      movies = filter(params.filters)
-      timeleft = period_length
-      #picked = []
-      #halls = schedule.values.detect { |p| p.range_time == range }.hall
-      start = range.first
-      # Отбросываем фильмы, которые точно не поместятся
-      # Выбираем из оставшихся рандомные, снижаем допустимое время
-      # Назначаем точное время показа
-      while timeleft > 0
-        movie = movies.reject { |m| m.duration > timeleft }.sample
-        return picked if movie.nil?
-        ScheduleLine.new(start, movie)
-        #picked << [start, [movie, halls]]
-        start += movie.duration * 60
-        timeleft -= movie.duration
-      end
-    end
+    # Picks and stacks movies into range period, while
+    # @param range [Range] period range time
+    # @param filters [Hash] hash of movie parameters accepted in current period
+    # @param timeleft [Integer] number of "airtime" available in current period
+    # @return [ScheduleLine] one period of schedule with picked movies that are going to be showed
+    # @see ImdbPlayfield::ScheduleLine
 
+
+    # Length of self(current period) in minutes
     def period_length
       ((range_time.first - range_time.last) / 60).abs.to_i
     end

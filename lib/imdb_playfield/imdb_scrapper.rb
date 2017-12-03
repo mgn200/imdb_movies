@@ -48,7 +48,7 @@ module ImdbPlayfield
       # @note
       #   Points to gem local path if scrapper was never run by user
       #   If #run is called by user, creates data/imdb_pages in current folder and uses it in the future
-      # @return [String] absolute filepath to imdb_pages
+      # @return [String] absolute filepath to data/imdb_pages
       def pages_path
         return File.expand_path("data/imdb_pages") if File.exist?("data/imdb_pages")
         File.join(File.dirname(File.expand_path("../../", __FILE__)), 'data/imdb_pages')

@@ -1,8 +1,8 @@
 module ImdbPlayfield
+  # Class that provide ineteface to manipulate theatres schedule
   module TheatreSchedule
     include ImdbPlayfield::TimeHelper
-    # Содержит дефолтное расписание для театров
-    # Содержит методы для обработки расписания театра
+    # Defautl thatres schedule
     DEFAULT_SCHEDULE = [ImdbPlayfield::SchedulePeriod.new(
                                            "06:00".."12:00",
                                            filters: { period: :ancient },
@@ -34,6 +34,12 @@ module ImdbPlayfield
       }
     end
 
+    # Picks and stacks movies into range period, while
+    # @param range [Range] period range time
+    # @param filters [Hash] hash of movie parameters accepted in current period
+    # @param timeleft [Integer] number of "airtime" available in current period
+    # @return [ScheduleLine] one period of schedule with picked movies that are going to be showed
+    # @see ImdbPlayfield::ScheduleLine
     def pick_movies(range, filters, timeleft)
       movies = filter(filters)
       picked = []
@@ -45,14 +51,10 @@ module ImdbPlayfield
       while timeleft > 0
         movie = movies.reject { |m| m.duration > timeleft }.sample
         return picked if movie.nil?
-        picked << schedule_line(start: start, movie: movie, halls: halls)
+        picked << ImdbPlayfield::ScheduleLine.new(start: start, movie: movie, halls: halls)
         start += movie.duration * 60
         timeleft -= movie.duration
       end
-    end
-
-    def schedule_line(start:, movie:, halls:)
-      ImdbPlayfield::ScheduleLine.new(start: start, movie: movie, halls: halls)
     end
   end
 end

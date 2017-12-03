@@ -122,7 +122,7 @@ RSpec.describe ImdbPlayfield::Netflix do
 
     context 'with invalid params' do
       let(:params) { { period: :wrong } }
-      it { expect { subject }.to raise_error(ArgumentError, "Wrong arguments") }
+      it { expect { subject }.to raise_error(ArgumentError, "Wrong arguments, or no such movies can be found") }
     end
 
 
