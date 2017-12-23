@@ -1,6 +1,6 @@
 module ImdbPlayfield
-  # Class that build schedule period in Theatre schedule
-  # Picks appropriate movies that will be showed
+  # Builds schedule period in Theatre schedule.
+  # Picks appropriate movies that will be showed.
   # @see TheatreSchedule
   class SchedulePeriod
     include Enumerable

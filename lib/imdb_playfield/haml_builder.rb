@@ -1,9 +1,10 @@
 module ImdbPlayfield
-  # Creates an index.html file based on movies data
+  # Creates an index.html file based on movies data.
   class HamlBuilder
     HTML_FILE = "index.html"
-    # Split one array of movies into array of arrays with two movies in each, representing rows in html template
-    # Set gem bootstrap varibales that are used in html template
+    # Splits array of movies into array of arrays with two movies in each.
+    # Each subarray represents bootstrap rows in html template.
+    # Also sets gem bootstrap varibales that are used in html template.
     # @param movies_array [Array<AncientMovie, ModernMovie, NewMovie, ClassicMovie>] array of movies
     # @return [HamlBuilder] object
     def initialize(movies_array = ImdbPlayfield::MovieCollection.new)
@@ -12,7 +13,8 @@ module ImdbPlayfield
        @movies_row = movies_array.each_slice(2).to_a
     end
 
-    # Creates index.html in the current folder from @movies_row array
+    # Creates index.html in the current folder from @movies_row array.
+    # @movies_row in created in #initialize.
     # @return [true] creates index.html file
     def build_html
       rendered_template = Haml::Engine.new(haml_layout).render(self)
@@ -20,8 +22,7 @@ module ImdbPlayfield
       return true
     end
 
-    # Contents of haml layout stored in String
-    # Used for rendering html file with movie content
+    # Content of haml layout file stored in String. Used for rendering html file with movie content.
     # @return [String] contents of index.haml
     # @see HamlBuilder#build_html
     def haml_layout

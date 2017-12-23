@@ -6,9 +6,9 @@ module ImdbPlayfield
     include ImdbPlayfield::TheatreSchedule
     include ImdbPlayfield::TimeHelper
 
-    # Gets collection of movies from MovieCollection
-    # Creates custom schedule if block is given by user_filters
-    # Checks schedule time holes and raises error if found any
+    # Gets collection of movies from MovieCollection.
+    # Creates custom schedule if block is given by user.
+    # Checks schedule time holes and raises error if found.
     def initialize(&block)
       super
       instance_eval(&block) if block
@@ -17,7 +17,7 @@ module ImdbPlayfield
 
     # Show some movie at given time
     # @param time [String] string in "09:00" format
-    # @return [String] with picked movie and when will it start
+    # @return [String] chosen movie and start time
     def show(time)
       return "Кинотеатр не работает в это время" if session_break?(to_seconds(time))
       params = schedule.find { |period| period.range_time.include?(to_seconds(time)) }.filters
@@ -39,7 +39,7 @@ module ImdbPlayfield
       @halls || DEFAULT_HALLS
     end
 
-    # Return periods when given title(movie) is being showed
+    # Return periods when given title(movie) is being showed.
     # @param title [String] movie title
     # @return [Array] with times movie is shown
     def when?(title)
@@ -50,10 +50,10 @@ module ImdbPlayfield
       to_time_string(periods.map(&:range_time))
     end
 
-    # Return periods whose filters matches with given movie attributes
+    # Return periods whose filters matches with given movie attributes.
     # @see ImdbPlayfield::SchedulePeriod#matches?
-    # @param movie [<AncientMovie, ModernMovie, NewMovie, ClassicMovie>] movie object
-    # @return [Array] of matching periods
+    # @param movie [AncientMovie, ModernMovie, NewMovie, ClassicMovie] movies
+    # @return [Array] matching periods
     def fetch_periods(movie)
       schedule.select { |period| period.matches?(movie) }
     end
@@ -62,7 +62,7 @@ module ImdbPlayfield
     # @param movie_title [String] movie title you want to watch
     # @param hall [Symbol] :red, :blue, :green by default
     # @note
-    #   You need to specify hall if one movie can be shown at different schedule periods
+    #   You need to specify hall if movie shown at different schedule periods
     # @return [String] buying confirmation
     def buy_ticket(movie_title, hall = nil)
       range_time = when?(movie_title)
@@ -109,7 +109,7 @@ module ImdbPlayfield
 
     # Represent schedule in a user-friendly strings
     # @note
-    #   When called, it creates an Array of ScheduleLine's objects who hold all the info
+    #   When called, creates an Array of ScheduleLine objects with data
     # @see ImdbPlayfield::ScheduleLine
     # @return [String] printed theatre schedule
     def info

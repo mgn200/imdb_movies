@@ -1,5 +1,5 @@
 module ImdbPlayfield
-  # Class for movies that were made in 1945 or older
+  # Movies that were made in 1945 or later.
   # @see MovieCollection#parse_file
   class ModernMovie < ImdbPlayfield::Movie
     # @return [String] with title and actors

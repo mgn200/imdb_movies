@@ -24,7 +24,8 @@ module ImdbPlayfield
         File.write(USER_FILE, data.to_yaml)
       end
 
-      # Pick imdb movie keys from movie collection, queries tmdb api(knows imdd movie ids), saves data from response in USER_FILE
+      # Pick imdb movie keys from movie collection. Query tmdb api(knows imdb movie ids)
+      # and save data from response in USER_FILE.
       # @note
       #   when user calls #run it creates local file and uses them instead(USER_FILE) of
       #   the ones stored in gem(GEM_YML_FILE)

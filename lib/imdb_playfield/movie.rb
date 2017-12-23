@@ -29,7 +29,7 @@ module ImdbPlayfield
     attribute :link
     attribute :country
 
-    # Absolute path to tmdb_movie_info.yml
+    # Absolute path to movies_tmdb_info.yml
     # @note
     #  If user ran IMDBScrapper or TMDBApi to get external movie info, then new yml file and folder were created in users folder.
     #  Method will return that path instead of one stored in local gem folder.
@@ -40,8 +40,11 @@ module ImdbPlayfield
       ImdbPlayfield::TMDBApi::GEM_YML_FILE
     end
 
-    # Absolute path to imdb_movie_info.yml, same as imdb_yml_file
+    # Absolute path to movies_imdb_info.yml.
     # @return [String] absolute path to imdb_movie_info.yml
+    # @note
+    #  If user ran IMDBScrapper or TMDBApi to get external movie info, then new yml file and folder were created in users folder.
+    #  Method will return that path instead of one stored in local gem folder.
     # @see Movie#tmdb_yml_file
     # @see IMDBScrapper::USER_FILE
     def imdb_yml_file
@@ -49,7 +52,7 @@ module ImdbPlayfield
       ImdbPlayfield::IMDBScrapper::GEM_YML_FILE
     end
 
-    # Basic method, overriden in child objects
+    # Basic method, overriden in child objects.
     # @return [String] when title, detailed year, director and rating info
     def to_s
       "#{@title}, #{@detailed_year}, #{@director}, #{@rating}"
@@ -60,9 +63,9 @@ module ImdbPlayfield
       Date::MONTHNAMES[@date.mon] unless @date.nil?
     end
 
-    # Check if genre exist in movie collection
+    # Check if genre exist in movie collection.
     # @note
-    #   Movie collection is sotred in @list, it is passed on creation
+    #   Movie collection is sotred in @list, it is passed on creation.
     # @see MovieCollection#parse_file
     # @see MovieCollection#has_genre?
     def has_genre?(genre_name)
@@ -72,9 +75,10 @@ module ImdbPlayfield
 
     # Checks if movie matches given parameters.
     # @note
-    #   Key and value are movie attribute and it's value
-    #   You can also use exclude_#{key} to specify what value you don't want to see in the movie
-    # @param [key, value] [Symbol, <Numeric, String, Date>] reference to movie attribute and it's value
+    #   Key and value are movie attribute and it's value.
+    #   You can also use exclude_#{key} to specify what value you don't want to see in the movie.
+    # @param key [Symbol] movie attribute
+    # @param value [Numeric, Date, String] value of attribute
     # @return [Boolean] true if movie matches given parameters
     def matches?(key, value)
       attribute = key.to_s.include?('exclude') ? send(key.to_s.split('_').last) : send(key)

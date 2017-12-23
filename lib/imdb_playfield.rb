@@ -1,5 +1,5 @@
-# Main namespace for ImdbPlayfield
-# Used for loading all necessary classes in correct order
+# Main namespace for ImdbPlayfield.
+# Used for loading all necessary classes in correct order.
 require 'nokogiri'
 require 'money'
 require 'virtus'
@@ -11,14 +11,14 @@ require 'net/http'
 require 'thor'
 require 'ostruct'
 
-# Gem main namespace, with folder and files scaffold methods and main libs requiring
+# Gem main namespace, with folder and files scaffold methods and main libs requiring.
 module ImdbPlayfield
   class << self
-    # Gets or sets the path that the ImdbPlayfield libs are loaded from
+    # Gets or sets path ImdbPlayfield libs are loaded from.
     attr_accessor :lib_path
     self.lib_path = File.expand_path "../imdb_playfield", __FILE__
 
-    # Requires internal ImdbPlayfield libraries
+    # Requiring ImdbPlayfield libraries.
     # @param libs [Array] array of .rb libs in /lib/imdb_playfield/
     # @return [Array] required libraries
     def require_libs(*libs)
@@ -27,8 +27,8 @@ module ImdbPlayfield
       end
     end
 
-    # Creates config.yml with API_KEY, needed to be run before building html or making any external
-    # requests(TMDBApi or IMDBScrapper)
+    # Creates config.yml with API_KEY. Must be run before building html(HamlBuilder#build_html)
+    # or making any external requests(TMDBApi or IMDBScrapper).
     # @return [String] with success message and config.yml file in current working folder
     def create_config
       config_sample_file = File.join(File.dirname(File.expand_path("../", __FILE__)), 'config.yml.sample')
@@ -36,7 +36,7 @@ module ImdbPlayfield
       return "config.yml created, change API_KEY in that file to your tmdb's API key"
     end
 
-    # Creates needed folder and files for TMDBApi and IDMBScrapper #run methods
+    # Creates folder and files required for TMDBApi and IDMBScrapper #run methods.
     # @see ImdbPlayfield::TMDBApi#run
     # @see ImdbPlayfield::IMDBScrapper#run
     # @return [Array] of created files and folder
@@ -49,8 +49,8 @@ module ImdbPlayfield
   end
 
 
-  # Requiring all the libraries needed in order for gem to work properly
-  # Order of requiring does matter
+  # Requiring needed gem libraries.
+  # Order of requiring does matter.
   require_libs "cashbox", "version", "time_helper", "schedule_line", "coercions",
                "movie", "movie_collection", "haml_builder", "imdb_scrapper", "tmdb_api","netflix_dsl",
                "netflix_reference", "netflix", "schedule_period", "theatre_builder",

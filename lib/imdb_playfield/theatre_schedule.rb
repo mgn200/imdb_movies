@@ -1,8 +1,8 @@
 module ImdbPlayfield
-  # Class that provide ineteface to manipulate theatres schedule
+  # Class that provide ineteface to manipulate theatres schedule.
   module TheatreSchedule
     include ImdbPlayfield::TimeHelper
-    # Defautl thatres schedule
+    # Default theatres schedule
     DEFAULT_SCHEDULE = [ImdbPlayfield::SchedulePeriod.new(
                                            "06:00".."12:00",
                                            filters: { period: :ancient },
@@ -24,9 +24,11 @@ module ImdbPlayfield
                                            hall: %i[blue]
                                          )]
 
-    DEFAULT_HALLS = { red: { title: 'Красный зал', places: 100 },
+    DEFAULT_HALLS = {
+                      red: { title: 'Красный зал', places: 100 },
                       blue: { title: 'Синий зал', places: 50 },
-                      green: { title: 'Зелёный зал (deluxe)', places: 12 } }
+                      green: { title: 'Зелёный зал (deluxe)', places: 12 }
+                    }
 
     def organize_schedule(schedule)
       schedule.flat_map { |period|
@@ -34,7 +36,7 @@ module ImdbPlayfield
       }
     end
 
-    # Picks and stacks movies into range period, while
+    # Picks and stacks movies into range period until time period is filled with movies.
     # @param range [Range] period range time
     # @param filters [Hash] hash of movie parameters accepted in current period
     # @param timeleft [Integer] number of "airtime" available in current period

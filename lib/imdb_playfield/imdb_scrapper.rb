@@ -1,12 +1,12 @@
 module ImdbPlayfield
-  # imdb.com data scrapper
-  # Gets budget info for given movies
+  # Imdb.com data scrapper.
+  # Gets budget info for every movie provided in array.
   class IMDBScrapper
     GEM_YML_FILE = File.join(File.dirname(File.expand_path("../../", __FILE__)), "data/movies_imdb_info.yml")
     USER_FILE = "data/movies_imdb_info.yml"
 
     class << self
-      # Main class method, that start scrapping process and saves result to yml file
+      # Main class method, starts scrapping process and saves result to yml file.
       # @note
       #   Creates data/imdb_pages folder with with raw html movie pages from imdb.com
       #   Stores data with movies imdb id and it's budget in data/movies_imdb_info.yml file
@@ -44,10 +44,10 @@ module ImdbPlayfield
         true
       end
 
-      # Contains absolute path to imdb_pages where raw html pages are stored
+      # Contains absolute path to data/imdb_pages, where raw html pages are stored
       # @note
-      #   Points to gem local path if scrapper was never run by user
-      #   If #run is called by user, creates data/imdb_pages in current folder and uses it in the future
+      #   Points to gem local path if scrapper was never run by user.
+      #   If #run is called by user, creates data/imdb_pages in current folder and uses it in the future.
       # @return [String] absolute filepath to data/imdb_pages
       def pages_path
         return File.expand_path("data/imdb_pages") if File.exist?("data/imdb_pages")

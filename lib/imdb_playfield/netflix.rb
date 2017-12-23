@@ -7,8 +7,8 @@ module ImdbPlayfield
     include ImdbPlayfield::NetflixDSL
     attr_reader :balance, :user_filters
 
-    # Sets variable and its default value: balance and user_filters
-    # Creates make_attr_filters used by NetflixDSL
+    # Set balance and user_filters variables.
+    # Builds attribute filters used by NetflixDSL.
     # @see NetflixDSL
     def initialize
       super
@@ -21,11 +21,12 @@ module ImdbPlayfield
     # @note
     #   You can access more advanced params if you use block, and even save it in custom filter
     # @see Netflix#define_filter
-    # @param [params, block] [Hash, &block] basic params or advanced param in block
+    # @param params [Hash] basic params in hash
+    # @param block [&block] advanced params given in block
     # @example
-    #   "netflix.show { |movie| !movie.title.include?('Terminator') && movie.genre.include?('Action') && movie.year > 2003}" => String
-    #   "netflix.show(genre: 'Comedy')" => String
-    #   "netflix.show(user_filter: true)" => String
+    #   netflix.show { |movie| !movie.title.include?('Terminator') && movie.genre.include?('Action') && movie.year > 2003} => String
+    #   netflix.show(genre: 'Comedy') => String
+    #   netflix.show(user_filter: true) => String
     # @return [String] with picker movie and time period in which it will be showed
     def show(params = {}, &block)
       movies = filter(params, &block)
@@ -38,8 +39,9 @@ module ImdbPlayfield
 
     # An overwrite of MovieCollection #filter. Returns filtered array of movies
     # Works with blocks, hash params and defined user filters
-    # @param [hash, block] [Hash, &block] normal params or user filters and optional block
-    # @return [Array] of movies filtered by given params
+    # @param hash [Hash] normal params or user filters and optional block
+    # @param block [&block] block with filter arguments
+    # @return [Array] movies filtered by given params
     def filter(params = {}, &block)
       filtered = block_given? ? select(&block) : all
       user_filter, movie_params = params.partition { |x| user_filters[x.first] }.map(&:to_h)
@@ -70,14 +72,17 @@ module ImdbPlayfield
       filter(title: movie_name).first.price.format
     end
 
-    # Saves custom user filter that can be used later
+    # Saves custom user filter that can be used later.
     # @see Netflix#show
     # @note
-    #   You can create new filters and filters based on another filters and its arguments
+    #   You can create new filters and filters based on another filters and their arguments.
     # @example
     #   netflix.define_filter(:new_sci_fi) { |movie, year| movie.year > year && ... }
     #   netflix.define_filter(:newest_sci_fi, from: :new_sci_fi, arg: 2014)
-    # @param [filter_name, from, arg, &block] [String, Proc, <Numeric, String, Date>, &block] for new and additional filters
+    # @param filter_name [Symbol] new filters name
+    # @param from [Symbol] filter upon which you build a new one
+    # @param arg [Numeric, String, Date] value to be changed in new filter
+    # @param block [&block] block of code with filter arguments
     # @return [Proc] stored in user_filters
     # @see Netflix#user_filters
     def define_filter(filter_name, from: nil, arg: nil, &block)

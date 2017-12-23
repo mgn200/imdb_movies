@@ -1,16 +1,16 @@
 # rubocop:disable Namin/PredicateName
 module ImdbPlayfield
-  # Class that parses movie.txt file, creates Movies with attributes and saves it in variable
-  # Contains different filtering options to work with movie collection
+  # Class that parses movie.txt file, creates Movies with attributes and saves it in variable.
+  # Contains different filtering options to work with movie collection.
   # @see Movie
   class MovieCollection
-    # Enumerable methods will by default use @all as data
+    # Enumerable methods will by default use @all as data.
     include Enumerable
-    # KEYS serve as attributes for parsed Movies
+    # KEYS serve as attributes for parsed Movies.
     KEYS = %w[link title year country date genre duration rating director actors].freeze
     attr_reader :all
 
-    # Initializes an array of different movies from given file
+    # Initializes an array of different movies from given file.
     # @param file [String] path to the movies file
     # @return [Array<AncientMovie, ModernMovie, NewMovie, ClassicMovie>] of parsed movies stored in @all
     def initialize(file = File.join(File.dirname(File.expand_path("../../", __FILE__)), 'data/movies.txt'))
@@ -19,7 +19,7 @@ module ImdbPlayfield
       @all = parse_file(file)
     end
 
-    # Sorts movie collection by given attribute
+    # Sorts movie collection by given attribute.
     # @param field [Symbol] any of the KEYS(movie attributes)
     # @return [String] sorted movies
     def sort_by(attribute)
@@ -30,8 +30,9 @@ module ImdbPlayfield
       end
     end
 
-    # Filters movie collection by given params
-    # @param [Hash, Array] [hash, array] hash of filters and an array that needs filtering
+    # Filters movie collection with given params.
+    # @param hash [Hash] hash of filters
+    # @param array [Array] array that will be filtered
     # @return [Array] filtered array of movies
     def filter(hash, array = nil)
       array ||= all
@@ -47,15 +48,15 @@ module ImdbPlayfield
       flat_map(&attribute).group_by(&:itself).map { |val, group| [val, group.count] }.to_h
     end
 
-    # Check of genre exist in current movie collection
+    # Check if genre exist in current movie collection.
     # @param genre [String] genre string, like 'Comedy' or 'Drama'
     # @return [Boolean] true if genre exist
     def has_genre?(genre)
       map(&:genre).flatten.uniq.include? genre
     end
 
-    # Random pick that weights movie rating. Higher rated movies are more likely to be picked
-    # @param movie_array [Array] array if movies that respond to #rating
+    # Random pick that weighs movie rating. Higher rated movies are more likely to be picked
+    # @param movie_array [Array] array of movies that respond to #rating
     # @return [<AncientMovie, ModernMovie, NewMovie, ClassicMovie>] picked movie
     def pick_movie(movies_array)
       movies_array.sort_by { |x| x.rating.to_f * rand(1..1.5) }.last

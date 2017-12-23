@@ -1,5 +1,5 @@
 module ImdbPlayfield
-  # Provied by virtus gem, more convinient way to work with Class attributes.
+  # Provied by Virtus gem, more convinient way to work with Class attributes.
   # @see Movie
   class Coercions
     class Integer < Virtus::Attribute

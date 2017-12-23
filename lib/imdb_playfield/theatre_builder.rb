@@ -38,16 +38,16 @@ module ImdbPlayfield
   module TheatreBuilder
     include ImdbPlayfield::TimeHelper
 
-    # Describing and builder halls
+    # Building halls
     def hall(name, params)
       halls[name] = params
     end
 
-    # Describing and building periods, then passing it a Theatres schedule
+    # Describing and building periods. Adds them to Theatres schedule.
     # @param new_range [Range] time range of future schedule period
-    # @param block [&block] block contaings data describing future period
-    # @see ImdbPlayfield::PeriodBuilder
+    # @param block [&block] block with data describing future period
     # @return [Hash] a hash of user defined theatre schedule
+    # @see ImdbPlayfield::PeriodBuilder
     def period(new_range = nil, &block)
       #range_in_seconds = to_seconds(new_range.first)..to_seconds(new_range.last) if new_range
       @schedule = [] if schedule == ImdbPlayfield::Theatre::DEFAULT_SCHEDULE
@@ -69,22 +69,22 @@ module ImdbPlayfield
       end
     end
 
-    # Describing and build official breaks between schedule periods
+    # Insert official break between schedule periods
     def session_break(range)
       period(range) { session_break }
     end
 
     # Check if there are any holes between schedule periods
-    # @see ImdbPlayfield::Theatre#initialize
-    # @param schedule [ImdbPlayfield::SchedulePeriod] schedule of Theatre
+    # @param schedule [Array] Theatre schedule, default one or user defined.
     # @return [Boolean, ArgumentError] true if no holes, error if any
+    # @see ImdbPlayfield::Theatre#initialize
     def check_holes(schedule)
       time_holes = []
       sorted_periods = schedule.sort_by { |period| period.range_time.begin }
       tested_period = [sorted_periods.shift]
       sorted_periods.each do |period|
         if tested_period.last.range_time.cover? period.range_time.begin
-          # If there are no hole, overwrite element in array
+          # If there are no holes, overwrite element in array
           tested_period[-1] = period
         else
           # If there is a hall, add previous period to array
@@ -112,7 +112,7 @@ module ImdbPlayfield
       end
     end
 
-    # Service class that builds period and populates it with attributes from provided block code
+    # Service class that builds period and populates it with attributes from given block.
     # @see ImdbPlayfield::TheatreBuilder#period
     # @see ImdbPlayfield::SchedulePeriod
     class PeriodBuilder
@@ -123,11 +123,11 @@ module ImdbPlayfield
         instance_eval(&block)
       end
 
-      # Dynamically create schedule attributes from given &block
+      # Dynamically create schedule attributes from given &block.
       # @see ImdbPlayfield::TheatreBuilder::PeriodBuilder#initialize
-      # param key [Symbol] key from provided block of code
-      # params value [Numeric, String, Hash, Date] value to attach to provided key
-      # @return [Hash] one schedule period added to @schedule in Theatre
+      # @param key [Symbol] key from provided block of code
+      # @param value [Numeric, String, Hash, Date] value to attach to provided key
+      # @return [Hash] one schedule period that is added to schedule in Theatre
       def method_missing(key, value)
         if ImdbPlayfield::MovieCollection::KEYS.any? { |k| k.to_sym == key }
         # wrap params in filter, when they are given out of hash
@@ -138,7 +138,7 @@ module ImdbPlayfield
         end
       end
 
-      # Add halls to the schedule
+      # Add halls to the schedule.
       def hall(*halls)
         @period.hall = halls
       end
