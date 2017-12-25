@@ -21,11 +21,6 @@ module ImdbPlayfield
     # Requiring ImdbPlayfield libraries.
     # @param libs [Array] array of .rb libs in /lib/imdb_playfield/
     # @return [Array] required libraries
-    def require_libs(*libs)
-      libs.each do |lib|
-        require "#{lib_path}/#{lib}"
-      end
-    end
 
     # Creates config.yml with API_KEY. Must be run before building html(HamlBuilder#build_html)
     # or making any external requests(TMDBApi or IMDBScrapper).
@@ -51,9 +46,10 @@ module ImdbPlayfield
 
   # Requiring needed gem libraries.
   # Order of requiring does matter.
-  require_libs "cashbox", "version", "time_helper", "schedule_line", "coercions",
-               "movie", "movie_collection", "haml_builder", "imdb_scrapper", "tmdb_api","netflix_dsl",
-               "netflix_reference", "netflix", "schedule_period", "theatre_builder",
-               "theatre_schedule", "theatre", "ancient_movie", "classic_movie", "modern_movie",
-               "new_movie"
+  %w[cashbox version time_helper schedule_line coercions movie movie_collection
+     haml_builder imdb_scrapper tmdb_api netflix_dsl netflix_reference netflix
+     schedule_period theatre_builder theatre_schedule theatre ancient_movie
+     classic_movie modern_movie new_movie].each do |lib|
+       require "../imdb_playfield/#{lib}"
+     end
 end
