@@ -1,5 +1,6 @@
 module ImdbPlayfield
-  # Integrates cashbox into movie theatres(Netflix and Theatre) to work with cash flow.
+  # Module incapsulating working with cash box (storing money, cash balance, incassation).
+  # Used by {Netflix} and {Theatre}
   module Cashbox
     I18n.enforce_available_locales = false
 

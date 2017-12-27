@@ -39,7 +39,7 @@ module ImdbPlayfield
 
     # An overwrite of MovieCollection #filter. Returns filtered array of movies
     # Works with blocks, hash params and defined user filters
-    # @param hash [Hash] normal params or user filters and optional block
+    # @param params [Hash] normal params or user filters and optional block
     # @param block [&block] block with filter arguments
     # @return [Array] movies filtered by given params
     def filter(params = {}, &block)
@@ -91,7 +91,8 @@ module ImdbPlayfield
 
     # Build an html page with HamlBuilder#build_html
     # @see HamlBuilder#build_html
-    # @params [builder, movie_collection] builder class and movie collection
+    # @param builder [HamlBuilder] builder class {HamlBuilder}
+    # @param movie_collection [Array] array of movies upon which html page is built, defaults to MovieCollection.all
     # @return [Boolean] true if 'index.html' was created in data/views/index.html
     def build_html(builder, movie_collection = all)
       builder.new(movie_collection).build_html

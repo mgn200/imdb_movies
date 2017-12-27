@@ -6,12 +6,22 @@ module ImdbPlayfield
     USER_FILE = "data/movies_imdb_info.yml"
 
     class << self
+      # Absolute path to file with additional movie info about budget(movies_imdb_info.yml).
+      # Used in {Movie}, providing additional movie information.
+      # Returns either defaul pre-made gem data file ({G  EM_YML_FILE})
+      # or user-created file, if it exists ({USER_FILE}).
+      # @return [String] absolute path to imdb_movie_info.yml
+      def imdb_yml_file
+        return File.expand_path(ImdbPlayfield::IMDBScrapper::USER_FILE) if File.exist?(ImdbPlayfield::IMDBScrapper::USER_FILE)
+        ImdbPlayfield::IMDBScrapper::GEM_YML_FILE
+      end
+
       # Main class method, starts scrapping process and saves result to yml file.
       # @note
       #   Creates data/imdb_pages folder with with raw html movie pages from imdb.com
       #   Stores data with movies imdb id and it's budget in data/movies_imdb_info.yml file
-      # @param array [Array<AncientMovie, ModernMovie, NewMovie, ClassicMovie>] array of movies
-      # @return [true] if file with movie budget data successfully created
+      # @param movies_array [Array<AncientMovie, ModernMovie, NewMovie, ClassicMovie>] array of movies
+      # @return [Boolean] true if file with movie budget data was successfully created
       def run(movies_array = ImdbPlayfield::MovieCollection.new.all)
         FileUtils::mkdir_p("data/imdb_pages") unless File.exist? "data/imdb_pages"
         File.new(user_file, "w+") unless File.exist? "data/movies_imdb_info.yml"

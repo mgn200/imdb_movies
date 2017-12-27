@@ -16,6 +16,16 @@ module ImdbPlayfield
     USER_FILE = "data/movies_tmdb_info.yml"
 
     class << self
+      # Absolute path to file with additional movie info(movies_tmdb_info.yml).
+      # Used in {Movie}, providing additional movie information.
+      # Returns either defaul pre-made gem data file ({GEM_YML_FILE})
+      # or user-created file, if it exists ({USER_FILE}).
+      # @return [String] absolute path to tmdb_movie_info.yml
+      def tmdb_yml_file
+        return File.expand_path(ImdbPlayfield::TMDBApi::USER_FILE) if File.exist?(ImdbPlayfield::TMDBApi::USER_FILE)
+        ImdbPlayfield::TMDBApi::GEM_YML_FILE
+      end
+
       # When user calls #run, it saves info to local USER_FILE and used it instread of GEM_YML_FILE
       # @param data [Hash] of parsed response from tmdb api
       # @return [Integer] number of bytes written after calling File.write and creating a USER_FILE

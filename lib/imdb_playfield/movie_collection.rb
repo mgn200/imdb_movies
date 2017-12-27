@@ -2,6 +2,9 @@
 module ImdbPlayfield
   # Class that parses movie.txt file, creates Movies with attributes and saves it in variable.
   # Contains different filtering options to work with movie collection.
+  # List of movies.
+  # Allow different filtering and sorting of list. Creates that list from
+  # movies.txt(default file), or similar file provided by user.
   # @see Movie
   class MovieCollection
     # Enumerable methods will by default use @all as data.
@@ -10,17 +13,17 @@ module ImdbPlayfield
     KEYS = %w[link title year country date genre duration rating director actors].freeze
     attr_reader :all
 
-    # Initializes an array of different movies from given file.
+    # Loads movie collection from file.
     # @param file [String] path to the movies file
     # @return [Array<AncientMovie, ModernMovie, NewMovie, ClassicMovie>] of parsed movies stored in @all
-    def initialize(file = File.join(File.dirname(File.expand_path("../../", __FILE__)), 'data/movies.txt'))
+    def initialize(file = File.expand_path('../../../data/movies.txt', __FILE__))
       @filename = file
       abort('No movie file') unless File.exist? file
       @all = parse_file(file)
     end
 
     # Sorts movie collection by given attribute.
-    # @param field [Symbol] any of the KEYS(movie attributes)
+    # @param attribute [Symbol] any of the KEYS(movie attributes)
     # @return [String] sorted movies
     def sort_by(attribute)
       if attribute == :director
@@ -30,10 +33,15 @@ module ImdbPlayfield
       end
     end
 
-    # Filters movie collection with given params.
-    # @param hash [Hash] hash of filters
-    # @param array [Array] array that will be filtered
-    # @return [Array] filtered array of movies
+    # Filters movie collection with given parameters.
+    # Parameters are movie attributes stored in hash.
+    # You can also use exclude_(movie_attribute) parameter for more specific filtering.
+    # @example
+    #   mc = ImdbPlayfield::MovieCollection.new
+    #   mc.filter { year: 1990, genre: 'Comedy', exclude_country: 'USA' }
+    # @param hash [Hash] hash of movie attributes and their values
+    # @param array [Array] optional parameter. Array that will be filtered, default is MovieCollection.all. It is used in child object method{Netflix#filter} - filtered array is sent here for final filtering.
+    # @return [Array<Movie>] filtered array of movies
     def filter(hash, array = nil)
       array ||= all
       hash.reduce(array) do |sequence, (k, v)|
@@ -56,7 +64,7 @@ module ImdbPlayfield
     end
 
     # Random pick that weighs movie rating. Higher rated movies are more likely to be picked
-    # @param movie_array [Array] array of movies that respond to #rating
+    # @param movies_array [Array] array of movies that respond to #rating
     # @return [<AncientMovie, ModernMovie, NewMovie, ClassicMovie>] picked movie
     def pick_movie(movies_array)
       movies_array.sort_by { |x| x.rating.to_f * rand(1..1.5) }.last
@@ -64,9 +72,6 @@ module ImdbPlayfield
 
     private
 
-    # Parses movie file, crates movie objects based on movie year production
-    # @param file [String] path to file that can be parsed
-    # @return [Array<AncientMovie, ModernMovie, NewMovie, ClassicMovie>] array of movies
     def parse_file(file)
       CSV.foreach(file, col_sep: '|', headers: KEYS).map do |row|
         year = row['year'].to_i

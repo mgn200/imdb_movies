@@ -13,9 +13,8 @@ module ImdbPlayfield
        @movies_row = movies_array.each_slice(2).to_a
     end
 
-    # Creates index.html in the current folder from @movies_row array.
-    # @movies_row in created in #initialize.
-    # @return [true] creates index.html file
+    # Creates index.html in the current folder from @movies_row array. @movies_row is created in {HamlBuilder#initialize}.
+    # @return [Boolean] true when creates index.html file
     def build_html
       rendered_template = Haml::Engine.new(haml_layout).render(self)
       File.write(HTML_FILE, rendered_template)
