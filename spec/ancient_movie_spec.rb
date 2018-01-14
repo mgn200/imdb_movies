@@ -1,4 +1,4 @@
-RSpec.describe MovieProduction::AncientMovie do
+RSpec.describe ImdbPlayfield::AncientMovie do
   let(:movie_info) {
                      {
                        title: 'Test movie',
@@ -9,7 +9,7 @@ RSpec.describe MovieProduction::AncientMovie do
                        list: nil
                      }
                    }
-  subject(:ancient_movie) { MovieProduction::AncientMovie.new(movie_info) }
+  subject(:ancient_movie) { ImdbPlayfield::AncientMovie.new(movie_info) }
 
   describe 'methods and attributes' do
     it {

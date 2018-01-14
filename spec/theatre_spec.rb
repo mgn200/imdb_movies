@@ -1,6 +1,6 @@
-RSpec.describe MovieProduction::Theatre do
-  let(:movies) { MovieProduction::MovieCollection.new }
-  let(:theatre) { MovieProduction::Theatre.new }
+RSpec.describe ImdbPlayfield::Theatre do
+  let(:movies) { ImdbPlayfield::MovieCollection.new }
+  let(:theatre) { ImdbPlayfield::Theatre.new }
 
   describe '#take' do
     before {
@@ -89,7 +89,7 @@ RSpec.describe MovieProduction::Theatre do
 
   describe '#info' do
     let(:theatre) do
-      MovieProduction::Theatre.new do
+      ImdbPlayfield::Theatre.new do
         hall :red, title: 'Красный зал', places: 100
         hall :blue, title: 'Синий зал', places: 50
         hall :green, title: 'Зелёный зал (deluxe)', places: 12

@@ -1,13 +1,13 @@
-RSpec.describe MovieProduction::HamlBuilder do
+RSpec.describe ImdbPlayfield::HamlBuilder do
   # берем определенный мувик для сравнения данных
-  let(:movies) { MovieProduction::MovieCollection.new.filter(title: 'Fight Club') }
-  let(:haml_builder) { MovieProduction::HamlBuilder.new(movies) }
+  let(:movies) { ImdbPlayfield::MovieCollection.new.filter(title: 'Fight Club') }
+  let(:haml_builder) { ImdbPlayfield::HamlBuilder.new(movies) }
   #before { allow(haml_builder).to receive(:haml_layout).and_return("spec/views/test_index.html") }
   describe "Build html file from haml layout" do
     describe "#build_html" do
       before {
-        stub_const("MovieProduction::HamlBuilder::HTML_FILE", "spec/views/test_index.html")
-        allow_any_instance_of(MovieProduction::HamlBuilder).to receive(:haml_layout).and_return(File.read('spec/views/test_index.haml'))
+        stub_const("ImdbPlayfield::HamlBuilder::HTML_FILE", File.expand_path("spec/views/test_index.html"))
+        allow_any_instance_of(ImdbPlayfield::HamlBuilder).to receive(:haml_layout).and_return(File.read('spec/views/test_index.haml'))
       }
 
       context 'return success message' do

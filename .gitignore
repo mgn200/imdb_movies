@@ -1,4 +1,8 @@
 !lib/imdb_pages/.keep
-lib/imdb_pages/*
+data/imdb_pages/*
 spec/views/*
 config.yml
+imdb_playfield-0.0.1.gem
+/.yardoc/*
+Gemfile.lock
+doc
